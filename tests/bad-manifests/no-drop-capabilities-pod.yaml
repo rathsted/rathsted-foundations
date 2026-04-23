@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-no-drop-caps
+spec:
+  containers:
+    - name: bad
+      image: docker.io/library/nginx:latest
+      securityContext:
+        capabilities:
+          add:
+            - SYS_ADMIN

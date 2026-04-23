@@ -1,0 +1,19 @@
+name: Question
+description: Ask a question about usage or architecture
+labels: ["question"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What would you like to know?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What are you trying to accomplish? Include version and relevant details.
+    validations:
+      required: true

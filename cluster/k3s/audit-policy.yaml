@@ -1,0 +1,55 @@
+# Kubernetes API Server Audit Policy
+# Defines what events are logged and at what detail level.
+# Reference: https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+  # Log authentication failures at RequestResponse level
+  - level: RequestResponse
+    users: ["system:anonymous"]
+    verbs: ["create", "update", "patch", "delete"]
+
+  # Log changes to secrets, configmaps, RBAC at Request level
+  - level: Request
+    resources:
+      - group: ""
+        resources: ["secrets", "configmaps"]
+      - group: "rbac.authorization.k8s.io"
+        resources: ["clusterroles", "clusterrolebindings", "roles", "rolebindings"]
+
+  # Log admission-related resources (policies, webhooks)
+  - level: Request
+    resources:
+      - group: "kyverno.io"
+        resources: ["clusterpolicies", "policies", "policyreports", "clusterpolicyreports"]
+      - group: "admissionregistration.k8s.io"
+        resources: ["validatingwebhookconfigurations", "mutatingwebhookconfigurations"]
+
+  # Log namespace and node lifecycle
+  - level: Request
+    resources:
+      - group: ""
+        resources: ["namespaces", "nodes"]
+    verbs: ["create", "update", "patch", "delete"]
+
+  # Log deployment and workload changes
+  - level: Metadata
+    resources:
+      - group: "apps"
+        resources: ["deployments", "statefulsets", "daemonsets"]
+      - group: ""
+        resources: ["pods", "services"]
+    verbs: ["create", "update", "patch", "delete"]
+
+  # Log Flux/GitOps resource changes
+  - level: Metadata
+    resources:
+      - group: "kustomize.toolkit.fluxcd.io"
+        resources: ["kustomizations"]
+      - group: "source.toolkit.fluxcd.io"
+        resources: ["gitrepositories"]
+
+  # Log everything else at metadata level (low noise)
+  - level: Metadata
+    omitStages:
+      - RequestReceived

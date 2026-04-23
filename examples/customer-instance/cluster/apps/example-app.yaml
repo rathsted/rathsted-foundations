@@ -1,0 +1,68 @@
+# Example customer workload
+# Replace this with your actual application deployment.
+# All workloads must comply with Foundations policies:
+#   - Run as non-root (runAsNonRoot: true, runAsUser: 10001+)
+#   - Drop all capabilities
+#   - No privilege escalation
+#   - Resource requests and limits set
+#   - Liveness and readiness probes
+#   - Images from allowed registries (ghcr.io/* or localhost/*)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-app
+  namespace: acme
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-app
+  template:
+    metadata:
+      labels:
+        app: example-app
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: app
+          image: ghcr.io/acme/example-app:1.0.0  # Pin to a specific version; avoid :latest in production
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-app
+  namespace: acme
+spec:
+  selector:
+    app: example-app
+  ports:
+    - port: 80
+      targetPort: 8080

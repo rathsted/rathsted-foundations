@@ -1,0 +1,97 @@
+name: Release Demo Image
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  build-sign-sbom:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set image
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          OWNER="$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')"
+          echo "IMAGE=ghcr.io/${OWNER}/foundations-demo:${TAG}" >> "$GITHUB_ENV"
+
+      - name: Login to GHCR
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull reference image, retag, and push
+        run: |
+          NGINX_SRC="docker.io/library/nginx@sha256:e7257f1ef28ba17cf7c248cb8ccf6f0c6e0228ab9c315c152f9c203cd34cf6d1"
+          docker pull "$NGINX_SRC"
+          docker tag "$NGINX_SRC" "$IMAGE"
+          docker push "$IMAGE"
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@cad07c2e89fa2edd6e2d7bab4c1aa38e53f76003 # v4.1.1
+
+      # Cosign signing uses COSIGN_PRIVATE_KEY and COSIGN_PASSWORD from
+      # the repo's Actions secrets. You don't need to type the passphrase
+      # to cut a release — CI reads it from the secret store. You *do*
+      # need to retain the passphrase elsewhere (e.g. 1Password) for:
+      #   - local signing via `make sign`
+      #   - re-importing the key on a new machine
+      #   - rotation. If lost, generate a new keypair per
+      #     docs/release-signing.md and update both repo secrets.
+      - name: Sign image (key-based)
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: |
+          test -n "$COSIGN_PRIVATE_KEY"
+          echo "$COSIGN_PRIVATE_KEY" > /tmp/cosign.key
+          cosign sign --key /tmp/cosign.key "$IMAGE"
+
+      - name: SBOM (Syft)
+        run: |
+          mkdir -p supply-chain/sbom/output
+          SYFT_VERSION="v1.42.1"
+          SYFT_RAW="${SYFT_VERSION#v}"
+          ARCH="$(uname -m)"; case "$ARCH" in x86_64) ARCH="amd64";; aarch64) ARCH="arm64";; esac
+          tmp="$(mktemp -d)"
+          ASSET="syft_${SYFT_RAW}_linux_${ARCH}.tar.gz"
+          CHECKSUMS="syft_${SYFT_RAW}_checksums.txt"
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+            "https://github.com/anchore/syft/releases/download/${SYFT_VERSION}/${ASSET}" -o "${tmp}/${ASSET}"
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+            "https://github.com/anchore/syft/releases/download/${SYFT_VERSION}/${CHECKSUMS}" -o "${tmp}/${CHECKSUMS}"
+          (cd "${tmp}" && grep " ${ASSET}$" "${CHECKSUMS}" | sha256sum -c -) >/dev/null
+          tar -xzf "${tmp}/${ASSET}" -C "${tmp}" syft
+          sudo install -m 0755 "${tmp}/syft" /usr/local/bin/syft
+          rm -rf "$tmp"
+          syft "$IMAGE" -o json > supply-chain/sbom/output/image.sbom.json
+          syft "$IMAGE" -o spdx-json > supply-chain/sbom/output/image.sbom.spdx.json
+
+      - name: Sign SBOM as cosign attestation
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: |
+          test -n "$COSIGN_PRIVATE_KEY"
+          echo "$COSIGN_PRIVATE_KEY" > /tmp/cosign.key
+          cosign attest --yes --key /tmp/cosign.key \
+            --predicate supply-chain/sbom/output/image.sbom.spdx.json \
+            --type spdxjson \
+            "$IMAGE"
+
+      - name: Upload SBOM artifacts
+        uses: actions/upload-artifact@834a144ee995460fba8ed112a2fc961b36a5ec5a # v4.3.6
+        with:
+          name: sbom-${{ github.ref_name }}
+          path: supply-chain/sbom/output/
+          if-no-files-found: error

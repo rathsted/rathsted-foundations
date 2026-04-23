@@ -1,0 +1,36 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-signed-images
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: verify-signatures
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+                - Deployment
+                - StatefulSet
+                - DaemonSet
+                - Job
+                - CronJob
+      exclude:
+        resources:
+          namespaces:
+            - kube-system
+            - flux-system
+            - kyverno
+      verifyImages:
+        - mutateDigest: false
+          imageReferences:
+            - "ghcr.io/rathsted/*"
+          attestors:
+            - entries:
+                - keys:
+                    publicKeys: |-
+                      -----BEGIN PUBLIC KEY-----
+                      MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEMtL2R7+LyDsxF7TklkFwaEaZA1P2
+                      jnVfErk6TlEOPTxbY9EbXpQLXxLIWkKRpgyfC8L1wAxfAA21F3vMkwZuVA==
+                      -----END PUBLIC KEY-----

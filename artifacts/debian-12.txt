@@ -1,0 +1,517 @@
+# Rathsted Foundations — debian:12 Compatibility Evidence
+# Date: 2026-04-23T20:17:07Z
+# Source: local copy (repo is private; target: https://github.com/rathsted/rathsted-foundations.git)
+#
+
+# Pins: current
+#   k3s=v1.35.1+k3s1  kyverno=v1.17.1  flux=2.8.1
+#   changed=2026-03-04/2026-03-04/2026-03-04
+
+[rathsted 13:17:07] Using VM: rathsted-compat-debian-12
+[rathsted 13:17:07] Using image: debian:12
+[rathsted 13:17:07] Repo: local copy (no remote)
+[rathsted 13:17:07] Creating VM (debian:12)...
+[rathsted 13:17:30] Installing prerequisites inside VM...
+Hit:1 http://deb.debian.org/debian bookworm InRelease
+Hit:2 http://deb.debian.org/debian bookworm-updates InRelease
+Hit:3 http://deb.debian.org/debian-security bookworm-security InRelease
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+curl is already the newest version (7.88.1-10+deb12u14).
+The following additional packages will be installed:
+  git-man less libcurl3-gnutls liberror-perl libgdbm-compat4 libgdbm6 libnsl2
+  libperl5.36 libpython3-stdlib libpython3.11-minimal libpython3.11-stdlib
+  libreadline8 libsqlite3-0 media-types patch perl perl-modules-5.36
+  python3-minimal python3.11 python3.11-minimal readline-common
+Suggested packages:
+  gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-email git-gui
+  gitk gitweb git-cvs git-mediawiki git-svn gdbm-l10n sensible-utils make-doc
+  ed diffutils-doc perl-doc libterm-readline-gnu-perl
+  | libterm-readline-perl-perl libtap-harness-archive-perl python3-doc
+  python3-tk python3-venv python3.11-venv python3.11-doc binutils
+  binfmt-support readline-doc
+The following NEW packages will be installed:
+  git git-man less libcurl3-gnutls liberror-perl libgdbm-compat4 libgdbm6
+  libnsl2 libperl5.36 libpython3-stdlib libpython3.11-minimal
+  libpython3.11-stdlib libreadline8 libsqlite3-0 make media-types patch perl
+  perl-modules-5.36 python3 python3-minimal python3.11 python3.11-minimal
+  readline-common
+0 upgraded, 24 newly installed, 0 to remove and 0 not upgraded.
+Need to get 23.5 MB of archives.
+After this operation, 128 MB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian bookworm/main arm64 perl-modules-5.36 all 5.36.0-7+deb12u3 [2,815 kB]
+Get:2 http://deb.debian.org/debian bookworm/main arm64 libgdbm6 arm64 1.23-3 [70.9 kB]
+Get:3 http://deb.debian.org/debian bookworm/main arm64 libgdbm-compat4 arm64 1.23-3 [48.0 kB]
+Get:4 http://deb.debian.org/debian bookworm/main arm64 libperl5.36 arm64 5.36.0-7+deb12u3 [4,009 kB]
+Get:5 http://deb.debian.org/debian bookworm/main arm64 perl arm64 5.36.0-7+deb12u3 [239 kB]
+Get:6 http://deb.debian.org/debian bookworm/main arm64 libpython3.11-minimal arm64 3.11.2-6+deb12u6 [810 kB]
+Get:7 http://deb.debian.org/debian bookworm/main arm64 python3.11-minimal arm64 3.11.2-6+deb12u6 [1,859 kB]
+Get:8 http://deb.debian.org/debian bookworm/main arm64 python3-minimal arm64 3.11.2-1+b1 [26.3 kB]
+Get:9 http://deb.debian.org/debian bookworm/main arm64 media-types all 10.0.0 [26.1 kB]
+Get:10 http://deb.debian.org/debian bookworm/main arm64 libnsl2 arm64 1.3.0-2 [36.9 kB]
+Get:11 http://deb.debian.org/debian bookworm/main arm64 readline-common all 8.2-1.3 [69.0 kB]
+Get:12 http://deb.debian.org/debian bookworm/main arm64 libreadline8 arm64 8.2-1.3 [155 kB]
+Get:13 http://deb.debian.org/debian bookworm/main arm64 libsqlite3-0 arm64 3.40.1-2+deb12u2 [786 kB]
+Get:14 http://deb.debian.org/debian bookworm/main arm64 libpython3.11-stdlib arm64 3.11.2-6+deb12u6 [1,746 kB]
+Get:15 http://deb.debian.org/debian bookworm/main arm64 python3.11 arm64 3.11.2-6+deb12u6 [573 kB]
+Get:16 http://deb.debian.org/debian bookworm/main arm64 libpython3-stdlib arm64 3.11.2-1+b1 [9,296 B]
+Get:17 http://deb.debian.org/debian bookworm/main arm64 python3 arm64 3.11.2-1+b1 [26.3 kB]
+Get:18 http://deb.debian.org/debian bookworm/main arm64 less arm64 590-2.1~deb12u2 [128 kB]
+Get:19 http://deb.debian.org/debian bookworm/main arm64 libcurl3-gnutls arm64 7.88.1-10+deb12u14 [362 kB]
+Get:20 http://deb.debian.org/debian bookworm/main arm64 liberror-perl all 0.17029-2 [29.0 kB]
+Get:21 http://deb.debian.org/debian bookworm/main arm64 git-man all 1:2.39.5-0+deb12u3 [2,053 kB]
+Get:22 http://deb.debian.org/debian bookworm/main arm64 git arm64 1:2.39.5-0+deb12u3 [7,153 kB]
+Get:23 http://deb.debian.org/debian bookworm/main arm64 make arm64 4.3-4.1 [391 kB]
+Get:24 http://deb.debian.org/debian bookworm/main arm64 patch arm64 2.7.6-7 [121 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 23.5 MB in 2s (13.5 MB/s)
+Selecting previously unselected package perl-modules-5.36.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 12661 files and directories currently installed.)
+Preparing to unpack .../0-perl-modules-5.36_5.36.0-7+deb12u3_all.deb ...
+Unpacking perl-modules-5.36 (5.36.0-7+deb12u3) ...
+Selecting previously unselected package libgdbm6:arm64.
+Preparing to unpack .../1-libgdbm6_1.23-3_arm64.deb ...
+Unpacking libgdbm6:arm64 (1.23-3) ...
+Selecting previously unselected package libgdbm-compat4:arm64.
+Preparing to unpack .../2-libgdbm-compat4_1.23-3_arm64.deb ...
+Unpacking libgdbm-compat4:arm64 (1.23-3) ...
+Selecting previously unselected package libperl5.36:arm64.
+Preparing to unpack .../3-libperl5.36_5.36.0-7+deb12u3_arm64.deb ...
+Unpacking libperl5.36:arm64 (5.36.0-7+deb12u3) ...
+Selecting previously unselected package perl.
+Preparing to unpack .../4-perl_5.36.0-7+deb12u3_arm64.deb ...
+Unpacking perl (5.36.0-7+deb12u3) ...
+Selecting previously unselected package libpython3.11-minimal:arm64.
+Preparing to unpack .../5-libpython3.11-minimal_3.11.2-6+deb12u6_arm64.deb ...
+Unpacking libpython3.11-minimal:arm64 (3.11.2-6+deb12u6) ...
+Selecting previously unselected package python3.11-minimal.
+Preparing to unpack .../6-python3.11-minimal_3.11.2-6+deb12u6_arm64.deb ...
+Unpacking python3.11-minimal (3.11.2-6+deb12u6) ...
+Setting up libpython3.11-minimal:arm64 (3.11.2-6+deb12u6) ...
+Setting up python3.11-minimal (3.11.2-6+deb12u6) ...
+Selecting previously unselected package python3-minimal.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 14978 files and directories currently installed.)
+Preparing to unpack .../0-python3-minimal_3.11.2-1+b1_arm64.deb ...
+Unpacking python3-minimal (3.11.2-1+b1) ...
+Selecting previously unselected package media-types.
+Preparing to unpack .../1-media-types_10.0.0_all.deb ...
+Unpacking media-types (10.0.0) ...
+Selecting previously unselected package libnsl2:arm64.
+Preparing to unpack .../2-libnsl2_1.3.0-2_arm64.deb ...
+Unpacking libnsl2:arm64 (1.3.0-2) ...
+Selecting previously unselected package readline-common.
+Preparing to unpack .../3-readline-common_8.2-1.3_all.deb ...
+Unpacking readline-common (8.2-1.3) ...
+Selecting previously unselected package libreadline8:arm64.
+Preparing to unpack .../4-libreadline8_8.2-1.3_arm64.deb ...
+Unpacking libreadline8:arm64 (8.2-1.3) ...
+Selecting previously unselected package libsqlite3-0:arm64.
+Preparing to unpack .../5-libsqlite3-0_3.40.1-2+deb12u2_arm64.deb ...
+Unpacking libsqlite3-0:arm64 (3.40.1-2+deb12u2) ...
+Selecting previously unselected package libpython3.11-stdlib:arm64.
+Preparing to unpack .../6-libpython3.11-stdlib_3.11.2-6+deb12u6_arm64.deb ...
+Unpacking libpython3.11-stdlib:arm64 (3.11.2-6+deb12u6) ...
+Selecting previously unselected package python3.11.
+Preparing to unpack .../7-python3.11_3.11.2-6+deb12u6_arm64.deb ...
+Unpacking python3.11 (3.11.2-6+deb12u6) ...
+Selecting previously unselected package libpython3-stdlib:arm64.
+Preparing to unpack .../8-libpython3-stdlib_3.11.2-1+b1_arm64.deb ...
+Unpacking libpython3-stdlib:arm64 (3.11.2-1+b1) ...
+Setting up python3-minimal (3.11.2-1+b1) ...
+Selecting previously unselected package python3.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 15425 files and directories currently installed.)
+Preparing to unpack .../0-python3_3.11.2-1+b1_arm64.deb ...
+Unpacking python3 (3.11.2-1+b1) ...
+Selecting previously unselected package less.
+Preparing to unpack .../1-less_590-2.1~deb12u2_arm64.deb ...
+Unpacking less (590-2.1~deb12u2) ...
+Selecting previously unselected package libcurl3-gnutls:arm64.
+Preparing to unpack .../2-libcurl3-gnutls_7.88.1-10+deb12u14_arm64.deb ...
+Unpacking libcurl3-gnutls:arm64 (7.88.1-10+deb12u14) ...
+Selecting previously unselected package liberror-perl.
+Preparing to unpack .../3-liberror-perl_0.17029-2_all.deb ...
+Unpacking liberror-perl (0.17029-2) ...
+Selecting previously unselected package git-man.
+Preparing to unpack .../4-git-man_1%3a2.39.5-0+deb12u3_all.deb ...
+Unpacking git-man (1:2.39.5-0+deb12u3) ...
+Selecting previously unselected package git.
+Preparing to unpack .../5-git_1%3a2.39.5-0+deb12u3_arm64.deb ...
+Unpacking git (1:2.39.5-0+deb12u3) ...
+Selecting previously unselected package make.
+Preparing to unpack .../6-make_4.3-4.1_arm64.deb ...
+Unpacking make (4.3-4.1) ...
+Selecting previously unselected package patch.
+Preparing to unpack .../7-patch_2.7.6-7_arm64.deb ...
+Unpacking patch (2.7.6-7) ...
+Setting up media-types (10.0.0) ...
+Setting up libsqlite3-0:arm64 (3.40.1-2+deb12u2) ...
+Setting up less (590-2.1~deb12u2) ...
+Setting up libcurl3-gnutls:arm64 (7.88.1-10+deb12u14) ...
+Setting up perl-modules-5.36 (5.36.0-7+deb12u3) ...
+Setting up make (4.3-4.1) ...
+Setting up patch (2.7.6-7) ...
+Setting up libnsl2:arm64 (1.3.0-2) ...
+Setting up git-man (1:2.39.5-0+deb12u3) ...
+Setting up readline-common (8.2-1.3) ...
+Setting up libgdbm6:arm64 (1.23-3) ...
+Setting up libreadline8:arm64 (8.2-1.3) ...
+Setting up libgdbm-compat4:arm64 (1.23-3) ...
+Setting up libperl5.36:arm64 (5.36.0-7+deb12u3) ...
+Setting up libpython3.11-stdlib:arm64 (3.11.2-6+deb12u6) ...
+Setting up perl (5.36.0-7+deb12u3) ...
+Setting up libpython3-stdlib:arm64 (3.11.2-1+b1) ...
+Setting up python3.11 (3.11.2-6+deb12u6) ...
+Setting up python3 (3.11.2-1+b1) ...
+running python rtupdate hooks for python3.11...
+running python post-rtupdate hooks for python3.11...
+Setting up liberror-perl (0.17029-2) ...
+Setting up git (1:2.39.5-0+deb12u3) ...
+Processing triggers for systemd (252.39-1~deb12u1) ...
+Processing triggers for libc-bin (2.36-9+deb12u13) ...
+[rathsted 13:17:53] Copying local repo into VM rathsted-compat-debian-12 (~/rathsted-foundations)...
+[rathsted 13:17:56] Running E2E inside VM rathsted-compat-debian-12...
+[rathsted 13:17:56] Decrypting SSH key (removing passphrase for Flux compatibility)...
+[rathsted 13:17:56] SSH key decrypted successfully
+./scripts/orbstack-e2e.sh
+[rathsted] OrbStack E2E starting
+[rathsted] Host: Linux rathsted-compat-debian-12 6.17.8-orbstack-00308-g8f9c941121b1 #1 SMP PREEMPT Thu Nov 20 09:34:02 UTC 2025 aarch64 GNU/Linux
+[rathsted] Detected OS: debian 12
+
+━━━ 1/6  OS Detection ━━━
+
+[rathsted] Detected OS: debian 12 (debian family)
+[rathsted] Version pins: k3s=v1.35.1+k3s1 kyverno=v1.17.1 flux=2.8.1
+[rathsted] Version pins: cosign=v3.0.5 syft=v1.42.1 grype=v0.109.0
+
+━━━ 2/6  k3s ━━━
+
+[rathsted] Audit policy installed
+[rathsted] Installing k3s...
+[INFO]  Using v1.35.1+k3s1 as release
+[INFO]  Downloading hash https://github.com/k3s-io/k3s/releases/download/v1.35.1%2Bk3s1/sha256sum-arm64.txt
+[INFO]  Downloading binary https://github.com/k3s-io/k3s/releases/download/v1.35.1%2Bk3s1/k3s-arm64
+[INFO]  Verifying binary download
+[INFO]  Installing k3s to /usr/local/bin/k3s
+[INFO]  Skipping installation of SELinux RPM
+[INFO]  Creating /usr/local/bin/kubectl symlink to k3s
+[INFO]  Creating /usr/local/bin/crictl symlink to k3s
+[INFO]  Creating /usr/local/bin/ctr symlink to k3s
+[INFO]  Creating killall script /usr/local/bin/k3s-killall.sh
+[INFO]  Creating uninstall script /usr/local/bin/k3s-uninstall.sh
+[INFO]  env: Creating environment file /etc/systemd/system/k3s.service.env
+[INFO]  systemd: Creating service file /etc/systemd/system/k3s.service
+[INFO]  systemd: Enabling k3s unit
+Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
+[INFO]  Host iptables-save/iptables-restore tools not found
+[INFO]  Host ip6tables-save/ip6tables-restore tools not found
+[INFO]  systemd: Starting k3s
+
+━━━ 3/6  Flux + Supply Chain Tools ━━━
+
+[rathsted] Installing Flux CLI...
+[INFO]  Downloading metadata https://api.github.com/repos/fluxcd/flux2/releases/tags/v2.8.1
+[INFO]  Using 2.8.1 as release
+[INFO]  Downloading hash https://github.com/fluxcd/flux2/releases/download/v2.8.1/flux_2.8.1_checksums.txt
+[INFO]  Downloading binary https://github.com/fluxcd/flux2/releases/download/v2.8.1/flux_2.8.1_linux_arm64.tar.gz
+[INFO]  Verifying binary download
+[INFO]  Installing flux to /usr/local/bin/flux
+[rathsted] Installing cosign...
+[rathsted] Installing syft...
+[info] checking github for release tag='v1.42.1' 
+[info] fetching release script for tag='v1.42.1' 
+[info] checking github for release tag='v1.42.1' 
+[info] using release tag='v1.42.1' version='1.42.1' os='linux' arch='arm64' 
+[info] installed /usr/local/bin/syft 
+[rathsted] Installing grype...
+[info] checking github for release tag='v0.109.0' 
+[info] fetching release script for tag='v0.109.0' 
+[info] checking github for release tag='v0.109.0' 
+[info] using release tag='v0.109.0' version='0.109.0' os='linux' arch='arm64' 
+[info] installed /usr/local/bin/grype 
+[rathsted] Installing Flux controllers...
+✚ generating manifests
+✔ manifests build completed
+► installing components in flux-system namespace
+CustomResourceDefinition/alerts.notification.toolkit.fluxcd.io created
+CustomResourceDefinition/buckets.source.toolkit.fluxcd.io created
+CustomResourceDefinition/externalartifacts.source.toolkit.fluxcd.io created
+CustomResourceDefinition/gitrepositories.source.toolkit.fluxcd.io created
+CustomResourceDefinition/helmcharts.source.toolkit.fluxcd.io created
+CustomResourceDefinition/helmreleases.helm.toolkit.fluxcd.io created
+CustomResourceDefinition/helmrepositories.source.toolkit.fluxcd.io created
+CustomResourceDefinition/kustomizations.kustomize.toolkit.fluxcd.io created
+CustomResourceDefinition/ocirepositories.source.toolkit.fluxcd.io created
+CustomResourceDefinition/providers.notification.toolkit.fluxcd.io created
+CustomResourceDefinition/receivers.notification.toolkit.fluxcd.io created
+Namespace/flux-system created
+ClusterRole/crd-controller-flux-system created
+ClusterRole/flux-edit-flux-system created
+ClusterRole/flux-view-flux-system created
+ClusterRoleBinding/cluster-reconciler-flux-system created
+ClusterRoleBinding/crd-controller-flux-system created
+ResourceQuota/flux-system/critical-pods-flux-system created
+ServiceAccount/flux-system/helm-controller created
+ServiceAccount/flux-system/kustomize-controller created
+ServiceAccount/flux-system/notification-controller created
+ServiceAccount/flux-system/source-controller created
+Service/flux-system/notification-controller created
+Service/flux-system/source-controller created
+Service/flux-system/webhook-receiver created
+Deployment/flux-system/helm-controller created
+Deployment/flux-system/kustomize-controller created
+Deployment/flux-system/notification-controller created
+Deployment/flux-system/source-controller created
+NetworkPolicy/flux-system/allow-egress created
+NetworkPolicy/flux-system/allow-scraping created
+NetworkPolicy/flux-system/allow-webhooks created
+◎ verifying installation
+✔ helm-controller: deployment ready
+✔ kustomize-controller: deployment ready
+✔ notification-controller: deployment ready
+✔ source-controller: deployment ready
+✔ install finished
+
+━━━ 4/6  Kyverno ━━━
+
+[rathsted] Installing Kyverno...
+customresourcedefinition.apiextensions.k8s.io/admissionreports.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/backgroundscanreports.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/cleanuppolicies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/clusteradmissionreports.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/clusterbackgroundscanreports.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/clustercleanuppolicies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/clusterpolicies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/globalcontextentries.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/policyexceptions.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/updaterequests.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/clusterephemeralreports.reports.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/ephemeralreports.reports.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/clusterpolicyreports.wgpolicyk8s.io created
+customresourcedefinition.apiextensions.k8s.io/policyreports.wgpolicyk8s.io created
+namespace/kyverno serverside-applied
+serviceaccount/kyverno-admission-controller serverside-applied
+serviceaccount/kyverno-background-controller serverside-applied
+serviceaccount/kyverno-cleanup-controller serverside-applied
+serviceaccount/kyverno-cleanup-jobs serverside-applied
+serviceaccount/kyverno-reports-controller serverside-applied
+configmap/kyverno serverside-applied
+configmap/kyverno-metrics serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:admission-controller serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:admission-controller:core serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:background-controller serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:background-controller:core serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:cleanup-controller serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:cleanup-controller:core serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:cleanup-jobs serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:admin:policies serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:view:policies serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:admin:policyreports serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:view:policyreports serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:admin:reports serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:view:reports serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:admin:updaterequests serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:view:updaterequests serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:reports-controller serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:reports-controller:core serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/kyverno:admission-controller serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/kyverno:background-controller serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/kyverno:cleanup-controller serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/kyverno:cleanup-jobs serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/kyverno:reports-controller serverside-applied
+role.rbac.authorization.k8s.io/kyverno:admission-controller serverside-applied
+role.rbac.authorization.k8s.io/kyverno:background-controller serverside-applied
+role.rbac.authorization.k8s.io/kyverno:cleanup-controller serverside-applied
+role.rbac.authorization.k8s.io/kyverno:reports-controller serverside-applied
+rolebinding.rbac.authorization.k8s.io/kyverno:admission-controller serverside-applied
+rolebinding.rbac.authorization.k8s.io/kyverno:background-controller serverside-applied
+rolebinding.rbac.authorization.k8s.io/kyverno:cleanup-controller serverside-applied
+rolebinding.rbac.authorization.k8s.io/kyverno:reports-controller serverside-applied
+service/kyverno-svc serverside-applied
+service/kyverno-svc-metrics serverside-applied
+service/kyverno-background-controller-metrics serverside-applied
+service/kyverno-cleanup-controller serverside-applied
+service/kyverno-cleanup-controller-metrics serverside-applied
+service/kyverno-reports-controller-metrics serverside-applied
+deployment.apps/kyverno-admission-controller serverside-applied
+deployment.apps/kyverno-background-controller serverside-applied
+deployment.apps/kyverno-cleanup-controller serverside-applied
+deployment.apps/kyverno-reports-controller serverside-applied
+cronjob.batch/kyverno-cleanup-admission-reports serverside-applied
+cronjob.batch/kyverno-cleanup-cluster-admission-reports serverside-applied
+cronjob.batch/kyverno-cleanup-cluster-ephemeral-reports serverside-applied
+cronjob.batch/kyverno-cleanup-ephemeral-reports serverside-applied
+cronjob.batch/kyverno-cleanup-update-requests serverside-applied
+
+━━━ 5/6  Policies ━━━
+
+[rathsted] Applying baseline policies...
+clusterpolicy.kyverno.io/baseline-networkpolicy created
+clusterpolicy.kyverno.io/disallow-host-namespaces created
+clusterpolicy.kyverno.io/disallow-privileged created
+clusterpolicy.kyverno.io/drop-all-capabilities created
+clusterpolicy.kyverno.io/require-namespace-labels created
+clusterpolicy.kyverno.io/require-non-root created
+clusterpolicy.kyverno.io/require-probes created
+clusterpolicy.kyverno.io/require-readonly-rootfs created
+clusterpolicy.kyverno.io/require-resources created
+clusterpolicy.kyverno.io/require-seccomp created
+clusterpolicy.kyverno.io/require-signed-images created
+clusterpolicy.kyverno.io/restrict-hostpath created
+clusterpolicy.kyverno.io/restrict-registries created
+
+━━━ 6/6  GitOps Bootstrap ━━━
+
+[rathsted] Bootstrapping GitOps sync...
+[rathsted] Configuring Flux GitRepository auth (SSH key)
+secret/rathsted-git-auth created
+gitrepository.source.toolkit.fluxcd.io/rathsted-foundations created
+kustomization.kustomize.toolkit.fluxcd.io/rathsted-sync created
+[rathsted] Done. Use ./bootstrap/verify.sh to validate.
+
+== Environment ==
+  Foundations version: untagged
+  Hostname:           rathsted-compat-debian-12
+  Date:               2026-04-23T20:19:14Z
+  OS:                 Debian GNU/Linux 12 (bookworm)
+  Kernel:             6.17.8-orbstack-00308-g8f9c941121b1
+[ok 13:19:14] Environment recorded
+
+== Cluster ==
+[ok 13:19:14] cluster-info ok
+[ok 13:19:14] k3s running
+
+== Hardening ==
+  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (2.8M, 2454 entries)
+[ok 13:19:14] API server audit logging active
+[ok 13:19:14] Audit policy file present
+[ok 13:19:14] Secrets encryption at rest enabled (encryption config present)
+
+== Flux ==
+[ok 13:19:15] Flux check passed
+[ok 13:19:15] Flux installed
+[ok 13:19:15] Flux pods present
+
+== Kyverno ==
+[ok 13:19:15] Kyverno installed
+[ok 13:19:15] Kyverno pods present
+[ok 13:19:15] Kyverno policies present
+
+== GitOps ==
+[ok 13:19:15] GitOps sync present
+[ok 13:19:15] Flux kustomizations listed
+[ok 13:19:15] Flux Git sources listed
+
+== Demo App ==
+[warn 13:19:16] Demo namespace not present (non-fatal: GitOps reconciliation may still be in progress)
+[ok 13:19:16] Signature policy installed
+
+== Supply Chain ==
+[skip 13:19:17] SBOM skipped (image not in registry; use --release to enforce)
+[skip 13:19:17] Cosign skipped (cosign.pub not configured; use --release to enforce)
+
+== Negative Tests ==
+[ok 13:19:28] Kyverno webhooks detected, waiting 15s for policies to settle...
+[ok 13:19:43] Policy rejected as expected: default-namespace-pod.yaml
+[ok 13:19:43] Policy rejected as expected: disallowed-registry.yaml
+[ok 13:19:43] Policy rejected as expected: host-namespaces-pod.yaml
+[ok 13:19:44] Policy rejected as expected: hostpath-pod.yaml
+[ok 13:19:44] Policy rejected as expected: no-drop-capabilities-pod.yaml
+[ok 13:19:44] Policy rejected as expected: no-namespace-labels.yaml
+[ok 13:19:44] Policy rejected as expected: no-probes-pod.yaml
+[ok 13:19:44] Policy rejected as expected: no-resources-pod.yaml
+[ok 13:19:44] Policy rejected as expected: no-seccomp-pod.yaml
+[ok 13:19:45] Policy rejected as expected: privileged-pod.yaml
+[ok 13:19:45] Policy rejected as expected: readonly-rootfs-pod.yaml
+[ok 13:19:45] Policy rejected as expected: root-pod.yaml
+[ok 13:19:45] Policy rejected as expected: unsigned-image-pod.yaml
+
+== Access Control (RBAC) ==
+  ClusterRoleBindings + RoleBindings: 78
+    cluster-admin
+    cluster-reconciler-flux-system
+    clustercidrs-node
+    crd-controller-flux-system
+    k3s-cloud-controller-manager
+    k3s-cloud-controller-manager-auth-delegator
+    kube-apiserver-kubelet-admin
+    kyverno:admission-controller
+    kyverno:background-controller
+    kyverno:cleanup-controller
+    kyverno:cleanup-jobs
+    kyverno:reports-controller
+    local-path-provisioner-bind
+    metrics-server:system:auth-delegator
+    system:basic-user
+    system:controller:attachdetach-controller
+    system:controller:certificate-controller
+    system:controller:clusterrole-aggregation-controller
+    system:controller:cronjob-controller
+    system:controller:daemon-set-controller
+    system:controller:deployment-controller
+    system:controller:disruption-controller
+    system:controller:endpoint-controller
+    system:controller:endpointslice-controller
+    system:controller:endpointslicemirroring-controller
+    system:controller:ephemeral-volume-controller
+    system:controller:expand-controller
+    system:controller:generic-garbage-collector
+    system:controller:horizontal-pod-autoscaler
+    system:controller:job-controller
+    system:controller:legacy-service-account-token-cleaner
+    system:controller:namespace-controller
+    system:controller:node-controller
+    system:controller:persistent-volume-binder
+    system:controller:pod-garbage-collector
+    system:controller:pv-protection-controller
+    system:controller:pvc-protection-controller
+    system:controller:replicaset-controller
+    system:controller:replication-controller
+    system:controller:resource-claim-controller
+    system:controller:resourcequota-controller
+    system:controller:root-ca-cert-publisher
+    system:controller:route-controller
+    system:controller:selinux-warning-controller
+    system:controller:service-account-controller
+    system:controller:service-cidrs-controller
+    system:controller:service-controller
+    system:controller:statefulset-controller
+    system:controller:ttl-after-finished-controller
+    system:controller:ttl-controller
+    system:controller:validatingadmissionpolicy-status-controller
+    system:controller:volumeattributesclass-protection-controller
+    system:coredns
+    system:discovery
+    system:k3s-controller
+    system:kube-controller-manager
+    system:kube-dns
+    system:kube-scheduler
+    system:metrics-server
+    system:monitoring
+    system:node
+    system:node-proxier
+    system:public-info-viewer
+    system:service-account-issuer-discovery
+    system:volume-scheduler
+[ok 13:19:45] RBAC snapshot recorded
+
+== Network Policies ==
+  NetworkPolicies across all namespaces: 3
+    flux-system          allow-egress
+    flux-system          allow-scraping
+    flux-system          allow-webhooks
+[ok 13:19:46] NetworkPolicy snapshot recorded
+
+== Summary ==
+  Passed:   32
+  Warnings: 3
+  Failed:   0
+
+[ok 13:19:46] Verification passed
+[rathsted] E2E complete
+[rathsted 13:19:46] Host-side OrbStack E2E complete
+
+# Exit code: 0
+# Completed: 2026-04-23T20:19:46Z

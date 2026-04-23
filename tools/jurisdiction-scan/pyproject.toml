@@ -1,0 +1,8 @@
+[project]
+name = "jurisdiction-scan"
+version = "0.1.0"
+description = "Scaffold for jurisdictional exposure scanning"
+requires-python = ">=3.10"
+
+[project.scripts]
+jurisdiction-scan = "jurisdiction_scan.cli:main"

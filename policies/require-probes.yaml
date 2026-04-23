@@ -1,0 +1,99 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-probes
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: liveness-readiness
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+                - Deployment
+                - StatefulSet
+                - DaemonSet
+                - Job
+                - CronJob
+      exclude:
+        resources:
+          namespaces:
+            - kube-system
+            - flux-system
+            - kyverno
+      validate:
+        message: "livenessProbe and readinessProbe are required"
+        anyPattern:
+          - spec:
+              containers:
+                - livenessProbe:
+                    httpGet:
+                      path: "?*"
+                      port: "*"
+                  readinessProbe:
+                    httpGet:
+                      path: "?*"
+                      port: "*"
+              =(initContainers):
+                - livenessProbe:
+                    httpGet:
+                      path: "?*"
+                      port: "*"
+                  readinessProbe:
+                    httpGet:
+                      path: "?*"
+                      port: "*"
+              =(ephemeralContainers):
+                - livenessProbe:
+                    httpGet:
+                      path: "?*"
+                      port: "*"
+                  readinessProbe:
+                    httpGet:
+                      path: "?*"
+                      port: "*"
+          - spec:
+              containers:
+                - livenessProbe:
+                    tcpSocket:
+                      port: "*"
+                  readinessProbe:
+                    tcpSocket:
+                      port: "*"
+              =(initContainers):
+                - livenessProbe:
+                    tcpSocket:
+                      port: "*"
+                  readinessProbe:
+                    tcpSocket:
+                      port: "*"
+              =(ephemeralContainers):
+                - livenessProbe:
+                    tcpSocket:
+                      port: "*"
+                  readinessProbe:
+                    tcpSocket:
+                      port: "*"
+          - spec:
+              containers:
+                - livenessProbe:
+                    exec:
+                      command: "?*"
+                  readinessProbe:
+                    exec:
+                      command: "?*"
+              =(initContainers):
+                - livenessProbe:
+                    exec:
+                      command: "?*"
+                  readinessProbe:
+                    exec:
+                      command: "?*"
+              =(ephemeralContainers):
+                - livenessProbe:
+                    exec:
+                      command: "?*"
+                  readinessProbe:
+                    exec:
+                      command: "?*"

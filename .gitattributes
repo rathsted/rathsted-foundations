@@ -1,0 +1,4 @@
+# Linguist overrides for accurate language reporting on GitHub.
+# Our .tmpl files are YAML templates with placeholder tokens (REPLACE_*),
+# not Go templates — map them so the Languages panel reflects reality.
+*.tmpl linguist-language=YAML

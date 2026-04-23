@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.env
+.env.*
+.claude/
+.omc/
+.mypy_cache/
+artifacts/*
+!artifacts/evidence/
+!artifacts/*-evidence-*.log
+!artifacts/compat-latest.json
+supply-chain/cosign/*.key
+config/customer.env
+config/rendered/
+*.log
+.gh-config/

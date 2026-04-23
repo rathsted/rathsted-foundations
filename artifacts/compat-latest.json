@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-04-23T20:23:28Z",
+  "source": "local copy",
+  "parallel": true,
+  "passed": 10,
+  "failed": 0,
+  "pin_change_dates": {
+    "current": {"k3s": "2026-03-04", "kyverno": "2026-03-04", "flux": "2026-03-04", "pin_set": "2026-03-04"},
+    "previous": {"k3s": "2026-03-04", "kyverno": "2026-03-04", "flux": "2026-03-04", "pin_set": "2026-03-04"}
+  },
+  "pin_change_age_days": {
+    "current": {"k3s": 50, "kyverno": 50, "flux": 50, "pin_set": 50},
+    "previous": {"k3s": 50, "kyverno": 50, "flux": 50, "pin_set": 50}
+  },
+  "pin_change_count_180d": {
+    "current": {"k3s": 3, "kyverno": 3, "flux": 3},
+    "previous": {"k3s": 1, "kyverno": 1, "flux": 1}
+  },
+  "results": [
+    {"image": "debian:12", "status": "passed"},
+    {"image": "debian:12-prev", "status": "passed"},
+    {"image": "rocky:9", "status": "passed"},
+    {"image": "rocky:9-prev", "status": "passed"},
+    {"image": "ubuntu:22.04", "status": "passed"},
+    {"image": "ubuntu:22.04-prev", "status": "passed"},
+    {"image": "ubuntu:24.04", "status": "passed"},
+    {"image": "ubuntu:24.04-prev", "status": "passed"},
+    {"image": "ubuntu:24.04-cis", "status": "passed"},
+    {"image": "ubuntu:24.04-cis-prev", "status": "passed"}
+  ]
+}

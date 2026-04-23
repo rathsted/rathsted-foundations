@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rathsted.dev/schemas/jurisdiction-scan-report/v1",
+  "title": "JurisdictionScanReport",
+  "description": "Output schema for the jurisdiction-scan tool. Describes every external dependency and service contact point found in a repository, annotated with risk levels.",
+  "type": "object",
+  "required": [
+    "repo",
+    "cloud_providers",
+    "saas_endpoints",
+    "github_actions",
+    "ci_platforms",
+    "container_registries",
+    "dependencies",
+    "findings",
+    "risk_summary"
+  ],
+  "properties": {
+    "repo": {
+      "type": "string",
+      "description": "Absolute path to the scanned repository root."
+    },
+    "cloud_providers": {
+      "type": "array",
+      "description": "Cloud providers detected in the repository (e.g. aws, azure, gcp).",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "saas_endpoints": {
+      "type": "array",
+      "description": "SaaS domain names detected in any scanned file.",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "github_actions": {
+      "type": "boolean",
+      "description": "True when at least one GitHub Actions workflow file is present (.github/workflows/). Kept for backwards compatibility; see ci_platforms for full CI detection."
+    },
+    "ci_platforms": {
+      "type": "object",
+      "description": "CI/CD platforms detected in the repository.",
+      "required": ["github_actions", "gitlab_ci", "circleci", "jenkins"],
+      "properties": {
+        "github_actions": {
+          "type": "boolean",
+          "description": "GitHub Actions (.github/workflows/) detected."
+        },
+        "gitlab_ci": {
+          "type": "boolean",
+          "description": "GitLab CI (.gitlab-ci.yml or gitlab-ci keyword) detected."
+        },
+        "circleci": {
+          "type": "boolean",
+          "description": "CircleCI (.circleci/ path or circleci.com reference) detected."
+        },
+        "jenkins": {
+          "type": "boolean",
+          "description": "Jenkins (Jenkinsfile or jenkins keyword) detected."
+        }
+      },
+      "additionalProperties": false
+    },
+    "container_registries": {
+      "type": "array",
+      "description": "Container registry hostnames referenced in any scanned file.",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "cdn_dns": {
+      "type": "array",
+      "description": "CDN and DNS provider identifiers detected (e.g. cloudflare.com, route53).",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "secrets_management": {
+      "type": "array",
+      "description": "Secrets management service identifiers detected (e.g. vault, secretsmanager, azure-keyvault).",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "terraform_providers": {
+      "type": "array",
+      "description": "Terraform provider identifiers found in provider blocks within .tf files.",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "Dependency manifest filenames found in the repository (e.g. requirements.txt, package.json).",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "findings": {
+      "type": "object",
+      "description": "Files grouped by detection category. Keys are category names; values are sorted arrays of absolute file paths.",
+      "propertyNames": {
+        "enum": ["Identity", "Storage", "Build", "Deploy", "Observability", "Messaging"]
+      },
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" },
+        "uniqueItems": true
+      }
+    },
+    "risk_summary": {
+      "type": "object",
+      "description": "Risk annotation for each finding group that has at least one hit. Keys are either a top-level field name (e.g. cloud_providers) or a category-prefixed name (e.g. category:Identity).",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["risk", "reason", "count"],
+        "properties": {
+          "risk": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "Risk level for this finding group."
+          },
+          "reason": {
+            "type": "string",
+            "description": "Human-readable explanation of the risk."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Number of distinct items or files in this group."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

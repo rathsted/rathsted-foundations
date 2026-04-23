@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+  namespace: app-runtime
+  labels:
+    app: traefik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: traefik
+          image: docker.io/library/traefik:3.0
+          args:
+            - "--entryPoints.web.address=:8000"
+            - "--api.dashboard=false"
+            - "--providers.file.filename=/etc/traefik/dynamic.yaml"
+            - "--ping"
+            - "--ping.entrypoint=web"
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: traefik-dynamic
+              mountPath: /etc/traefik
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+      volumes:
+        - name: traefik-dynamic
+          configMap:
+            name: traefik-dynamic
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik
+  namespace: app-runtime
+spec:
+  selector:
+    app: traefik
+  ports:
+    - name: web
+      port: 80
+      targetPort: 8000
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-dynamic
+  namespace: app-runtime
+data:
+  dynamic.yaml: |
+    http:
+      routers:
+        demo:
+          entryPoints:
+            - web
+          rule: "PathPrefix(`/`)"
+          service: demo-api
+      services:
+        demo-api:
+          loadBalancer:
+            servers:
+              - url: "http://demo-api.app-runtime.svc.cluster.local:80"

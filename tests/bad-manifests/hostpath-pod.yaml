@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-hostpath
+spec:
+  containers:
+    - name: bad
+      image: docker.io/library/nginx:latest
+      volumeMounts:
+        - name: host
+          mountPath: /host
+  volumes:
+    - name: host
+      hostPath:
+        path: /
+        type: Directory

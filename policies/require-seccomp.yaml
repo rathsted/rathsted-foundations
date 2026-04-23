@@ -1,0 +1,36 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-seccomp
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: seccomp-profile
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+                - Deployment
+                - StatefulSet
+                - DaemonSet
+                - Job
+                - CronJob
+      exclude:
+        resources:
+          namespaces:
+            - kube-system
+            - flux-system
+            - kyverno
+      validate:
+        message: "Pods and containers must set a Seccomp profile (RuntimeDefault or Localhost)"
+        foreach:
+          - list: "request.object.spec.[containers, initContainers, ephemeralContainers][]"
+            deny:
+              conditions:
+                all:
+                  - key: "{{ element.securityContext.seccompProfile.type || request.object.spec.securityContext.seccompProfile.type || 'undefined' }}"
+                    operator: AnyNotIn
+                    value:
+                      - RuntimeDefault
+                      - Localhost

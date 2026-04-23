@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: app-runtime-smoke
+  namespace: app-runtime
+  labels:
+    app: smoke-test
+spec:
+  template:
+    metadata:
+      labels:
+        app: smoke-test
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: curl
+          image: docker.io/curlimages/curl:8.6.0
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              for i in $(seq 1 30); do
+                if curl -s http://traefik:80/ >/dev/null; then
+                  exit 0
+                fi
+                sleep 2
+              done
+              exit 1
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "32Mi"
+            limits:
+              cpu: "50m"
+              memory: "64Mi"

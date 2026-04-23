@@ -1,0 +1,27 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: restrict-registries
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: allowed-registries
+      match:
+        resources:
+          kinds:
+            - Pod
+      exclude:
+        resources:
+          namespaces:
+            - kube-system
+            - flux-system
+            - kyverno
+      validate:
+        message: "Images must come from an allowed registry ({{RATHSTED_REGISTRY}} or localhost)"
+        anyPattern:
+          - spec:
+              containers:
+                - image: "{{RATHSTED_REGISTRY}}/*"
+          - spec:
+              containers:
+                - image: "localhost/*"

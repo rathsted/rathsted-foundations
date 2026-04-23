@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-writable-rootfs
+spec:
+  containers:
+    - name: bad
+      image: docker.io/library/nginx:latest
+      securityContext:
+        readOnlyRootFilesystem: false

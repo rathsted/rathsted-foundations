@@ -1,0 +1,27 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-signed-images
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: verify-signatures
+      match:
+        resources:
+          kinds:
+            - Pod
+      exclude:
+        resources:
+          namespaces:
+            - kube-system
+            - flux-system
+            - kyverno
+      verifyImages:
+        - mutateDigest: false
+          imageReferences:
+            - "{{RATHSTED_REGISTRY}}/*"
+          attestors:
+            - entries:
+                - keys:
+                    publicKeys: |-
+                      REPLACE_WITH_COSIGN_PUBLIC_KEY

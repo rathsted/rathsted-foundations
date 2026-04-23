@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-no-probes
+spec:
+  containers:
+    - name: bad
+      image: docker.io/library/nginx:latest
+      ports:
+        - containerPort: 80

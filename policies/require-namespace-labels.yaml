@@ -1,0 +1,20 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-namespace-labels
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: namespace-labels
+      match:
+        resources:
+          kinds:
+            - Namespace
+      validate:
+        message: "Namespaces must include owner, environment, and jurisdiction labels"
+        pattern:
+          metadata:
+            labels:
+              owner: "?*"
+              environment: "?*"
+              jurisdiction: "?*"

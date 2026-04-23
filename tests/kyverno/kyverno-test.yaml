@@ -1,0 +1,316 @@
+apiVersion: cli.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: rathsted-baseline-policies
+policies:
+  - ../../policies/require-non-root.yaml
+  - ../../policies/disallow-privileged.yaml
+  - ../../policies/disallow-host-namespaces.yaml
+  - ../../policies/restrict-hostpath.yaml
+  - ../../policies/require-resources.yaml
+  - ../../policies/require-probes.yaml
+  - ../../policies/restrict-registries.yaml
+  - ../../policies/require-namespace-labels.yaml
+  - ../../policies/require-readonly-rootfs.yaml
+  - ../../policies/require-seccomp.yaml
+resources:
+  - resources/bad-pod.yaml
+  - resources/good-pod.yaml
+  - resources/good-pod-localhost.yaml
+  - resources/bad-no-probes.yaml
+  - resources/bad-host-namespaces.yaml
+  - resources/bad-hostpath.yaml
+  - resources/bad-registry.yaml
+  - resources/bad-no-resources.yaml
+  - resources/bad-namespace.yaml
+  - resources/good-namespace.yaml
+  - resources/bad-no-readonly-rootfs.yaml
+  - resources/bad-no-seccomp.yaml
+results:
+  # --- bad-pod: fails everything (privileged, root, host network, docker.io, no resources/probes) ---
+  - policy: require-non-root
+    rule: run-as-non-root
+    resources:
+      - bad-pod
+    kind: Pod
+    result: fail
+  - policy: disallow-privileged
+    rule: privileged
+    resources:
+      - bad-pod
+    kind: Pod
+    result: fail
+  - policy: disallow-host-namespaces
+    rule: host-namespaces
+    resources:
+      - bad-pod
+    kind: Pod
+    result: fail
+  - policy: restrict-hostpath
+    rule: hostpath
+    resources:
+      - bad-pod
+    kind: Pod
+    result: pass
+  - policy: require-resources
+    rule: require-requests-limits
+    resources:
+      - bad-pod
+    kind: Pod
+    result: fail
+  - policy: require-probes
+    rule: liveness-readiness
+    resources:
+      - bad-pod
+    kind: Pod
+    result: fail
+  - policy: restrict-registries
+    rule: allowed-registries
+    resources:
+      - bad-pod
+    kind: Pod
+    result: fail
+
+  # --- good-pod: passes all policies (ghcr.io registry) ---
+  - policy: require-non-root
+    rule: run-as-non-root
+    resources:
+      - good-pod
+    kind: Pod
+    result: pass
+  - policy: restrict-registries
+    rule: allowed-registries
+    resources:
+      - good-pod
+    kind: Pod
+    result: pass
+  - policy: require-resources
+    rule: require-requests-limits
+    resources:
+      - good-pod
+    kind: Pod
+    result: pass
+  - policy: require-probes
+    rule: liveness-readiness
+    resources:
+      - good-pod
+    kind: Pod
+    result: pass
+
+  # --- good-pod-localhost: passes registry check with localhost/* ---
+  - policy: restrict-registries
+    rule: allowed-registries
+    resources:
+      - good-pod-localhost
+    kind: Pod
+    result: pass
+  - policy: require-non-root
+    rule: run-as-non-root
+    resources:
+      - good-pod-localhost
+    kind: Pod
+    result: pass
+
+  # --- bad-no-probes: passes everything except probes ---
+  - policy: require-probes
+    rule: liveness-readiness
+    resources:
+      - bad-no-probes
+    kind: Pod
+    result: fail
+  - policy: require-non-root
+    rule: run-as-non-root
+    resources:
+      - bad-no-probes
+    kind: Pod
+    result: pass
+  - policy: restrict-registries
+    rule: allowed-registries
+    resources:
+      - bad-no-probes
+    kind: Pod
+    result: pass
+
+  # --- bad-host-namespaces: only fails host namespace check ---
+  - policy: disallow-host-namespaces
+    rule: host-namespaces
+    resources:
+      - bad-host-namespaces
+    kind: Pod
+    result: fail
+  - policy: require-non-root
+    rule: run-as-non-root
+    resources:
+      - bad-host-namespaces
+    kind: Pod
+    result: pass
+
+  # --- bad-hostpath: only fails hostpath check ---
+  - policy: restrict-hostpath
+    rule: hostpath
+    resources:
+      - bad-hostpath
+    kind: Pod
+    result: fail
+  - policy: require-non-root
+    rule: run-as-non-root
+    resources:
+      - bad-hostpath
+    kind: Pod
+    result: pass
+
+  # --- bad-registry: only fails registry allowlist (quay.io not permitted) ---
+  - policy: restrict-registries
+    rule: allowed-registries
+    resources:
+      - bad-registry
+    kind: Pod
+    result: fail
+  - policy: require-non-root
+    rule: run-as-non-root
+    resources:
+      - bad-registry
+    kind: Pod
+    result: pass
+  - policy: require-resources
+    rule: require-requests-limits
+    resources:
+      - bad-registry
+    kind: Pod
+    result: pass
+  - policy: require-probes
+    rule: liveness-readiness
+    resources:
+      - bad-registry
+    kind: Pod
+    result: pass
+
+  # --- bad-no-resources: only fails resource requirements ---
+  - policy: require-resources
+    rule: require-requests-limits
+    resources:
+      - bad-no-resources
+    kind: Pod
+    result: fail
+  - policy: require-non-root
+    rule: run-as-non-root
+    resources:
+      - bad-no-resources
+    kind: Pod
+    result: pass
+  - policy: restrict-registries
+    rule: allowed-registries
+    resources:
+      - bad-no-resources
+    kind: Pod
+    result: pass
+  - policy: require-probes
+    rule: liveness-readiness
+    resources:
+      - bad-no-resources
+    kind: Pod
+    result: pass
+
+  # --- good-pod: passes readonly-rootfs and seccomp ---
+  - policy: require-readonly-rootfs
+    rule: readonly-root-filesystem
+    resources:
+      - good-pod
+    kind: Pod
+    result: pass
+  - policy: require-seccomp
+    rule: seccomp-profile
+    resources:
+      - good-pod
+    kind: Pod
+    result: pass
+
+  # --- bad-no-readonly-rootfs: fails readonly-rootfs only ---
+  - policy: require-readonly-rootfs
+    rule: readonly-root-filesystem
+    resources:
+      - bad-no-readonly-rootfs
+    kind: Pod
+    result: fail
+  - policy: require-non-root
+    rule: run-as-non-root
+    resources:
+      - bad-no-readonly-rootfs
+    kind: Pod
+    result: pass
+  - policy: require-seccomp
+    rule: seccomp-profile
+    resources:
+      - bad-no-readonly-rootfs
+    kind: Pod
+    result: pass
+  - policy: require-resources
+    rule: require-requests-limits
+    resources:
+      - bad-no-readonly-rootfs
+    kind: Pod
+    result: pass
+  - policy: require-probes
+    rule: liveness-readiness
+    resources:
+      - bad-no-readonly-rootfs
+    kind: Pod
+    result: pass
+  - policy: restrict-registries
+    rule: allowed-registries
+    resources:
+      - bad-no-readonly-rootfs
+    kind: Pod
+    result: pass
+
+  # --- bad-no-seccomp: fails seccomp only ---
+  - policy: require-seccomp
+    rule: seccomp-profile
+    resources:
+      - bad-no-seccomp
+    kind: Pod
+    result: fail
+  - policy: require-non-root
+    rule: run-as-non-root
+    resources:
+      - bad-no-seccomp
+    kind: Pod
+    result: pass
+  - policy: require-readonly-rootfs
+    rule: readonly-root-filesystem
+    resources:
+      - bad-no-seccomp
+    kind: Pod
+    result: pass
+  - policy: require-resources
+    rule: require-requests-limits
+    resources:
+      - bad-no-seccomp
+    kind: Pod
+    result: pass
+  - policy: require-probes
+    rule: liveness-readiness
+    resources:
+      - bad-no-seccomp
+    kind: Pod
+    result: pass
+  - policy: restrict-registries
+    rule: allowed-registries
+    resources:
+      - bad-no-seccomp
+    kind: Pod
+    result: pass
+
+  # --- namespace tests ---
+  - policy: require-namespace-labels
+    rule: namespace-labels
+    resources:
+      - bad-ns
+    kind: Namespace
+    result: fail
+  - policy: require-namespace-labels
+    rule: namespace-labels
+    resources:
+      - good-ns
+    kind: Namespace
+    result: pass

@@ -1,0 +1,41 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: restrict-registries
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: allowed-registries
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+                - Deployment
+                - StatefulSet
+                - DaemonSet
+                - Job
+                - CronJob
+      exclude:
+        resources:
+          namespaces:
+            - kube-system
+            - flux-system
+            - kyverno
+      validate:
+        message: "Images must come from allowed registries (ghcr.io or local)"
+        anyPattern:
+          - spec:
+              containers:
+                - image: "ghcr.io/*"
+              =(initContainers):
+                - image: "ghcr.io/*"
+              =(ephemeralContainers):
+                - image: "ghcr.io/*"
+          - spec:
+              containers:
+                - image: "localhost/*"
+              =(initContainers):
+                - image: "localhost/*"
+              =(ephemeralContainers):
+                - image: "localhost/*"

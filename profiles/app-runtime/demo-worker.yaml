@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-worker
+  namespace: app-runtime
+  labels:
+    app: demo-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-worker
+  template:
+    metadata:
+      labels:
+        app: demo-worker
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: demo-worker
+          image: nginx:1.29.7-alpine
+          env:
+            - name: NATS_URL
+              value: nats://nats:4222
+          command: ["/bin/sh", "-c"]
+          args: ["echo worker started; sleep 3600"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: "20m"
+              memory: "64Mi"
+            limits:
+              cpu: "50m"
+              memory: "128Mi"

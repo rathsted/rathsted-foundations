@@ -1,0 +1,3 @@
+output:
+  - format: json
+    file: supply-chain/sbom/output/foundations-demo.sbom.json

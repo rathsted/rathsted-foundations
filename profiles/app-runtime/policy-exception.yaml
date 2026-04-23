@@ -1,0 +1,42 @@
+apiVersion: kyverno.io/v2beta1
+kind: PolicyException
+metadata:
+  name: app-runtime-registry-exception
+  namespace: app-runtime
+  annotations:
+    rathsted.io/reason: "Allow docker.io images only for named runtime components (not all pods in namespace)"
+spec:
+  exceptions:
+    - policyName: restrict-registries
+      ruleNames:
+        - allowed-registries
+        - autogen-allowed-registries
+    - policyName: require-probes
+      ruleNames:
+        - liveness-readiness
+        - autogen-liveness-readiness
+    - policyName: require-readonly-rootfs
+      ruleNames:
+        - readonly-root-filesystem
+        - autogen-readonly-root-filesystem
+    - policyName: require-seccomp
+      ruleNames:
+        - seccomp-profile
+        - autogen-seccomp-profile
+  match:
+    any:
+      - resources:
+          kinds:
+            - Deployment
+            - ReplicaSet
+            - Pod
+            - Job
+          namespaces:
+            - app-runtime
+          names:
+            - traefik*
+            - nats*
+            - postgres*
+            - demo-api*
+            - demo-worker*
+            - app-runtime-smoke*

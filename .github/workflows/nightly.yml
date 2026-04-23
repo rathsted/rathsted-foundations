@@ -1,0 +1,102 @@
+name: Nightly Baseline
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install k3d
+        run: |
+          K3D_VERSION="v5.7.5"
+          K3D_SHA256="5d3f22817d9e163ab6ed43572189dd49fe724d7a6948075b570067747eca8d3f"
+          tmp="$(mktemp -d)"
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+            "https://github.com/k3d-io/k3d/releases/download/${K3D_VERSION}/k3d-linux-amd64" -o "${tmp}/k3d"
+          echo "${K3D_SHA256}  ${tmp}/k3d" | sha256sum -c -
+          sudo install -m 0755 "${tmp}/k3d" /usr/local/bin/k3d
+          rm -rf "$tmp"
+
+      - name: Create cluster
+        run: |
+          k3d cluster create rathsted --wait --k3s-arg "--disable=traefik@server:*" --k3s-arg "--disable=servicelb@server:*"
+
+      - name: Install Flux
+        run: |
+          VERSION="2.8.1"
+          ARCH="$(uname -m)"
+          case "$ARCH" in
+            x86_64) ARCH="amd64" ;;
+            aarch64) ARCH="arm64" ;;
+            *) echo "Unsupported architecture: $ARCH" >&2; exit 1 ;;
+          esac
+          TMPDIR="$(mktemp -d)"
+          ASSET="flux_${VERSION}_linux_${ARCH}.tar.gz"
+          CHECKSUMS="flux_${VERSION}_checksums.txt"
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+            "https://github.com/fluxcd/flux2/releases/download/v${VERSION}/${ASSET}" -o "${TMPDIR}/${ASSET}"
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+            "https://github.com/fluxcd/flux2/releases/download/v${VERSION}/${CHECKSUMS}" -o "${TMPDIR}/${CHECKSUMS}"
+          (cd "${TMPDIR}" && sha256sum -c <<<"$(grep " ${ASSET}\$" "${CHECKSUMS}")") >/dev/null
+          tar -xzf "${TMPDIR}/${ASSET}" -C "${TMPDIR}" flux
+          sudo install -m 0755 "${TMPDIR}/flux" /usr/local/bin/flux
+          rm -rf "${TMPDIR}"
+          flux install
+
+      - name: Install Kyverno
+        run: |
+          tmpdir=$(mktemp -d)
+          crd_file="${tmpdir}/crds.yaml"
+          rest_file="${tmpdir}/rest.yaml"
+          awk -v crd="${crd_file}" -v rest="${rest_file}" '
+            function flush() {
+              if (doc == "") return;
+              if (is_crd) { printf "---\n%s", doc >> crd } else { printf "---\n%s", doc >> rest }
+              doc=""; is_crd=0;
+            }
+            /^---/ { flush(); next }
+            { doc = doc $0 "\n"; if ($1 == "kind:" && $2 == "CustomResourceDefinition") is_crd=1 }
+            END { flush() }
+          ' cluster/policies/kyverno-install.yaml
+          if [[ -s "${crd_file}" ]]; then
+            if ! kubectl create -f "${crd_file}" 2>/tmp/kyverno-crd.err; then
+              if ! grep -q "AlreadyExists" /tmp/kyverno-crd.err; then
+                cat /tmp/kyverno-crd.err >&2
+                exit 1
+              fi
+            fi
+          fi
+          kubectl apply -f "${rest_file}"
+          rm -rf "${tmpdir}"
+
+      - name: Apply policies
+        run: |
+          kubectl apply -k policies
+
+      - name: Bootstrap GitOps sync
+        run: |
+          GIT_URL="https://github.com/${GITHUB_REPOSITORY}"
+          sed -e "s|REPLACE_GIT_URL|${GIT_URL}|g" -e "s|__SECRET_REF__||g" cluster/gitops/sync/gitrepository.yaml.tmpl | kubectl apply -f -
+          kubectl apply -f cluster/gitops/sync/kustomization.yaml
+
+      - name: Wait for Kyverno controllers
+        run: |
+          kubectl -n kyverno rollout status deployment/kyverno-admission-controller --timeout=180s
+          kubectl -n kyverno rollout status deployment/kyverno-background-controller --timeout=180s
+
+      - name: Verify baseline
+        run: |
+          ./bootstrap/verify.sh
+
+      - name: Cleanup cluster
+        if: always()
+        run: |
+          k3d cluster delete rathsted || true

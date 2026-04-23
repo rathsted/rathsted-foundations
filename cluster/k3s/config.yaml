@@ -1,0 +1,27 @@
+write-kubeconfig-mode: "0640"
+secrets-encryption: true
+protect-kernel-defaults: true
+kube-apiserver-arg:
+  - "anonymous-auth=false"
+  - "audit-policy-file=/var/lib/rancher/k3s/server/audit-policy.yaml"
+  - "audit-log-path=/var/lib/rancher/k3s/server/logs/audit.log"
+  - "audit-log-maxage=30"
+  - "audit-log-maxbackup=10"
+  - "audit-log-maxsize=100"
+  - "authorization-mode=Node,RBAC"
+  - "profiling=false"
+  - "enable-admission-plugins=NodeRestriction"
+  - "service-account-issuer=https://kubernetes.default.svc.cluster.local"
+  - "service-account-jwks-uri=https://kubernetes.default.svc.cluster.local/openid/v1/jwks"
+  - "service-account-signing-key-file=/var/lib/rancher/k3s/server/tls/service.key"
+
+kubelet-arg:
+  - "protect-kernel-defaults=true"
+  - "read-only-port=0"
+  - "streaming-connection-idle-timeout=5m"
+
+# Disable bundled components not needed in the baseline
+# (Traefik can be re‑enabled if desired)
+disable:
+  - traefik
+  - servicelb

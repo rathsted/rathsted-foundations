@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install tooling
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y shellcheck
+
+      - name: Shellcheck scripts
+        run: |
+          find bootstrap scripts -type f -name "*.sh" -print0 | xargs -0 shellcheck -S warning
+
+      - name: Validate manifests (kubeconform)
+        run: |
+          tmp="$(mktemp -d)"
+          curl --fail -sSL --proto '=https' --tlsv1.2 \
+            https://github.com/yannh/kubeconform/releases/download/v0.7.0/kubeconform-linux-amd64.tar.gz \
+            -o "${tmp}/kubeconform.tar.gz"
+          echo "c31518ddd122663b3f3aa874cfe8178cb0988de944f29c74a0b9260920d115d3  ${tmp}/kubeconform.tar.gz" | sha256sum -c -
+          sudo tar -xz -C /usr/local/bin kubeconform < "${tmp}/kubeconform.tar.gz"
+          rm -rf "$tmp"
+          find cluster policies examples profiles -type f \( -name "*.yaml" -o -name "*.yml" \) \
+            ! -path "cluster/k3s/config.yaml" -print0 \
+            | xargs -0 kubeconform -strict -summary -ignore-missing-schemas
+
+      - name: Kustomize build
+        run: |
+          tmp="$(mktemp -d)"
+          curl --fail -sSL --proto '=https' --tlsv1.2 \
+            https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v5.4.2/kustomize_v5.4.2_linux_amd64.tar.gz \
+            -o "${tmp}/kustomize.tar.gz"
+          echo "881c6e9007c7ea2b9ecc214d13f4cdd1f837635dcf4db49ce4479898f7d911a3  ${tmp}/kustomize.tar.gz" | sha256sum -c -
+          sudo tar -xz -C /usr/local/bin kustomize < "${tmp}/kustomize.tar.gz"
+          rm -rf "$tmp"
+          kustomize build cluster/gitops/apps >/dev/null
+
+      - name: Verify script (dry-run)
+        run: |
+          ./bootstrap/verify.sh --dry-run
+
+      - name: Kyverno policy tests
+        run: |
+          tmp="$(mktemp -d)"
+          curl --fail -sSL --proto '=https' --tlsv1.2 \
+            https://github.com/kyverno/kyverno/releases/download/v1.17.1/kyverno-cli_v1.17.1_linux_x86_64.tar.gz \
+            -o "${tmp}/kyverno.tar.gz"
+          echo "d0c0f52e8fc8d66a3663b63942b131e5f91b63f7644b3e446546f79142d1b7a3  ${tmp}/kyverno.tar.gz" | sha256sum -c -
+          sudo tar -xz -C /usr/local/bin kyverno < "${tmp}/kyverno.tar.gz"
+          rm -rf "$tmp"
+          kyverno test ./tests/kyverno
+
+      - name: Jurisdiction scan
+        run: |
+          PYTHONPATH=tools/jurisdiction-scan/src python3 -m jurisdiction_scan.cli .
