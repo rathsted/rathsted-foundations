@@ -28,10 +28,13 @@ spec:
           - list: "request.object.spec.[containers, initContainers, ephemeralContainers][]"
             deny:
               conditions:
-                all:
+                any:
+                  - key: "{{ length(element.securityContext.capabilities.drop || `[]`) }}"
+                    operator: Equals
+                    value: 0
                   - key: "ALL"
                     operator: AnyNotIn
-                    value: "{{ element.securityContext.capabilities.drop || [] }}"
+                    value: "{{ element.securityContext.capabilities.drop || `[]` }}"
     - name: restrict-added-capabilities
       match:
         any:

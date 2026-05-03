@@ -2,6 +2,10 @@
 
 Rathsted Foundations is a Kubernetes baseline for teams that need infrastructure they can control, explain, and defend. It is intentionally narrow: a stable, single-node starting point with GitOps, policy enforcement, signed artifacts, and SBOM generation in a stack small enough to understand.
 
+That “single-node” qualifier is a real boundary, not an omission hidden in the
+footnotes. If Foundations grows into a supported multi-node substrate, that
+should be an explicit next-stage product step owned here first.
+
 In this context, sovereignty does not mean marketing language or automatic compliance. It means knowing where the important control points live, who controls them, and which surrounding choices still need explicit business approval. Foundations helps you stand up that baseline faster, but it does not make a cloud or hosting model sovereign on its own.
 
 ## What This Means In Practice
@@ -19,6 +23,18 @@ In this context, sovereignty does not mean marketing language or automatic compl
 - Guardrails that prevent unsafe manifests from being applied
 - A practical Kyverno policy set with tests
 
+## What May Come Next
+
+The next likely substrate expansion is:
+
+- a small supported multi-node cluster shape
+
+But that should preserve the same narrow product posture:
+
+- explicit assumptions
+- explicit verify output
+- no automatic claim of HA/failover
+
 ## Example Situations
 
 - You deploy into customer-owned or regulator-sensitive environments
@@ -33,6 +49,10 @@ Flux keeps the stack controller-first and UI-optional, which makes it easier to 
 ## What It Does Not Do
 
 See the [README](../README.md#scope-boundaries) section for the full list. In short: no multi-node HA, no enforced secrets lifecycle, and no claim that the baseline by itself confers compliance or legal approval.
+
+The current design note for that next step is:
+
+- [Multi-Node Design](multi-node-design.md)
 
 ## Related Docs
 

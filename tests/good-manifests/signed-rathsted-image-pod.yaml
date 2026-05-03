@@ -1,0 +1,47 @@
+# Positive admission test for `policies/require-signed-images.yaml`.
+#
+# A fully policy-compliant pod using the project's signed demo image.
+# Should be admitted because:
+# - Image matches `ghcr.io/rathsted/*` (require-signed-images applies)
+# - Image is signed by the project's cosign key (signature verifies)
+# - All other policies (runAsNonRoot, drop ALL, seccomp, readonly rootfs,
+#   resources, probes, restrict-registries) are satisfied
+#
+# This is the positive counterpart to tests/bad-manifests/unsigned-image-pod.yaml.
+#
+# Scope bound: this fixture references the image by TAG, not digest. It proves
+# that a currently-signed image is admitted, not that the bytes admitted are
+# byte-identical to the bytes that were signed at release time. See
+# docs/known-risks.md §4 for the residual-risk discussion.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: good-signed-image
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: app
+      image: ghcr.io/rathsted/foundations-demo:1.0.0
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "16Mi"
+        limits:
+          cpu: "50m"
+          memory: "64Mi"
+      livenessProbe:
+        exec:
+          command: ["sh", "-c", "true"]
+      readinessProbe:
+        exec:
+          command: ["sh", "-c", "true"]

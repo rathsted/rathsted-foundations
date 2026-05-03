@@ -19,11 +19,11 @@ Tested via `make compat-test` (OrbStack E2E matrix). Each run produces evidence 
 
 | OS | Image | Status | Last Validated |
 | --- | --- | --- | --- |
-| Ubuntu 22.04 LTS | `ubuntu:22.04` | Primary supported | 2026-04-23 |
-| Ubuntu 24.04 LTS | `ubuntu:24.04` | Primary supported | 2026-04-23 |
-| Ubuntu 24.04 CIS L1 | `ubuntu:24.04-cis` | Validated hardened path | 2026-04-23 |
-| Debian 12 | `debian:12` | Validated compatibility path | 2026-04-23 |
-| Rocky Linux 9 | `rocky:9` | Validated compatibility path | 2026-04-23 |
+| Ubuntu 22.04 LTS | `ubuntu:22.04` | Primary supported | 2026-05-03 |
+| Ubuntu 24.04 LTS | `ubuntu:24.04` | Primary supported | 2026-05-03 |
+| Ubuntu 24.04 CIS L1 | `ubuntu:24.04-cis` | Validated hardened path | 2026-05-03 |
+| Debian 12 | `debian:12` | Validated compatibility path | 2026-05-03 |
+| Rocky Linux 9 | `rocky:9` | Validated compatibility path | 2026-05-03 |
 | RHEL 9 | — | Compatible (same family as Rocky 9) | — |
 | AlmaLinux 9 | — | Compatible (same family as Rocky 9) | — |
 

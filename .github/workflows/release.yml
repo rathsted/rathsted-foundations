@@ -32,7 +32,9 @@ jobs:
 
       - name: Pull reference image, retag, and push
         run: |
-          NGINX_SRC="docker.io/library/nginx@sha256:e7257f1ef28ba17cf7c248cb8ccf6f0c6e0228ab9c315c152f9c203cd34cf6d1"
+          # Source the digest-pinned base image (shared with nightly.yml)
+          # so a rotation in supply-chain/base-image.env propagates to both.
+          set -a; . supply-chain/base-image.env; set +a
           docker pull "$NGINX_SRC"
           docker tag "$NGINX_SRC" "$IMAGE"
           docker push "$IMAGE"
@@ -43,7 +45,7 @@ jobs:
       # Cosign signing uses COSIGN_PRIVATE_KEY and COSIGN_PASSWORD from
       # the repo's Actions secrets. You don't need to type the passphrase
       # to cut a release — CI reads it from the secret store. You *do*
-      # need to retain the passphrase elsewhere (e.g. 1Password) for:
+      # need to retain the passphrase in your own secret manager for:
       #   - local signing via `make sign`
       #   - re-importing the key on a new machine
       #   - rotation. If lost, generate a new keypair per

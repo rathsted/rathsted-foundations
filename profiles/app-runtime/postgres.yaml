@@ -27,8 +27,8 @@ spec:
     spec:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 999
-        fsGroup: 999
+        runAsUser: 70
+        fsGroup: 70
       containers:
         - name: postgres
           image: docker.io/library/postgres:16-alpine
@@ -38,6 +38,8 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
           ports:
             - containerPort: 5432
           livenessProbe:

@@ -22,6 +22,27 @@ info() { echo "[rathsted] $*"; }
 fail() { echo "[FAIL] $*" >&2; }
 step() { printf '\n━━━ %s ━━━\n\n' "$1"; }
 
+apply_foundations_contract_marker() {
+  local install_mode="$1"
+  local foundations_version contract_version
+  foundations_version="$(git -C "${ROOT_DIR}" describe --tags --always 2>/dev/null || echo "untagged")"
+  contract_version="v1"
+  cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rathsted-foundations-contract
+  namespace: flux-system
+data:
+  contract_version: "${contract_version}"
+  foundations_version: "${foundations_version}"
+  foundations_series: "1.x"
+  install_mode: "${install_mode}"
+  decks_v0_supported: "true"
+  policy_exception_support: "true"
+EOF
+}
+
 if [[ "${EUID:-$(id -u)}" -ne 0 ]]; then
   if require_cmd sudo; then
     exec sudo -E bash "$0" "$@"
@@ -109,6 +130,7 @@ if ! kubectl get ns flux-system >/dev/null 2>&1; then
 else
   info "Flux already installed"
 fi
+apply_foundations_contract_marker "self-hosted"
 
 step "4/6  Kyverno"
 need_kyverno_install="false"
@@ -156,6 +178,10 @@ fi
 # Wait for Kyverno CRDs to be established before applying policies
 kubectl wait --for=condition=Established crd/clusterpolicies.kyverno.io --timeout=120s >/dev/null 2>&1 || true
 kubectl wait --for=condition=Established crd/policies.kyverno.io --timeout=120s >/dev/null 2>&1 || true
+kubectl wait --for=condition=available deployment/kyverno-admission-controller -n kyverno --timeout=120s >/dev/null 2>&1 || true
+kubectl wait --for=condition=available deployment/kyverno-background-controller -n kyverno --timeout=120s >/dev/null 2>&1 || true
+kubectl wait --for=condition=available deployment/kyverno-cleanup-controller -n kyverno --timeout=120s >/dev/null 2>&1 || true
+kubectl wait --for=condition=available deployment/kyverno-reports-controller -n kyverno --timeout=120s >/dev/null 2>&1 || true
 
 step "5/6  Policies"
 info "Applying baseline policies..."

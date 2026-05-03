@@ -1,8 +1,41 @@
+# Negative test fixture for `policies/require-signed-images.yaml`.
+#
+# Uses a `ghcr.io/rathsted/*` image so the registry policy passes.
+# All other pod-level policies are deliberately satisfied (runAsNonRoot,
+# drop ALL caps, seccomp, readonly rootfs, resources, probes), so the
+# only policy that can reject this pod is `require-signed-images`.
+#
+# The image tag points at a deliberately-unsigned (or non-existent)
+# tag so cosign verification fails and admission is denied.
 apiVersion: v1
 kind: Pod
 metadata:
   name: bad-unsigned-image
 spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    seccompProfile:
+      type: RuntimeDefault
   containers:
     - name: bad
-      image: docker.io/library/nginx:latest
+      image: ghcr.io/rathsted/test-fixture-unsigned:never
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "16Mi"
+        limits:
+          cpu: "50m"
+          memory: "64Mi"
+      livenessProbe:
+        exec:
+          command: ["sh", "-c", "true"]
+      readinessProbe:
+        exec:
+          command: ["sh", "-c", "true"]

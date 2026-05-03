@@ -21,6 +21,19 @@ graph TD
 - `Cosign`: Signing and verification
 - `Syft`: SBOM generation
 
+## Current Boundary
+
+Today the supported substrate is still:
+
+- one node
+- one cluster
+- one narrow baseline
+
+The next topology expansion should happen in Foundations first, not in a
+higher-level runtime repo.
+
+See `docs/multi-node-design.md`.
+
 ## What This Diagram Clarifies
 
 - Git is the system of record for desired state

@@ -12,6 +12,7 @@ if [[ -f /etc/rancher/k3s/k3s.yaml ]]; then
 fi
 DRY_RUN="false"
 RELEASE_MODE="false"
+MANAGED_MODE="auto"
 FAIL=0
 WARN=0
 PASS=0
@@ -20,6 +21,8 @@ for arg in "$@"; do
   case "$arg" in
     --dry-run) DRY_RUN="true" ;;
     --release) RELEASE_MODE="true" ;;
+    --managed) MANAGED_MODE="true" ;;
+    --self-hosted) MANAGED_MODE="false" ;;
   esac
 done
 
@@ -44,9 +47,20 @@ fi
 
 section "Environment"
 FOUNDATIONS_VERSION="$(git -C "$ROOT_DIR" describe --tags --always 2>/dev/null || echo "untagged")"
+CONTRACT_NAME="rathsted-foundations-contract"
+CONTRACT_NS="flux-system"
+CONTRACT_MODE="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.install_mode}' 2>/dev/null || true)"
+if [[ "${MANAGED_MODE}" == "auto" ]]; then
+  if [[ "${CONTRACT_MODE}" == "managed" ]]; then
+    MANAGED_MODE="true"
+  else
+    MANAGED_MODE="false"
+  fi
+fi
 echo "  Foundations version: ${FOUNDATIONS_VERSION}"
 echo "  Hostname:           $(hostname)"
 echo "  Date:               $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+echo "  Verify mode:        $([[ "${MANAGED_MODE}" == "true" ]] && echo managed || echo self-hosted)"
 # shellcheck disable=SC1091
 if [[ -f /etc/os-release ]]; then
   . /etc/os-release
@@ -63,36 +77,52 @@ else
   FAIL=1
 fi
 if kubectl get nodes -o wide >/dev/null 2>&1; then
-  ok "k3s running"
+  ok "cluster nodes accessible"
 else
-  warn "k3s not accessible"
+  warn "cluster nodes not accessible"
   FAIL=1
+fi
+if kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" >/dev/null 2>&1; then
+  contract_series="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.foundations_series}' 2>/dev/null || true)"
+  contract_mode="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.install_mode}' 2>/dev/null || true)"
+  contract_decks="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.decks_v0_supported}' 2>/dev/null || true)"
+  echo "  Contract series:    ${contract_series:-unknown}"
+  echo "  Contract install:   ${contract_mode:-unknown}"
+  echo "  Decks v0 support:   ${contract_decks:-unknown}"
+  ok "Foundations contract marker present"
+else
+  warn "Foundations contract marker missing (${CONTRACT_NS}/${CONTRACT_NAME})"
 fi
 
 section "Hardening"
-# Audit logging
-AUDIT_LOG="/var/lib/rancher/k3s/server/logs/audit.log"
-if [[ -f "$AUDIT_LOG" ]]; then
-  AUDIT_SIZE="$(du -h "$AUDIT_LOG" 2>/dev/null | cut -f1)"
-  AUDIT_LINES="$(wc -l < "$AUDIT_LOG" | tr -d ' ')"
-  echo "  Audit log: ${AUDIT_LOG} (${AUDIT_SIZE}, ${AUDIT_LINES} entries)"
-  ok "API server audit logging active"
+if [[ "${MANAGED_MODE}" == "true" ]]; then
+  skip "Managed-mode host audit-log checks skipped"
+  skip "Managed-mode host audit-policy checks skipped"
+  skip "Managed-mode local secrets-encryption file checks skipped"
 else
-  warn "Audit log not found at ${AUDIT_LOG}"
-fi
-AUDIT_POLICY="/var/lib/rancher/k3s/server/audit-policy.yaml"
-if [[ -f "$AUDIT_POLICY" ]]; then
-  ok "Audit policy file present"
-else
-  warn "Audit policy file not found"
-fi
-# Secrets encryption at rest
-if grep -q "secrets-encryption: true" /etc/rancher/k3s/config.yaml 2>/dev/null; then
-  ok "Secrets encryption at rest enabled (k3s config)"
-elif [[ -f /var/lib/rancher/k3s/server/cred/encryption-config.json ]]; then
-  ok "Secrets encryption at rest enabled (encryption config present)"
-else
-  warn "Secrets encryption at rest not detected"
+  AUDIT_LOG="/var/lib/rancher/k3s/server/logs/audit.log"
+  if [[ -f "$AUDIT_LOG" ]]; then
+    AUDIT_SIZE="$(du -h "$AUDIT_LOG" 2>/dev/null | cut -f1)"
+    AUDIT_LINES="$(wc -l < "$AUDIT_LOG" | tr -d ' ')"
+    echo "  Audit log: ${AUDIT_LOG} (${AUDIT_SIZE}, ${AUDIT_LINES} entries)"
+    ok "API server audit logging active"
+  else
+    warn "Audit log not found at ${AUDIT_LOG}"
+  fi
+  AUDIT_POLICY="/var/lib/rancher/k3s/server/audit-policy.yaml"
+  if [[ -f "$AUDIT_POLICY" ]]; then
+    ok "Audit policy file present"
+  else
+    warn "Audit policy file not found"
+  fi
+  # Secrets encryption at rest
+  if grep -q "secrets-encryption: true" /etc/rancher/k3s/config.yaml 2>/dev/null; then
+    ok "Secrets encryption at rest enabled (k3s config)"
+  elif [[ -f /var/lib/rancher/k3s/server/cred/encryption-config.json ]]; then
+    ok "Secrets encryption at rest enabled (encryption config present)"
+  else
+    warn "Secrets encryption at rest not detected"
+  fi
 fi
 
 section "Flux"
@@ -130,24 +160,39 @@ else
 fi
 
 section "GitOps"
-if kubectl get kustomizations.kustomize.toolkit.fluxcd.io -n flux-system >/dev/null; then
-  ok "GitOps sync present"
+if [[ "${MANAGED_MODE}" == "true" ]]; then
+  if kubectl get kustomizations.kustomize.toolkit.fluxcd.io -n flux-system >/dev/null 2>&1; then
+    ok "Managed-mode GitOps sync present"
+  else
+    skip "Managed-mode GitOps sync not configured"
+  fi
+  if flux get sources git -A >/dev/null 2>&1; then
+    ok "Managed-mode Flux Git sources listed"
+  else
+    skip "Managed-mode Flux Git sources not configured"
+  fi
 else
-  warn "GitOps sync missing"
-fi
-if flux get kustomizations -A >/dev/null; then
-  ok "Flux kustomizations listed"
-else
-  warn "Flux kustomizations not listed"
-fi
-if flux get sources git -A >/dev/null; then
-  ok "Flux Git sources listed"
-else
-  warn "Flux Git sources not listed"
+  if kubectl get kustomizations.kustomize.toolkit.fluxcd.io -n flux-system >/dev/null; then
+    ok "GitOps sync present"
+  else
+    warn "GitOps sync missing"
+  fi
+  if flux get kustomizations -A >/dev/null; then
+    ok "Flux kustomizations listed"
+  else
+    warn "Flux kustomizations not listed"
+  fi
+  if flux get sources git -A >/dev/null; then
+    ok "Flux Git sources listed"
+  else
+    warn "Flux Git sources not listed"
+  fi
 fi
 
 section "Demo App"
-if kubectl get ns demo >/dev/null 2>&1; then
+if [[ "${MANAGED_MODE}" == "true" ]] && ! kubectl get ns demo >/dev/null 2>&1; then
+  skip "Managed-mode demo app not installed"
+elif kubectl get ns demo >/dev/null 2>&1; then
   if kubectl get deploy,po,svc -n demo >/dev/null 2>&1; then
     ok "Demo app objects present"
   else
@@ -295,6 +340,10 @@ if [[ "$WEBHOOK_READY" == "true" ]]; then
 fi
 
 for f in "${ROOT_DIR}"/tests/bad-manifests/*.yaml; do
+  if [[ "${MANAGED_MODE}" == "true" && "$(basename "$f")" == "no-namespace-labels.yaml" ]]; then
+    skip "Namespace-label negative test skipped in managed mode"
+    continue
+  fi
   ADMITTED=true
   for _attempt in 1 2 3 4 5; do
     if ! kubectl apply -f "$f" >/tmp/rathsted-bad-apply.log 2>&1; then
@@ -310,9 +359,41 @@ for f in "${ROOT_DIR}"/tests/bad-manifests/*.yaml; do
     kubectl delete -f "$f" --ignore-not-found >/dev/null 2>&1
     FAIL=1
   else
-    ok "Policy rejected as expected: $(basename "$f")"
+    REJECTING_POLICY=$(awk '/blocked due to the following policies/,/^$/' /tmp/rathsted-bad-apply.log 2>/dev/null | grep -oE '^[a-z][a-z0-9-]+:' 2>/dev/null | head -1 | tr -d ':' || true)
+    if [[ -n "$REJECTING_POLICY" ]]; then
+      ok "Policy rejected as expected: $(basename "$f") (by $REJECTING_POLICY)"
+    else
+      ok "Policy rejected as expected: $(basename "$f")"
+    fi
   fi
 done
+
+# Positive admission tests: each manifest should be admitted (server-side dry-run).
+# Only run in release-verify mode — outside release mode, the demo image referenced
+# by signed-image fixtures may not be signed (or the policy's embedded public key
+# may be a placeholder), and we'd produce false negatives. Matches the gating used
+# by the cosign signature-verification step earlier in this file.
+section "Positive Admission Tests"
+if [[ "${RATHSTED_VERIFY_RELEASE:-}" != "1" ]]; then
+  skip "Positive admission tests skipped (use --release / RATHSTED_VERIFY_RELEASE=1 to enforce)"
+else
+  shopt -s nullglob
+  GOOD_MANIFESTS=("${ROOT_DIR}"/tests/good-manifests/*.yaml)
+  shopt -u nullglob
+  if [[ ${#GOOD_MANIFESTS[@]} -eq 0 ]]; then
+    skip "No tests/good-manifests/*.yaml fixtures present"
+  else
+    for f in "${GOOD_MANIFESTS[@]}"; do
+      if kubectl apply --dry-run=server -f "$f" >/tmp/rathsted-good-apply.log 2>&1; then
+        ok "Good manifest admitted: $(basename "$f")"
+      else
+        warn "Good manifest was rejected unexpectedly: $(basename "$f")"
+        tail -5 /tmp/rathsted-good-apply.log | sed 's/^/    /'
+        FAIL=1
+      fi
+    done
+  fi
+fi
 
 section "Access Control (RBAC)"
 RBAC_BINDINGS="$(kubectl get clusterrolebindings,rolebindings -A --no-headers 2>/dev/null | wc -l | tr -d ' ')"

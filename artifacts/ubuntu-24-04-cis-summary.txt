@@ -1,7 +1,7 @@
 ┌─────────────────────────────────────────────────────────────┐
 │  Rathsted Foundations — Validation Evidence                 │
 │  Version: untagged · Target: ubuntu:24.04-cis               │
-│  Date: 2026-04-23 · Source: github.com/rathsted             │
+│  Date: 2026-05-03 · Source: github.com/rathsted             │
 └─────────────────────────────────────────────────────────────┘
 
   Component Versions
@@ -13,51 +13,67 @@
   Syft           v1.42.1
   Grype          v0.109.0
 
-  ╭─ 1/10 Environment ───────────────────────────────── PASS ─╮
+  ╭─ 1/12 Environment ───────────────────────────────── PASS ─╮
   │  Foundations version: untagged
   │  Hostname:           rathsted-compat-ubuntu-24-04-cis
-  │  Date:               2026-04-23T20:23:01Z
+  │  Date:               2026-05-03T16:09:48Z
+  │  Verify mode:        self-hosted
   │  OS:                 Ubuntu 24.04.4 LTS
-  │  Kernel:             6.17.8-orbstack-00308-g8f9c941121b1
+  │  Kernel:             6.19.13-orbstack-gbd1dc07b8cf4
   │  ✓  Environment recorded
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 2/10 Cluster ───────────────────────────────────── PASS ─╮
+  ╭─ 2/12 Cluster ───────────────────────────────────── PASS ─╮
   │  ✓  cluster-info ok
-  │  ✓  k3s running
+  │  ✓  cluster nodes accessible
+  │  Contract series:    1.x
+  │  Contract install:   self-hosted
+  │  Decks v0 support:   true
+  │  ✓  Foundations contract marker present
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 3/10 Hardening ─────────────────────────────────── PASS ─╮
-  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (2.7M, 2373 entries)
+  ╭─ 3/12 Hardening ─────────────────────────────────── PASS ─╮
+  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (5.4M, 4254 entries)
   │  ✓  API server audit logging active
   │  ✓  Audit policy file present
   │  ✓  Secrets encryption at rest enabled (encryption config present)
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 4/10 Flux ──────────────────────────────────────── PASS ─╮
+  ╭─ 4/12 Flux ──────────────────────────────────────── PASS ─╮
   │  ✓  Flux check passed
   │  ✓  Flux installed
   │  ✓  Flux pods present
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 5/10 Kyverno ───────────────────────────────────── PASS ─╮
+  ╭─ 5/12 Kyverno ───────────────────────────────────── PASS ─╮
   │  ✓  Kyverno installed
   │  ✓  Kyverno pods present
   │  ✓  Kyverno policies present
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 6/10 GitOps ────────────────────────────────────── PASS ─╮
+  ╭─ 6/12 GitOps ────────────────────────────────────── PASS ─╮
   │  ✓  GitOps sync present
   │  ✓  Flux kustomizations listed
   │  ✓  Flux Git sources listed
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 7/10 Demo App ──────────────────────────────────── WARN ─╮
-  │  ⚠  Demo namespace not present (non-fatal: GitOps reconciliation may still be in progress)
+  ╭─ 7/12 Demo App ──────────────────────────────────── PASS ─╮
+  │  ✓  Demo app objects present
+  │  ✓  Demo app Ready
   │  ✓  Signature policy installed
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 8/10 Negative Tests ────────────────────────────── PASS ─╮
+  ╭─ 8/12 Supply Chain ──────────────────────────────── PASS ─╮
+  │  ✓  SBOM generated (local containerd)
+  ╰───────────────────────────────────────────────────────────╯
+
+  ╭─ 9/12 Vulnerability Scan ────────────────────────── PASS ─╮
+  │  ✓  Grype scan complete (45 lines)
+  │  Results: /srv/rathsted-foundations/supply-chain/sbom/output/foundations-demo.grype.txt
+  │  Critical: 2  High: 20
+  ╰───────────────────────────────────────────────────────────╯
+
+  ╭─ 10/12 Negative Tests ───────────────────────────── PASS ─╮
   │  ✓  Kyverno webhooks detected, waiting 15s for policies to settle...
   │  ✓  Policy rejected as expected: default-namespace-pod.yaml
   │  ✓  Policy rejected as expected: disallowed-registry.yaml
@@ -74,7 +90,7 @@
   │  ✓  Policy rejected as expected: unsigned-image-pod.yaml
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 9/10 Access Control (RBAC) ─────────────────────── PASS ─╮
+  ╭─ 11/12 Access Control (RBAC) ────────────────────── PASS ─╮
   │  ClusterRoleBindings + RoleBindings: 78
   │    cluster-admin
   │    cluster-reconciler-flux-system
@@ -144,7 +160,7 @@
   │  ✓  RBAC snapshot recorded
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 10/10 Network Policies ─────────────────────────── PASS ─╮
+  ╭─ 12/12 Network Policies ─────────────────────────── PASS ─╮
   │  NetworkPolicies across all namespaces: 3
   │    flux-system          allow-egress
   │    flux-system          allow-scraping
@@ -153,7 +169,7 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ═════════════════════════════════════════════════════════════
-  Result:  32 passed · 3 warning(s) · 0 failed
+  Result:  37 passed · 2 warning(s) · 0 failed
   ═════════════════════════════════════════════════════════════
 
-  Generated: 2026-04-23T20:21:44Z
+  Generated: 2026-05-03T16:07:50Z

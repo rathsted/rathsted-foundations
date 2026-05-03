@@ -14,21 +14,77 @@ set -euo pipefail
 
 # Centralized temp file cleanup
 CLEANUP_DIRS=()
-cleanup() { for d in "${CLEANUP_DIRS[@]}"; do rm -rf "$d"; done; }
+cleanup() {
+  local d
+  for d in "${CLEANUP_DIRS[@]:-}"; do
+    rm -rf "$d"
+  done
+}
 trap cleanup EXIT
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+USER_LOCAL_BIN="${HOME}/.local/bin"
+mkdir -p "${USER_LOCAL_BIN}"
+export PATH="${USER_LOCAL_BIN}:/usr/local/bin:${PATH}"
 
-# Reuse helpers from the main install script
-# shellcheck disable=SC1090  # dynamic process substitution; shellcheck cannot follow
-source <(sed -n '/^# --- shared helpers ---$/,/^# --- end shared helpers ---$/p' "${ROOT_DIR}/bootstrap/install.sh" 2>/dev/null || true)
-
-# Fallback helpers if shared block not found
-command -v info >/dev/null 2>&1 || info() { printf '[rathsted] %s\n' "$1"; }
-command -v step >/dev/null 2>&1 || step() { printf '\n━━━ %s ━━━\n\n' "$1"; }
-command -v download_https >/dev/null 2>&1 || download_https() {
+# Managed install owns its own lightweight helpers. Do not rely on the host's
+# `info` binary or on sourcing chunks from install.sh.
+info() { printf '[rathsted] %s\n' "$*"; }
+step() { printf '\n━━━ %s ━━━\n\n' "$1"; }
+download_https() {
   curl --fail --silent --show-error --location \
     --proto '=https' --tlsv1.2 "$1" -o "$2"
+}
+
+wait_for_endpoints() {
+  local namespace="$1"
+  local service="$2"
+  local timeout_seconds="${3:-120}"
+  local start now endpoints
+  start="$(date +%s)"
+  while true; do
+    endpoints="$(kubectl get endpoints "$service" -n "$namespace" -o jsonpath='{.subsets[*].addresses[*].ip}' 2>/dev/null || true)"
+    if [[ -n "${endpoints}" ]]; then
+      return 0
+    fi
+    now="$(date +%s)"
+    if (( now - start >= timeout_seconds )); then
+      echo "timed out waiting for endpoints on ${namespace}/${service}" >&2
+      return 1
+    fi
+    sleep 2
+  done
+}
+
+apply_foundations_contract_marker() {
+  local install_mode="$1"
+  local foundations_version contract_version
+  foundations_version="$(git -C "${ROOT_DIR}" describe --tags --always 2>/dev/null || echo "untagged")"
+  contract_version="v1"
+  cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rathsted-foundations-contract
+  namespace: flux-system
+data:
+  contract_version: "${contract_version}"
+  foundations_version: "${foundations_version}"
+  foundations_series: "1.x"
+  install_mode: "${install_mode}"
+  decks_v0_supported: "true"
+  policy_exception_support: "true"
+EOF
+}
+
+install_user_binary() {
+  local src="$1"
+  local name="$2"
+  if [[ -w /usr/local/bin ]]; then
+    install -m 0755 "$src" "/usr/local/bin/${name}"
+  else
+    install -m 0755 "$src" "${USER_LOCAL_BIN}/${name}"
+  fi
 }
 
 # ── Preflight ──
@@ -66,7 +122,7 @@ if ! command -v flux >/dev/null 2>&1; then
   download_https "https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/${CHECKSUMS}" "${tmpdir}/${CHECKSUMS}"
   (cd "${tmpdir}" && grep " ${ASSET}$" "${CHECKSUMS}" | sha256sum -c - >/dev/null 2>&1 || shasum -a 256 -c - >/dev/null 2>&1)
   tar -xzf "${tmpdir}/${ASSET}" -C "${tmpdir}" flux
-  sudo install -m 0755 "${tmpdir}/flux" /usr/local/bin/flux
+  install_user_binary "${tmpdir}/flux" flux
 fi
 
 # Install supply chain tools if not present
@@ -86,6 +142,7 @@ if ! kubectl get namespace flux-system >/dev/null 2>&1; then
 else
   info "Flux already installed"
 fi
+apply_foundations_contract_marker "managed"
 
 # ── Kyverno ──
 
@@ -113,11 +170,22 @@ if ! kubectl get deployment -n kyverno kyverno-admission-controller >/dev/null 2
     fi
     kubectl apply -f "${rest_file}"
     info "Waiting for Kyverno to be ready..."
-    kubectl wait --for=condition=available deployment/kyverno-admission-controller -n kyverno --timeout=120s
+    kubectl wait --for=condition=available deployment/kyverno-admission-controller -n kyverno --timeout=300s
+    kubectl wait --for=condition=available deployment/kyverno-background-controller -n kyverno --timeout=300s
+    kubectl wait --for=condition=available deployment/kyverno-cleanup-controller -n kyverno --timeout=300s
+    kubectl wait --for=condition=available deployment/kyverno-reports-controller -n kyverno --timeout=300s
+    wait_for_endpoints kyverno kyverno-svc 300
   fi
 else
   info "Kyverno already installed"
 fi
+
+info "Waiting for Kyverno to be ready..."
+kubectl wait --for=condition=available deployment/kyverno-admission-controller -n kyverno --timeout=300s
+kubectl wait --for=condition=available deployment/kyverno-background-controller -n kyverno --timeout=300s
+kubectl wait --for=condition=available deployment/kyverno-cleanup-controller -n kyverno --timeout=300s
+kubectl wait --for=condition=available deployment/kyverno-reports-controller -n kyverno --timeout=300s
+wait_for_endpoints kyverno kyverno-svc 300
 
 # ── Policies ──
 
@@ -178,4 +246,4 @@ github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAA
   kubectl apply -f "${ROOT_DIR}/cluster/gitops/sync/kustomization.yaml"
 fi
 
-info "Done. Use ./bootstrap/verify.sh to validate."
+info "Done. Use ./bootstrap/verify.sh --managed to validate."

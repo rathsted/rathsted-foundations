@@ -4,7 +4,21 @@ All notable changes to Rathsted Foundations will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.0.1] — 2026-05-03
+
+### Changed
+- Close absent-field and empty-drop gaps.
+- Scope foundations multi-node substrate.
+
+### Fixed
+- Align app-runtime postgres uid with alpine image.
+- Match Pod only and let Kyverno autogen handle controllers.
+
 ## [Unreleased]
+
+### Fixed
+
+- Baseline policies (`require-non-root`, `require-probes`, `require-resources`, `restrict-registries`) now match `Pod` only and rely on Kyverno's autogen to derive controller-shaped rules. Previously these policies listed Deployment/StatefulSet/etc. directly while keeping a Pod-shape pattern, which caused admission to fail at `/spec/containers/` when applying compliant Deployments directly via kubectl.
 
 ## [1.0.0] — 2026-04-21
 

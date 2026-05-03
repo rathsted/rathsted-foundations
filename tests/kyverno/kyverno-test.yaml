@@ -13,6 +13,7 @@ policies:
   - ../../policies/require-namespace-labels.yaml
   - ../../policies/require-readonly-rootfs.yaml
   - ../../policies/require-seccomp.yaml
+  - ../../policies/drop-all-capabilities.yaml
 resources:
   - resources/bad-pod.yaml
   - resources/good-pod.yaml
@@ -26,6 +27,10 @@ resources:
   - resources/good-namespace.yaml
   - resources/bad-no-readonly-rootfs.yaml
   - resources/bad-no-seccomp.yaml
+  - resources/bad-no-drop-all.yaml
+  - resources/bad-extra-capability.yaml
+  - resources/bad-no-capabilities-field.yaml
+  - resources/bad-empty-drop.yaml
 results:
   # --- bad-pod: fails everything (privileged, root, host network, docker.io, no resources/probes) ---
   - policy: require-non-root
@@ -313,4 +318,75 @@ results:
     resources:
       - good-ns
     kind: Namespace
+    result: pass
+
+  # --- drop-all-capabilities tests ---
+  # good-pod drops ALL caps and adds none → both rules pass
+  - policy: drop-all-capabilities
+    rule: require-drop-all
+    resources:
+      - good-pod
+    kind: Pod
+    result: pass
+  - policy: drop-all-capabilities
+    rule: restrict-added-capabilities
+    resources:
+      - good-pod
+    kind: Pod
+    result: pass
+  # bad-no-drop-all: no capabilities.drop set → require-drop-all fails;
+  # restrict-added-capabilities passes (no add list)
+  - policy: drop-all-capabilities
+    rule: require-drop-all
+    resources:
+      - bad-no-drop-all
+    kind: Pod
+    result: fail
+  - policy: drop-all-capabilities
+    rule: restrict-added-capabilities
+    resources:
+      - bad-no-drop-all
+    kind: Pod
+    result: pass
+  # bad-extra-capability drops ALL but adds SYS_ADMIN → require-drop-all passes;
+  # restrict-added-capabilities fails (only NET_BIND_SERVICE is allowed)
+  - policy: drop-all-capabilities
+    rule: require-drop-all
+    resources:
+      - bad-extra-capability
+    kind: Pod
+    result: pass
+  - policy: drop-all-capabilities
+    rule: restrict-added-capabilities
+    resources:
+      - bad-extra-capability
+    kind: Pod
+    result: fail
+  # bad-no-capabilities-field: no `capabilities` block at all → require-drop-all fails
+  # (pattern matching catches absent fields). restrict-added-capabilities passes (no add list).
+  - policy: drop-all-capabilities
+    rule: require-drop-all
+    resources:
+      - bad-no-capabilities-field
+    kind: Pod
+    result: fail
+  - policy: drop-all-capabilities
+    rule: restrict-added-capabilities
+    resources:
+      - bad-no-capabilities-field
+    kind: Pod
+    result: pass
+  # bad-empty-drop: `capabilities.drop: []` → require-drop-all fails (array missing ALL).
+  # restrict-added-capabilities passes (no add list).
+  - policy: drop-all-capabilities
+    rule: require-drop-all
+    resources:
+      - bad-empty-drop
+    kind: Pod
+    result: fail
+  - policy: drop-all-capabilities
+    rule: restrict-added-capabilities
+    resources:
+      - bad-empty-drop
+    kind: Pod
     result: pass
