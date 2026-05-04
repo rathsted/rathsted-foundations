@@ -16,7 +16,7 @@
   ╭─ 1/12 Environment ───────────────────────────────── PASS ─╮
   │  Foundations version: untagged
   │  Hostname:           rathsted-compat-ubuntu-24-04-cis
-  │  Date:               2026-05-03T16:09:48Z
+  │  Date:               2026-05-03T20:06:29Z
   │  Verify mode:        self-hosted
   │  OS:                 Ubuntu 24.04.4 LTS
   │  Kernel:             6.19.13-orbstack-gbd1dc07b8cf4
@@ -33,7 +33,7 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ╭─ 3/12 Hardening ─────────────────────────────────── PASS ─╮
-  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (5.4M, 4254 entries)
+  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (5.4M, 4230 entries)
   │  ✓  API server audit logging active
   │  ✓  Audit policy file present
   │  ✓  Secrets encryption at rest enabled (encryption config present)
@@ -161,7 +161,8 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ╭─ 12/12 Network Policies ─────────────────────────── PASS ─╮
-  │  NetworkPolicies across all namespaces: 3
+  │  NetworkPolicies across all namespaces: 4
+  │    demo                 default-deny
   │    flux-system          allow-egress
   │    flux-system          allow-scraping
   │    flux-system          allow-webhooks
@@ -172,4 +173,4 @@
   Result:  37 passed · 2 warning(s) · 0 failed
   ═════════════════════════════════════════════════════════════
 
-  Generated: 2026-05-03T16:07:50Z
+  Generated: 2026-05-03T20:05:09Z

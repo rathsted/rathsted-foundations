@@ -16,7 +16,7 @@
   ╭─ 1/12 Environment ───────────────────────────────── PASS ─╮
   │  Foundations version: untagged
   │  Hostname:           rathsted-compat-debian-12
-  │  Date:               2026-05-03T16:03:04Z
+  │  Date:               2026-05-03T20:01:17Z
   │  Verify mode:        self-hosted
   │  OS:                 Debian GNU/Linux 12 (bookworm)
   │  Kernel:             6.19.13-orbstack-gbd1dc07b8cf4
@@ -33,7 +33,7 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ╭─ 3/12 Hardening ─────────────────────────────────── PASS ─╮
-  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (4.9M, 3933 entries)
+  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (5.3M, 4174 entries)
   │  ✓  API server audit logging active
   │  ✓  Audit policy file present
   │  ✓  Secrets encryption at rest enabled (encryption config present)
@@ -161,8 +161,7 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ╭─ 12/12 Network Policies ─────────────────────────── PASS ─╮
-  │  NetworkPolicies across all namespaces: 4
-  │    demo                 default-deny
+  │  NetworkPolicies across all namespaces: 3
   │    flux-system          allow-egress
   │    flux-system          allow-scraping
   │    flux-system          allow-webhooks
@@ -173,4 +172,4 @@
   Result:  37 passed · 2 warning(s) · 0 failed
   ═════════════════════════════════════════════════════════════
 
-  Generated: 2026-05-03T16:00:50Z
+  Generated: 2026-05-03T19:59:39Z

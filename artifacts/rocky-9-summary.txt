@@ -16,7 +16,7 @@
   ╭─ 1/12 Environment ───────────────────────────────── PASS ─╮
   │  Foundations version: untagged
   │  Hostname:           rathsted-compat-rocky-9
-  │  Date:               2026-05-03T16:02:50Z
+  │  Date:               2026-05-03T20:01:28Z
   │  Verify mode:        self-hosted
   │  OS:                 Rocky Linux 9.7 (Blue Onyx)
   │  Kernel:             6.19.13-orbstack-gbd1dc07b8cf4
@@ -33,7 +33,7 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ╭─ 3/12 Hardening ─────────────────────────────────── PASS ─╮
-  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (5.1M, 4108 entries)
+  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (5.2M, 4102 entries)
   │  ✓  API server audit logging active
   │  ✓  Audit policy file present
   │  ✓  Secrets encryption at rest enabled (encryption config present)
@@ -172,4 +172,4 @@
   Result:  37 passed · 2 warning(s) · 0 failed
   ═════════════════════════════════════════════════════════════
 
-  Generated: 2026-05-03T16:00:50Z
+  Generated: 2026-05-03T19:59:39Z

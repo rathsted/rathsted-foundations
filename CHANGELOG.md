@@ -4,6 +4,11 @@ All notable changes to Rathsted Foundations will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.0.2] — 2026-05-04
+
+### Changed
+- Internal improvements for CI
+
 ## [1.0.1] — 2026-05-03
 
 ### Changed

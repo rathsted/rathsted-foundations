@@ -32,9 +32,7 @@ jobs:
 
       - name: Pull reference image, retag, and push
         run: |
-          # Source the digest-pinned base image (shared with nightly.yml)
-          # so a rotation in supply-chain/base-image.env propagates to both.
-          set -a; . supply-chain/base-image.env; set +a
+          NGINX_SRC="docker.io/library/nginx@sha256:e7257f1ef28ba17cf7c248cb8ccf6f0c6e0228ab9c315c152f9c203cd34cf6d1"
           docker pull "$NGINX_SRC"
           docker tag "$NGINX_SRC" "$IMAGE"
           docker push "$IMAGE"
@@ -92,7 +90,7 @@ jobs:
             "$IMAGE"
 
       - name: Upload SBOM artifacts
-        uses: actions/upload-artifact@834a144ee995460fba8ed112a2fc961b36a5ec5a # v4.3.6
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: sbom-${{ github.ref_name }}
           path: supply-chain/sbom/output/
