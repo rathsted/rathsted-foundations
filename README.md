@@ -96,7 +96,7 @@ Optional on the workstation:
 | [Compliance Mapping](docs/compliance-mapping.md) | How repo controls map to CIS, NIST 800-53, and SOC 2 in an illustrative way |
 | [Versions](docs/versions.md) | Pinned component versions, platform status, and current support/compatibility matrix |
 | [Upgrade Guide](docs/upgrade-guide.md) | How to move between tagged `1.x` releases, verify results, and roll back when needed |
-| [Profiles](docs/profiles.md) | What the optional `profiles/app-runtime` bundle adds, and why it is off by default |
+| [Profiles](docs/profiles.md) | What the optional Phase 1 runtime profile adds (`app-runtime`) and why it is off by default |
 | [Offline Notes](docs/offline.md) | What must be pre-staged if you want an offline or local-only bootstrap path |
 | [Backup Guide](docs/backup-guide.md) | What to back up on a single-node deployment and what recovery does and does not restore |
 | [Monitoring Guide](docs/monitoring-guide.md) | Recommended observability add-ons and why monitoring is outside the narrow baseline |
@@ -137,7 +137,7 @@ These documents are public because they explain the intended direction of policy
 | `docs/` | All documentation — architecture, policies, compliance, upgrade guide, etc. |
 | `examples/` | GitOps pattern example (`hello-gitops-app`), customer instance template |
 | `policies/` | Kyverno ClusterPolicies (all Enforce mode) |
-| `profiles/` | Optional runtime profile (Traefik + NATS + Postgres + demo workloads) |
+| `profiles/` | Optional Phase 1 runtime profile: `app-runtime` (Traefik + NATS + Postgres) |
 | `scripts/` | Configuration, validation, and doctor utilities |
 | `supply-chain/` | Cosign keys, SBOM config, signing scripts |
 | `tests/` | Kyverno policy tests and negative test fixtures |
@@ -158,6 +158,14 @@ What `v1.0.0` does not include:
 ## Config Model
 
 `make configure` writes `config/customer.env`, renders registry/signature policies for your image namespace, and points the example deployment at your chosen image. The default demo uses `nginx:1.29.7-alpine` from Docker Hub as a placeholder — Foundations does not ship its own application image. Production use requires replacing this with your own image.
+
+## Profiles
+
+Profiles are optional workload patterns that layer on top of the baseline. They are off by default — apply only what your deployment needs.
+
+| Profile | Command | What it deploys |
+|---|---|---|
+| `app-runtime` | `make app-runtime` | Traefik, NATS, Postgres, demo API — standard web/API workload pattern |
 
 ## Compliance Note
 

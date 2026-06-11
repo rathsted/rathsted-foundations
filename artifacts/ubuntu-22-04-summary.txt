@@ -1,7 +1,7 @@
 ┌─────────────────────────────────────────────────────────────┐
 │  Rathsted Foundations — Validation Evidence                 │
 │  Version: untagged · Target: ubuntu:22.04                   │
-│  Date: 2026-05-03 · Source: github.com/rathsted             │
+│  Date: 2026-06-11 · Source: github.com/rathsted             │
 └─────────────────────────────────────────────────────────────┘
 
   Component Versions
@@ -16,10 +16,10 @@
   ╭─ 1/12 Environment ───────────────────────────────── PASS ─╮
   │  Foundations version: untagged
   │  Hostname:           rathsted-compat-ubuntu-22-04
-  │  Date:               2026-05-03T20:04:08Z
+  │  Date:               2026-06-11T00:09:36Z
   │  Verify mode:        self-hosted
   │  OS:                 Ubuntu 22.04.5 LTS
-  │  Kernel:             6.19.13-orbstack-gbd1dc07b8cf4
+  │  Kernel:             7.0.11-orbstack-00360-gc9bc4d96ac70
   │  ✓  Environment recorded
   ╰───────────────────────────────────────────────────────────╯
 
@@ -33,7 +33,7 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ╭─ 3/12 Hardening ─────────────────────────────────── PASS ─╮
-  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (5.3M, 4174 entries)
+  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (4.6M, 3715 entries)
   │  ✓  API server audit logging active
   │  ✓  Audit policy file present
   │  ✓  Secrets encryption at rest enabled (encryption config present)
@@ -57,8 +57,9 @@
   │  ✓  Flux Git sources listed
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 7/12 Demo App ──────────────────────────────────── WARN ─╮
-  │  ⚠  Demo namespace not present (non-fatal: GitOps reconciliation may still be in progress)
+  ╭─ 7/12 Demo App ──────────────────────────────────── PASS ─╮
+  │  ✓  Demo app objects present
+  │  ✓  Demo app Ready
   │  ✓  Signature policy installed
   ╰───────────────────────────────────────────────────────────╯
 
@@ -67,9 +68,9 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ╭─ 9/12 Vulnerability Scan ────────────────────────── PASS ─╮
-  │  ✓  Grype scan complete (45 lines)
+  │  ✓  Grype scan complete (63 lines)
   │  Results: /srv/rathsted-foundations/supply-chain/sbom/output/foundations-demo.grype.txt
-  │  Critical: 2  High: 20
+  │  Critical: 2  High: 22
   ╰───────────────────────────────────────────────────────────╯
 
   ╭─ 10/12 Negative Tests ───────────────────────────── PASS ─╮
@@ -168,7 +169,7 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ═════════════════════════════════════════════════════════════
-  Result:  35 passed · 3 warning(s) · 0 failed
+  Result:  37 passed · 2 warning(s) · 0 failed
   ═════════════════════════════════════════════════════════════
 
-  Generated: 2026-05-03T20:02:38Z
+  Generated: 2026-06-11T00:07:41Z

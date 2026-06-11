@@ -1,5 +1,5 @@
 # Rathsted Foundations — debian:12 Compatibility Evidence
-# Date: 2026-05-03T19:59:39Z
+# Date: 2026-06-11T00:02:55Z
 # Source: https://github.com/rathsted/rathsted-foundations.git
 #
 
@@ -7,11 +7,11 @@
 #   k3s=v1.35.1+k3s1  kyverno=v1.17.1  flux=2.8.1
 #   changed=2026-03-04/2026-03-04/2026-03-04
 
-[rathsted 12:59:39] Using VM: rathsted-compat-debian-12
-[rathsted 12:59:39] Using image: debian:12
-[rathsted 12:59:39] Repo: bundled tarball from invoking workspace
-[rathsted 12:59:39] Creating VM (debian:12)...
-[rathsted 12:59:50] Installing prerequisites inside VM...
+[rathsted 17:02:55] Using VM: rathsted-compat-debian-12
+[rathsted 17:02:55] Using image: debian:12
+[rathsted 17:02:55] Repo: bundled tarball from invoking workspace
+[rathsted 17:02:55] Creating VM (debian:12)...
+[rathsted 17:03:11] Installing prerequisites inside VM...
 Hit:1 http://deb.debian.org/debian bookworm InRelease
 Hit:2 http://deb.debian.org/debian bookworm-updates InRelease
 Hit:3 http://deb.debian.org/debian-security bookworm-security InRelease
@@ -38,7 +38,7 @@ The following NEW packages will be installed:
   libpython3.11-stdlib libreadline8 libsqlite3-0 make media-types patch perl
   perl-modules-5.36 python3 python3-minimal python3.11 python3.11-minimal
   readline-common
-0 upgraded, 24 newly installed, 0 to remove and 0 not upgraded.
+0 upgraded, 24 newly installed, 0 to remove and 2 not upgraded.
 Need to get 23.5 MB of archives.
 After this operation, 128 MB of additional disk space will be used.
 Get:1 http://deb.debian.org/debian bookworm/main arm64 perl-modules-5.36 all 5.36.0-7+deb12u3 [2,815 kB]
@@ -46,16 +46,16 @@ Get:2 http://deb.debian.org/debian bookworm/main arm64 libgdbm6 arm64 1.23-3 [70
 Get:3 http://deb.debian.org/debian bookworm/main arm64 libgdbm-compat4 arm64 1.23-3 [48.0 kB]
 Get:4 http://deb.debian.org/debian bookworm/main arm64 libperl5.36 arm64 5.36.0-7+deb12u3 [4,009 kB]
 Get:5 http://deb.debian.org/debian bookworm/main arm64 perl arm64 5.36.0-7+deb12u3 [239 kB]
-Get:6 http://deb.debian.org/debian bookworm/main arm64 libpython3.11-minimal arm64 3.11.2-6+deb12u6 [810 kB]
-Get:7 http://deb.debian.org/debian bookworm/main arm64 python3.11-minimal arm64 3.11.2-6+deb12u6 [1,859 kB]
+Get:6 http://deb.debian.org/debian bookworm/main arm64 libpython3.11-minimal arm64 3.11.2-6+deb12u7 [811 kB]
+Get:7 http://deb.debian.org/debian bookworm/main arm64 python3.11-minimal arm64 3.11.2-6+deb12u7 [1,859 kB]
 Get:8 http://deb.debian.org/debian bookworm/main arm64 python3-minimal arm64 3.11.2-1+b1 [26.3 kB]
 Get:9 http://deb.debian.org/debian bookworm/main arm64 media-types all 10.0.0 [26.1 kB]
 Get:10 http://deb.debian.org/debian bookworm/main arm64 libnsl2 arm64 1.3.0-2 [36.9 kB]
 Get:11 http://deb.debian.org/debian bookworm/main arm64 readline-common all 8.2-1.3 [69.0 kB]
 Get:12 http://deb.debian.org/debian bookworm/main arm64 libreadline8 arm64 8.2-1.3 [155 kB]
 Get:13 http://deb.debian.org/debian bookworm/main arm64 libsqlite3-0 arm64 3.40.1-2+deb12u2 [786 kB]
-Get:14 http://deb.debian.org/debian bookworm/main arm64 libpython3.11-stdlib arm64 3.11.2-6+deb12u6 [1,746 kB]
-Get:15 http://deb.debian.org/debian bookworm/main arm64 python3.11 arm64 3.11.2-6+deb12u6 [573 kB]
+Get:14 http://deb.debian.org/debian bookworm/main arm64 libpython3.11-stdlib arm64 3.11.2-6+deb12u7 [1,748 kB]
+Get:15 http://deb.debian.org/debian bookworm/main arm64 python3.11 arm64 3.11.2-6+deb12u7 [574 kB]
 Get:16 http://deb.debian.org/debian bookworm/main arm64 libpython3-stdlib arm64 3.11.2-1+b1 [9,296 B]
 Get:17 http://deb.debian.org/debian bookworm/main arm64 python3 arm64 3.11.2-1+b1 [26.3 kB]
 Get:18 http://deb.debian.org/debian bookworm/main arm64 less arm64 590-2.1~deb12u2 [128 kB]
@@ -66,7 +66,7 @@ Get:22 http://deb.debian.org/debian bookworm/main arm64 git arm64 1:2.39.5-0+deb
 Get:23 http://deb.debian.org/debian bookworm/main arm64 make arm64 4.3-4.1 [391 kB]
 Get:24 http://deb.debian.org/debian bookworm/main arm64 patch arm64 2.7.6-7 [121 kB]
 debconf: delaying package configuration, since apt-utils is not installed
-Fetched 23.5 MB in 1s (24.4 MB/s)
+Fetched 23.5 MB in 0s (60.4 MB/s)
 Selecting previously unselected package perl-modules-5.36.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 12661 files and directories currently installed.)
 Preparing to unpack .../0-perl-modules-5.36_5.36.0-7+deb12u3_all.deb ...
@@ -84,13 +84,13 @@ Selecting previously unselected package perl.
 Preparing to unpack .../4-perl_5.36.0-7+deb12u3_arm64.deb ...
 Unpacking perl (5.36.0-7+deb12u3) ...
 Selecting previously unselected package libpython3.11-minimal:arm64.
-Preparing to unpack .../5-libpython3.11-minimal_3.11.2-6+deb12u6_arm64.deb ...
-Unpacking libpython3.11-minimal:arm64 (3.11.2-6+deb12u6) ...
+Preparing to unpack .../5-libpython3.11-minimal_3.11.2-6+deb12u7_arm64.deb ...
+Unpacking libpython3.11-minimal:arm64 (3.11.2-6+deb12u7) ...
 Selecting previously unselected package python3.11-minimal.
-Preparing to unpack .../6-python3.11-minimal_3.11.2-6+deb12u6_arm64.deb ...
-Unpacking python3.11-minimal (3.11.2-6+deb12u6) ...
-Setting up libpython3.11-minimal:arm64 (3.11.2-6+deb12u6) ...
-Setting up python3.11-minimal (3.11.2-6+deb12u6) ...
+Preparing to unpack .../6-python3.11-minimal_3.11.2-6+deb12u7_arm64.deb ...
+Unpacking python3.11-minimal (3.11.2-6+deb12u7) ...
+Setting up libpython3.11-minimal:arm64 (3.11.2-6+deb12u7) ...
+Setting up python3.11-minimal (3.11.2-6+deb12u7) ...
 Selecting previously unselected package python3-minimal.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 14978 files and directories currently installed.)
 Preparing to unpack .../0-python3-minimal_3.11.2-1+b1_arm64.deb ...
@@ -111,11 +111,11 @@ Selecting previously unselected package libsqlite3-0:arm64.
 Preparing to unpack .../5-libsqlite3-0_3.40.1-2+deb12u2_arm64.deb ...
 Unpacking libsqlite3-0:arm64 (3.40.1-2+deb12u2) ...
 Selecting previously unselected package libpython3.11-stdlib:arm64.
-Preparing to unpack .../6-libpython3.11-stdlib_3.11.2-6+deb12u6_arm64.deb ...
-Unpacking libpython3.11-stdlib:arm64 (3.11.2-6+deb12u6) ...
+Preparing to unpack .../6-libpython3.11-stdlib_3.11.2-6+deb12u7_arm64.deb ...
+Unpacking libpython3.11-stdlib:arm64 (3.11.2-6+deb12u7) ...
 Selecting previously unselected package python3.11.
-Preparing to unpack .../7-python3.11_3.11.2-6+deb12u6_arm64.deb ...
-Unpacking python3.11 (3.11.2-6+deb12u6) ...
+Preparing to unpack .../7-python3.11_3.11.2-6+deb12u7_arm64.deb ...
+Unpacking python3.11 (3.11.2-6+deb12u7) ...
 Selecting previously unselected package libpython3-stdlib:arm64.
 Preparing to unpack .../8-libpython3-stdlib_3.11.2-1+b1_arm64.deb ...
 Unpacking libpython3-stdlib:arm64 (3.11.2-1+b1) ...
@@ -159,24 +159,24 @@ Setting up libgdbm6:arm64 (1.23-3) ...
 Setting up libreadline8:arm64 (8.2-1.3) ...
 Setting up libgdbm-compat4:arm64 (1.23-3) ...
 Setting up libperl5.36:arm64 (5.36.0-7+deb12u3) ...
-Setting up libpython3.11-stdlib:arm64 (3.11.2-6+deb12u6) ...
+Setting up libpython3.11-stdlib:arm64 (3.11.2-6+deb12u7) ...
 Setting up perl (5.36.0-7+deb12u3) ...
 Setting up libpython3-stdlib:arm64 (3.11.2-1+b1) ...
-Setting up python3.11 (3.11.2-6+deb12u6) ...
+Setting up python3.11 (3.11.2-6+deb12u7) ...
 Setting up python3 (3.11.2-1+b1) ...
 running python rtupdate hooks for python3.11...
 running python post-rtupdate hooks for python3.11...
 Setting up liberror-perl (0.17029-2) ...
 Setting up git (1:2.39.5-0+deb12u3) ...
-Processing triggers for systemd (252.39-1~deb12u1) ...
-Processing triggers for libc-bin (2.36-9+deb12u13) ...
-[rathsted 13:00:04] Copying local repo into VM rathsted-compat-debian-12 (/srv/rathsted-foundations)...
-[rathsted 13:00:07] Running E2E inside VM rathsted-compat-debian-12...
-[rathsted 13:00:07] Decrypting SSH key (removing passphrase for Flux compatibility)...
-[rathsted 13:00:07] SSH key decrypted successfully
+Processing triggers for systemd (252.39-1~deb12u2) ...
+Processing triggers for libc-bin (2.36-9+deb12u14) ...
+[rathsted 17:03:25] Copying local repo into VM rathsted-compat-debian-12 (/srv/rathsted-foundations)...
+[rathsted 17:03:26] Running E2E inside VM rathsted-compat-debian-12...
+[rathsted 17:03:26] Decrypting SSH key (removing passphrase for Flux compatibility)...
+[rathsted 17:03:26] SSH key decrypted successfully
 ./scripts/orbstack-e2e.sh
 [rathsted] OrbStack E2E starting
-[rathsted] Host: Linux rathsted-compat-debian-12 6.19.13-orbstack-gbd1dc07b8cf4 #1 SMP PREEMPT Mon Apr 20 11:17:03 UTC 2026 aarch64 GNU/Linux
+[rathsted] Host: Linux rathsted-compat-debian-12 7.0.11-orbstack-00360-gc9bc4d96ac70 #1 SMP PREEMPT Thu Jun  4 16:40:25 UTC 2026 aarch64 GNU/Linux
 [rathsted] Detected OS: debian 12
 
 ━━━ 1/6  OS Detection ━━━
@@ -195,7 +195,6 @@ Processing triggers for libc-bin (2.36-9+deb12u13) ...
 [INFO]  Verifying binary download
 [INFO]  Installing k3s to /usr/local/bin/k3s
 [INFO]  Skipping installation of SELinux RPM
-Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
 [INFO]  Creating /usr/local/bin/kubectl symlink to k3s
 [INFO]  Creating /usr/local/bin/crictl symlink to k3s
 [INFO]  Creating /usr/local/bin/ctr symlink to k3s
@@ -204,6 +203,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc
 [INFO]  env: Creating environment file /etc/systemd/system/k3s.service.env
 [INFO]  systemd: Creating service file /etc/systemd/system/k3s.service
 [INFO]  systemd: Enabling k3s unit
+Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
 [INFO]  Host iptables-save/iptables-restore tools not found
 [INFO]  Host ip6tables-save/ip6tables-restore tools not found
 [INFO]  systemd: Starting k3s
@@ -349,6 +349,7 @@ cronjob.batch/kyverno-cleanup-update-requests serverside-applied
 ━━━ 5/6  Policies ━━━
 
 [rathsted] Applying baseline policies...
+[rathsted] Policy apply attempt 1/3 (timeout 60s)...
 clusterpolicy.kyverno.io/baseline-networkpolicy created
 clusterpolicy.kyverno.io/disallow-host-namespaces created
 clusterpolicy.kyverno.io/disallow-privileged created
@@ -375,73 +376,73 @@ kustomization.kustomize.toolkit.fluxcd.io/rathsted-sync created
 == Environment ==
   Foundations version: untagged
   Hostname:           rathsted-compat-debian-12
-  Date:               2026-05-03T20:01:17Z
+  Date:               2026-06-11T00:05:10Z
   Verify mode:        self-hosted
   OS:                 Debian GNU/Linux 12 (bookworm)
-  Kernel:             6.19.13-orbstack-gbd1dc07b8cf4
-[ok 13:01:17] Environment recorded
+  Kernel:             7.0.11-orbstack-00360-gc9bc4d96ac70
+[ok 17:05:10] Environment recorded
 
 == Cluster ==
-[ok 13:01:17] cluster-info ok
-[ok 13:01:18] cluster nodes accessible
+[ok 17:05:10] cluster-info ok
+[ok 17:05:12] cluster nodes accessible
   Contract series:    1.x
   Contract install:   self-hosted
   Decks v0 support:   true
-[ok 13:01:18] Foundations contract marker present
+[ok 17:05:16] Foundations contract marker present
 
 == Hardening ==
-  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (5.3M, 4174 entries)
-[ok 13:01:18] API server audit logging active
-[ok 13:01:18] Audit policy file present
-[ok 13:01:18] Secrets encryption at rest enabled (encryption config present)
+  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (5.2M, 4170 entries)
+[ok 17:05:17] API server audit logging active
+[ok 17:05:17] Audit policy file present
+[ok 17:05:17] Secrets encryption at rest enabled (encryption config present)
 
 == Flux ==
-[ok 13:01:18] Flux check passed
-[ok 13:01:18] Flux installed
-[ok 13:01:19] Flux pods present
+[ok 17:05:19] Flux check passed
+[ok 17:05:19] Flux installed
+[ok 17:05:19] Flux pods present
 
 == Kyverno ==
-[ok 13:01:19] Kyverno installed
-[ok 13:01:19] Kyverno pods present
-[ok 13:01:19] Kyverno policies present
+[ok 17:05:20] Kyverno installed
+[ok 17:05:20] Kyverno pods present
+[ok 17:05:20] Kyverno policies present
 
 == GitOps ==
-[ok 13:01:19] GitOps sync present
-[ok 13:01:19] Flux kustomizations listed
-[ok 13:01:19] Flux Git sources listed
+[ok 17:05:20] GitOps sync present
+[ok 17:05:20] Flux kustomizations listed
+[ok 17:05:20] Flux Git sources listed
 
 == Demo App ==
-[ok 13:01:19] Demo app objects present
-[ok 13:01:38] Demo app Ready
-[ok 13:01:38] Signature policy installed
+[ok 17:05:21] Demo app objects present
+[warn 17:05:21] Demo app not Ready (non-fatal: GitOps reconciliation may still be in progress)
+[ok 17:05:21] Signature policy installed
 
 == Supply Chain ==
-[ok 13:01:42] SBOM generated (local containerd)
-[skip 13:01:42] Cosign skipped (cosign.pub not configured; use --release to enforce)
+[ok 17:05:35] SBOM generated (local containerd)
+[skip 17:05:35] Cosign skipped (cosign.pub not configured; use --release to enforce)
 
 == Vulnerability Scan ==
-[ok 13:02:17] Grype scan complete (45 lines)
+[ok 17:07:34] Grype scan complete (63 lines)
   Results: /srv/rathsted-foundations/supply-chain/sbom/output/foundations-demo.grype.txt
-  Critical: 2  High: 20
+  Critical: 2  High: 22
 
 == Negative Tests ==
-[ok 13:02:18] Kyverno webhooks detected, waiting 15s for policies to settle...
-[ok 13:02:33] Policy rejected as expected: default-namespace-pod.yaml
-[ok 13:02:33] Policy rejected as expected: disallowed-registry.yaml
-[ok 13:02:33] Policy rejected as expected: host-namespaces-pod.yaml
-[ok 13:02:33] Policy rejected as expected: hostpath-pod.yaml
-[ok 13:02:33] Policy rejected as expected: no-drop-capabilities-pod.yaml
-[ok 13:02:34] Policy rejected as expected: no-namespace-labels.yaml
-[ok 13:02:34] Policy rejected as expected: no-probes-pod.yaml
-[ok 13:02:34] Policy rejected as expected: no-resources-pod.yaml
-[ok 13:02:34] Policy rejected as expected: no-seccomp-pod.yaml
-[ok 13:02:34] Policy rejected as expected: privileged-pod.yaml
-[ok 13:02:34] Policy rejected as expected: readonly-rootfs-pod.yaml
-[ok 13:02:34] Policy rejected as expected: root-pod.yaml
-[ok 13:02:35] Policy rejected as expected: unsigned-image-pod.yaml
+[ok 17:07:35] Kyverno webhooks detected, waiting 15s for policies to settle...
+[ok 17:07:50] Policy rejected as expected: default-namespace-pod.yaml
+[ok 17:07:50] Policy rejected as expected: disallowed-registry.yaml
+[ok 17:07:50] Policy rejected as expected: host-namespaces-pod.yaml
+[ok 17:07:50] Policy rejected as expected: hostpath-pod.yaml
+[ok 17:07:51] Policy rejected as expected: no-drop-capabilities-pod.yaml
+[ok 17:07:51] Policy rejected as expected: no-namespace-labels.yaml
+[ok 17:07:51] Policy rejected as expected: no-probes-pod.yaml
+[ok 17:07:51] Policy rejected as expected: no-resources-pod.yaml
+[ok 17:07:51] Policy rejected as expected: no-seccomp-pod.yaml
+[ok 17:07:51] Policy rejected as expected: privileged-pod.yaml
+[ok 17:07:51] Policy rejected as expected: readonly-rootfs-pod.yaml
+[ok 17:07:52] Policy rejected as expected: root-pod.yaml
+[ok 17:07:53] Policy rejected as expected: unsigned-image-pod.yaml
 
 == Positive Admission Tests ==
-[skip 13:02:35] Positive admission tests skipped (use --release / RATHSTED_VERIFY_RELEASE=1 to enforce)
+[skip 17:07:53] Positive admission tests skipped (use --release / RATHSTED_VERIFY_RELEASE=1 to enforce)
 
 == Access Control (RBAC) ==
   ClusterRoleBindings + RoleBindings: 78
@@ -510,23 +511,24 @@ kustomization.kustomize.toolkit.fluxcd.io/rathsted-sync created
     system:public-info-viewer
     system:service-account-issuer-discovery
     system:volume-scheduler
-[ok 13:02:36] RBAC snapshot recorded
+[ok 17:07:53] RBAC snapshot recorded
 
 == Network Policies ==
-  NetworkPolicies across all namespaces: 3
+  NetworkPolicies across all namespaces: 4
+    demo                 default-deny
     flux-system          allow-egress
     flux-system          allow-scraping
     flux-system          allow-webhooks
-[ok 13:02:36] NetworkPolicy snapshot recorded
+[ok 17:07:54] NetworkPolicy snapshot recorded
 
 == Summary ==
-  Passed:   37
-  Warnings: 2
+  Passed:   36
+  Warnings: 3
   Failed:   0
 
-[ok 13:02:36] Verification passed
+[ok 17:07:54] Verification passed
 [rathsted] E2E complete
-[rathsted 13:02:36] Host-side OrbStack E2E complete
+[rathsted 17:07:54] Host-side OrbStack E2E complete
 
 # Exit code: 0
-# Completed: 2026-05-03T20:02:36Z
+# Completed: 2026-06-11T00:07:54Z

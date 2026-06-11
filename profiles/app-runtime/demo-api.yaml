@@ -69,6 +69,7 @@ metadata:
   name: demo-api
   namespace: app-runtime
 spec:
+  clusterIP: None
   selector:
     app: demo-api
   ports:

@@ -1,7 +1,7 @@
 ┌─────────────────────────────────────────────────────────────┐
 │  Rathsted Foundations — Validation Evidence                 │
 │  Version: untagged · Target: ubuntu:24.04                   │
-│  Date: 2026-05-03 · Source: github.com/rathsted             │
+│  Date: 2026-06-11 · Source: github.com/rathsted             │
 └─────────────────────────────────────────────────────────────┘
 
   Component Versions
@@ -16,10 +16,10 @@
   ╭─ 1/12 Environment ───────────────────────────────── PASS ─╮
   │  Foundations version: untagged
   │  Hostname:           rathsted-compat-ubuntu-24-04
-  │  Date:               2026-05-03T20:04:56Z
+  │  Date:               2026-06-11T00:09:48Z
   │  Verify mode:        self-hosted
   │  OS:                 Ubuntu 24.04.4 LTS
-  │  Kernel:             6.19.13-orbstack-gbd1dc07b8cf4
+  │  Kernel:             7.0.11-orbstack-00360-gc9bc4d96ac70
   │  ✓  Environment recorded
   ╰───────────────────────────────────────────────────────────╯
 
@@ -33,7 +33,7 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ╭─ 3/12 Hardening ─────────────────────────────────── PASS ─╮
-  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (5.5M, 4286 entries)
+  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (5.2M, 4097 entries)
   │  ✓  API server audit logging active
   │  ✓  Audit policy file present
   │  ✓  Secrets encryption at rest enabled (encryption config present)
@@ -68,9 +68,9 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ╭─ 9/12 Vulnerability Scan ────────────────────────── PASS ─╮
-  │  ✓  Grype scan complete (45 lines)
+  │  ✓  Grype scan complete (63 lines)
   │  Results: /srv/rathsted-foundations/supply-chain/sbom/output/foundations-demo.grype.txt
-  │  Critical: 2  High: 20
+  │  Critical: 2  High: 22
   ╰───────────────────────────────────────────────────────────╯
 
   ╭─ 10/12 Negative Tests ───────────────────────────── PASS ─╮
@@ -161,7 +161,8 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ╭─ 12/12 Network Policies ─────────────────────────── PASS ─╮
-  │  NetworkPolicies across all namespaces: 3
+  │  NetworkPolicies across all namespaces: 4
+  │    demo                 default-deny
   │    flux-system          allow-egress
   │    flux-system          allow-scraping
   │    flux-system          allow-webhooks
@@ -172,4 +173,4 @@
   Result:  37 passed · 2 warning(s) · 0 failed
   ═════════════════════════════════════════════════════════════
 
-  Generated: 2026-05-03T20:02:56Z
+  Generated: 2026-06-11T00:08:01Z

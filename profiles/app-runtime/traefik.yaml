@@ -27,6 +27,7 @@ spec:
             - "--providers.file.filename=/etc/traefik/dynamic.yaml"
             - "--ping"
             - "--ping.entrypoint=web"
+            - "--accesslog=true"
           ports:
             - containerPort: 8000
           volumeMounts:

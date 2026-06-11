@@ -21,12 +21,20 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
+              set -eu
+              echo "[smoke] DNS check (short name):"
+              curl --fail --show-error -sv http://traefik:80/ 2>&1 || true
+              echo "[smoke] DNS check (FQDN):"
+              curl --fail --show-error -sv http://traefik.app-runtime.svc.cluster.local:80/ 2>&1 || true
               for i in $(seq 1 30); do
-                if curl -s http://traefik:80/ >/dev/null; then
+                echo "[smoke] attempt ${i}/30"
+                if curl --fail --show-error -sv http://traefik:80/ 2>&1; then
+                  echo "[smoke] success on attempt ${i}"
                   exit 0
                 fi
                 sleep 2
               done
+              echo "[smoke] exhausted retries"
               exit 1
           securityContext:
             allowPrivilegeEscalation: false

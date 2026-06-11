@@ -185,7 +185,34 @@ kubectl wait --for=condition=available deployment/kyverno-reports-controller -n 
 
 step "5/6  Policies"
 info "Applying baseline policies..."
-kubectl apply -k "${ROOT_DIR}/policies"
+
+# Retry wrapper for policy application. k3s v1.34.4 can timeout on large policy batches.
+# This ensures policies apply even if the API server is slow.
+apply_policies_with_retry() {
+  local max_attempts=3
+  local attempt=1
+  local timeout_seconds=60
+
+  while (( attempt <= max_attempts )); do
+    info "Policy apply attempt $attempt/$max_attempts (timeout ${timeout_seconds}s)..."
+    if timeout "${timeout_seconds}" kubectl apply -k "${ROOT_DIR}/policies"; then
+      return 0
+    fi
+    local rc=$?
+    if (( rc == 124 )); then
+      info "API server timeout (exit 124). Retrying..."
+      sleep 5
+    else
+      return $rc
+    fi
+    (( attempt++ )) || true
+  done
+
+  error "Failed to apply policies after $max_attempts attempts"
+  return 1
+}
+
+apply_policies_with_retry
 
 step "6/6  GitOps Bootstrap"
 info "Bootstrapping GitOps sync..."
