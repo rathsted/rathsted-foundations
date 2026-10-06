@@ -2,7 +2,7 @@
 
 This document lists accepted security risks in Rathsted Foundations, the mitigations in place, and when to re-evaluate. It is intended for internal review, auditors, and security-conscious operators.
 
-Last reviewed: 2026-04-07
+Last reviewed: 2026-07-26
 
 ## 1. k3s Installer Trust Model
 
@@ -65,6 +65,48 @@ Last reviewed: 2026-04-07
 
 ---
 
+## 5. PolicyExceptions Enabled Cluster-Wide, Unscoped
+
+**Risk:** Kyverno runs with `--enablePolicyException=true` on all controllers
+(`cluster/policies/kyverno-install.yaml`) with **no** `--exceptionNamespace`, so a
+`PolicyException` is honored from *any* namespace. A principal able to `create`
+`policyexceptions.kyverno.io` in their own namespace could exempt their workloads
+from any ClusterPolicy (non-root, signed-images, registry, seccomp, …).
+Separately, `--protectManagedResources=false` leaves Kyverno-generated
+default-deny NetworkPolicies editable at admission, and the `default` namespace is
+excluded from the generated default-deny.
+
+**Mitigations (current):**
+- Single-operator / single-tenant v0: **no delegated Role grants `create` on
+  `policyexceptions`** — a grep of the RBAC surface finds none, so exploitation
+  requires cluster-admin today (**LOW** as shipped).
+- Generated default-deny NetworkPolicies use `synchronize: true`, so drift is
+  reconciled (leaving only a short window).
+- The only shipped exceptions (`profiles/app-runtime`, `profiles/ai-inference`)
+  are narrowly scoped by namespace + name and are operator-installed.
+
+**Residual risk:** The moment namespace-admin is delegated to a tenant, this
+becomes **HIGH** — self-service policy exemption.
+
+**Planned remediation (requires live validation before commit):**
+1. Add `--exceptionNamespace=kyverno-exceptions` to every `--enablePolicyException`
+   controller. **Validate the flag against Kyverno v1.12.3 on a live cluster
+   first** — an invalid flag crashloops the controller, and with
+   `--forceFailurePolicyIgnore=false` that fails admission *closed* cluster-wide.
+2. Create the admin-only `kyverno-exceptions` namespace and migrate the two
+   existing exceptions into it (both already target their workload namespace
+   explicitly via `spec.match…namespaces`, so relocating the resource is safe).
+3. RBAC: never grant `create/update` on `policyexceptions.kyverno.io` in any
+   delegated Role; keep it cluster-admin-only.
+4. Consider `--protectManagedResources=true` and a policy denying pods in the
+   `default` namespace (both are behavior changes to validate live).
+
+**Re-evaluate:** Before any multi-tenant / delegated-namespace-admin deployment —
+this remediation must land first. Tracked as a hardening item; not applied blind
+because the flag change can brick admission if the version behavior differs.
+
+---
+
 ## Summary
 
 | # | Risk | Severity | Status | Mitigation |
@@ -73,3 +115,4 @@ Last reviewed: 2026-04-07
 | 2 | Namespace exclusions | Medium | Accepted | RBAC, pinned installs, documented boundary |
 | 3 | Cosign key in repo | Low | Accepted | Encrypted, excluded from public, rotation documented |
 | 4 | Signed-image test uses tag, not digest | Low | Accepted | Cosign signature binds to digest; tag-shift without matching signature still rejected at admission |
+| 5 | PolicyExceptions unscoped cluster-wide | Low now / High if tenancy delegated | Remediation planned (live-validation required) | No delegated exception-create RBAC today; scope to `kyverno-exceptions` before delegating |

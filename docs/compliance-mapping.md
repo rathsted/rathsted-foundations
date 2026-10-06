@@ -45,7 +45,7 @@ This document maps Rathsted Foundations controls to industry frameworks. This is
 | GitOps (no manual kubectl apply) | CM-3, CM-5 | Flux reconciliation from git | `cluster/gitops/` |
 | Signed artifacts | SA-12, SI-7 | Cosign image signing | `supply-chain/cosign/` |
 | SBOM generation | SA-12 | Syft generates component inventory | `supply-chain/sbom/` |
-| Vulnerability scanning | RA-5 | Grype scan (non-blocking) | CI workflow |
+| Vulnerability scanning | RA-5 | Grype scan — release-blocking at High+ (`verify-release`; time-boxed exceptions in `.grype.yaml`), informational in CI | `bootstrap/verify.sh --release`, `.grype.yaml`, CI workflow |
 | Pinned versions | CM-2 | All components version-pinned | `docs/versions.md`, `bootstrap/install.sh` |
 | Upgrade via git | CM-3 | Version bumps are PRs with audit trail | `examples/customer-instance/` |
 | Policy-as-code | CM-6 | Kyverno policies in git, versioned | `policies/` |

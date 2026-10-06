@@ -42,8 +42,13 @@ while IFS='=' read -r key value; do
   export "$key=$value"
 done < <(
   load_env_file "${SCRIPT_DIR}/foundations-version.env" FOUNDATIONS_VERSION FOUNDATIONS_REPO
-  load_env_file "${SCRIPT_DIR}/values.env" CUSTOMER_NAMESPACE CUSTOMER_REGISTRY CUSTOMER_GIT_URL
+  load_env_file "${SCRIPT_DIR}/values.env" CUSTOMER_NAMESPACE CUSTOMER_REGISTRY CUSTOMER_GIT_URL CUSTOMER_JURISDICTION
 )
+
+case "${CUSTOMER_JURISDICTION:-}" in
+  ca|us|fr) ;;
+  *) echo "values.env: CUSTOMER_JURISDICTION must be ca, us or fr (got '${CUSTOMER_JURISDICTION:-}')" >&2; exit 1 ;;
+esac
 
 FOUNDATIONS_DIR="${SCRIPT_DIR}/.foundations"
 
@@ -64,18 +69,21 @@ fi
 echo "[customer] Running Foundations install..."
 sudo "${FOUNDATIONS_DIR}/bootstrap/install.sh"
 
-# Create customer namespace if it doesn't exist
+# Create or update the customer namespace with the labels the
+# require-namespace-labels policy checks at admission. They must be present
+# on create: an unlabelled namespace is rejected before it can be labelled.
+# rathsted.io/operator-control is stamped by the platform; don't set it.
 echo "[customer] Ensuring customer namespace: ${CUSTOMER_NAMESPACE}"
-kubectl get namespace "${CUSTOMER_NAMESPACE}" >/dev/null 2>&1 || \
-  kubectl create namespace "${CUSTOMER_NAMESPACE}" --dry-run=client -o yaml | \
-  kubectl apply -f -
-
-# Label the namespace (required by Kyverno require-namespace-labels policy)
-kubectl label namespace "${CUSTOMER_NAMESPACE}" \
-  owner=customer \
-  environment=production \
-  jurisdiction=local \
-  --overwrite
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ${CUSTOMER_NAMESPACE}
+  labels:
+    owner: customer
+    environment: production
+    rathsted.io/jurisdiction: ${CUSTOMER_JURISDICTION}
+EOF
 
 # Apply customer workloads
 if [[ -f "${SCRIPT_DIR}/cluster/apps/kustomization.yaml" ]]; then

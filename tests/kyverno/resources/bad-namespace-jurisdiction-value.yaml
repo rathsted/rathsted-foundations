@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bad-ns-jurisdiction-value
+  labels:
+    owner: platform
+    environment: demo
+    # malformed: not in the ca|us|fr enum (bad casing / legacy sentinel)
+    rathsted.io/jurisdiction: global
+    rathsted.io/operator-control: foreign-provider

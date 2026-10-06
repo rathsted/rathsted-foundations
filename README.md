@@ -19,7 +19,7 @@ Rathsted Foundations is a Kubernetes baseline for teams that need infrastructure
 - SBOM generation with Syft (optional vulnerability scan via Grype)
 - A demo workload and an optional app‑runtime profile
 
-## Product Promise For `1.x`
+## Product Promise For `2.x`
 - Stable, tag-based single-node baseline
 - Primary supported path on Ubuntu 22.04 and 24.04
 - Validated compatibility paths for Debian 12, Rocky Linux 9, and Ubuntu 24.04 CIS
@@ -95,7 +95,7 @@ Optional on the workstation:
 | [Policy Exceptions](docs/policy-exceptions.md) | When to use Kyverno `PolicyException` and how to scope exceptions without weakening the whole baseline |
 | [Compliance Mapping](docs/compliance-mapping.md) | How repo controls map to CIS, NIST 800-53, and SOC 2 in an illustrative way |
 | [Versions](docs/versions.md) | Pinned component versions, platform status, and current support/compatibility matrix |
-| [Upgrade Guide](docs/upgrade-guide.md) | How to move between tagged `1.x` releases, verify results, and roll back when needed |
+| [Upgrade Guide](docs/upgrade-guide.md) | How to move between tagged releases (including the 1.x → 2.0 relabel), verify results, and roll back when needed |
 | [Profiles](docs/profiles.md) | What the optional Phase 1 runtime profile adds (`app-runtime`) and why it is off by default |
 | [Offline Notes](docs/offline.md) | What must be pre-staged if you want an offline or local-only bootstrap path |
 | [Backup Guide](docs/backup-guide.md) | What to back up on a single-node deployment and what recovery does and does not restore |

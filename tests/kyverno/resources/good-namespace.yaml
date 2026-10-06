@@ -5,4 +5,6 @@ metadata:
   labels:
     owner: platform
     environment: demo
-    jurisdiction: local
+    # Author declares ONLY jurisdiction. operator-control is stamped by the
+    # mutate rule at admission — authors never hand-write it.
+    rathsted.io/jurisdiction: ca

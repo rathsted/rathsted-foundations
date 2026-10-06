@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: author-control-ns
+  labels:
+    owner: platform
+    environment: demo
+    rathsted.io/jurisdiction: ca
+    # author attempts to assert control themselves — mutation must overwrite this
+    rathsted.io/operator-control: rathsted

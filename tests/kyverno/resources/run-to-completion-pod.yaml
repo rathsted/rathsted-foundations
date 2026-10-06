@@ -1,0 +1,28 @@
+# A migration pod: run-to-completion, so probes cannot apply to it. Exempt by
+# restartPolicy, which Kubernetes will not let a Deployment/StatefulSet/DaemonSet
+# template set to anything but Always — so this exemption cannot be claimed by a
+# long-running workload.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: run-to-completion-pod
+  namespace: default
+spec:
+  restartPolicy: Never
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: migrate
+      image: ghcr.io/rathsted/example:1.0.0
+      command: ["migrate", "up"]
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: ["ALL"]
+      resources:
+        requests: {cpu: "10m", memory: "16Mi"}
+        limits: {cpu: "50m", memory: "64Mi"}

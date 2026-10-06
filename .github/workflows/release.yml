@@ -60,7 +60,7 @@ jobs:
       - name: SBOM (Syft)
         run: |
           mkdir -p supply-chain/sbom/output
-          SYFT_VERSION="v1.42.1"
+          SYFT_VERSION="v1.54.0"
           SYFT_RAW="${SYFT_VERSION#v}"
           ARCH="$(uname -m)"; case "$ARCH" in x86_64) ARCH="amd64";; aarch64) ARCH="arm64";; esac
           tmp="$(mktemp -d)"

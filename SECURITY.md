@@ -14,5 +14,6 @@ If you discover a security vulnerability in Rathsted Foundations, please report 
 
 | Version | Supported |
 |---------|-----------|
-| 1.x     | Yes       |
+| 2.x     | Yes       |
+| 1.x     | No — upgrade to 2.x ([upgrade guide](docs/upgrade-guide.md#upgrading-from-1x-to-20)) |
 | < 1.0   | No        |

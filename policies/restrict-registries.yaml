@@ -18,15 +18,18 @@ spec:
             - flux-system
             - kyverno
       validate:
-        message: "Images must come from allowed registries (ghcr.io or local)"
+        # First-party images (ghcr.io/rathsted/*) must be signed — see
+        # require-signed-images. localhost/* is a dev/kind surface for
+        # locally-loaded images and is NOT signature-checked.
+        message: "Images must come from allowed registries (ghcr.io/rathsted or localhost)"
         anyPattern:
           - spec:
               containers:
-                - image: "ghcr.io/*"
+                - image: "ghcr.io/rathsted/*"
               =(initContainers):
-                - image: "ghcr.io/*"
+                - image: "ghcr.io/rathsted/*"
               =(ephemeralContainers):
-                - image: "ghcr.io/*"
+                - image: "ghcr.io/rathsted/*"
           - spec:
               containers:
                 - image: "localhost/*"

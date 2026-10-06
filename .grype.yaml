@@ -1,0 +1,18 @@
+# Grype configuration — vulnerability exceptions for the release gate.
+#
+# The release gate (`make verify-release` -> bootstrap/verify.sh --release) runs
+# `grype --fail-on high` against the shipped image SBOM and FAILS the release when
+# a High or Critical vulnerability remains. CI (.github/workflows/ci.yml) stays
+# non-blocking/informational.
+#
+# To accept a specific finding, add a time-boxed ignore rule below. Every rule
+# MUST carry a `reason` and an `expires` comment so accepted risk is auditable
+# and does not silently persist — grype does not enforce the expiry, review does.
+# Renew or remove on expiry.
+#
+# Example:
+# ignore:
+#   - vulnerability: CVE-0000-00000
+#     # reason: no fix upstream yet; not reachable in our usage — accepted by <owner>
+#     # expires: 2026-08-31
+ignore: []

@@ -2,6 +2,11 @@ apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: require-probes
+  annotations:
+    # Autogen covers the long-running controllers only. Job and CronJob are
+    # omitted deliberately: their pod templates are run-to-completion, and the
+    # rule below explains why probes cannot apply to them.
+    pod-policies.kyverno.io/autogen-controllers: Deployment,DaemonSet,StatefulSet
 spec:
   validationFailureAction: Enforce
   rules:
@@ -17,6 +22,28 @@ spec:
             - kube-system
             - flux-system
             - kyverno
+      preconditions:
+        all:
+          # Probes are a promise about a service that is supposed to stay up.
+          # A run-to-completion pod — a migration, a backup, a CronJob tick —
+          # has no such promise to make: readiness gates traffic that will never
+          # be routed to it, and a Job that exits 0 is finished, not unhealthy.
+          # Requiring both of a Job is unsatisfiable, so every batch workload was
+          # forced to carry a PolicyException; two of ours already did. An
+          # exception disables the whole policy for that workload, including the
+          # parts that should still apply, so the exemption belongs here where it
+          # is bounded and reviewable.
+          #
+          # restartPolicy is the discriminator rather than an ownerReference
+          # because Kubernetes enforces it: a Deployment, StatefulSet or DaemonSet
+          # pod template MUST be Always, and a Job's must be Never or OnFailure.
+          # An ownerReference is author-supplied and can simply be claimed; this
+          # cannot. A bare pod that declares itself run-to-completion is one.
+          # The field defaults to Always when unset, so an omitted value is
+          # still covered.
+          - key: "{{ request.object.spec.restartPolicy || 'Always' }}"
+            operator: Equals
+            value: Always
       validate:
         message: "livenessProbe and readinessProbe are required"
         anyPattern:

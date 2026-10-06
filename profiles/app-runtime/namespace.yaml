@@ -5,4 +5,4 @@ metadata:
   labels:
     owner: platform
     environment: dev
-    jurisdiction: us
+    rathsted.io/jurisdiction: us

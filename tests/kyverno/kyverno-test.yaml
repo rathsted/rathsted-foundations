@@ -19,12 +19,18 @@ resources:
   - resources/good-pod.yaml
   - resources/good-pod-localhost.yaml
   - resources/bad-no-probes.yaml
+  - resources/bad-no-probes-explicit-always.yaml
+  - resources/run-to-completion-pod.yaml
   - resources/bad-host-namespaces.yaml
   - resources/bad-hostpath.yaml
   - resources/bad-registry.yaml
+  - resources/bad-registry-ghcr-other.yaml
   - resources/bad-no-resources.yaml
   - resources/bad-namespace.yaml
   - resources/good-namespace.yaml
+  - resources/bad-namespace-jurisdiction-value.yaml
+  - resources/bad-namespace-jurisdiction-missing.yaml
+  - resources/author-control-namespace.yaml
   - resources/bad-no-readonly-rootfs.yaml
   - resources/bad-no-seccomp.yaml
   - resources/bad-no-drop-all.yaml
@@ -116,6 +122,42 @@ results:
     kind: Pod
     result: pass
 
+  # --- run-to-completion: exempt from probes, still bound by everything else ---
+  # The exemption is keyed on restartPolicy, which Kubernetes forces to Always in
+  # a Deployment/StatefulSet/DaemonSet pod template. A long-running workload
+  # therefore cannot claim it, which an ownerReference-based exemption could not
+  # guarantee. bad-no-probes-explicit-always is that attempt, and it still fails.
+  - policy: require-probes
+    rule: liveness-readiness
+    resources:
+      - run-to-completion-pod
+    kind: Pod
+    result: skip
+  - policy: require-probes
+    rule: liveness-readiness
+    resources:
+      - bad-no-probes-explicit-always
+    kind: Pod
+    result: fail
+  - policy: drop-all-capabilities
+    rule: drop-all
+    resources:
+      - run-to-completion-pod
+    kind: Pod
+    result: pass
+  - policy: require-non-root
+    rule: run-as-non-root
+    resources:
+      - run-to-completion-pod
+    kind: Pod
+    result: pass
+  - policy: require-resources
+    rule: resource-requests-limits
+    resources:
+      - run-to-completion-pod
+    kind: Pod
+    result: pass
+
   # --- bad-no-probes: passes everything except probes ---
   - policy: require-probes
     rule: liveness-readiness
@@ -187,6 +229,21 @@ results:
     rule: liveness-readiness
     resources:
       - bad-registry
+    kind: Pod
+    result: pass
+
+  # --- bad-registry-ghcr-other: compliant except registry — a non-rathsted
+  #     ghcr.io org must now be denied (allowlist scoped to ghcr.io/rathsted/*) ---
+  - policy: restrict-registries
+    rule: allowed-registries
+    resources:
+      - bad-registry-ghcr-other
+    kind: Pod
+    result: fail
+  - policy: require-non-root
+    rule: run-as-non-root
+    resources:
+      - bad-registry-ghcr-other
     kind: Pod
     result: pass
 
@@ -306,18 +363,42 @@ results:
     kind: Pod
     result: pass
 
-  # --- namespace tests ---
+  # --- namespace tests (R3 sovereignty contract) ---
+  # good-ns: owner+environment+rathsted.io/jurisdiction (ca, in enum) → passes validation
   - policy: require-namespace-labels
-    rule: namespace-labels
+    rule: validate-namespace-labels
+    resources:
+      - good-ns
+    kind: Namespace
+    result: pass
+  # bad-ns: no labels at all → rejected
+  - policy: require-namespace-labels
+    rule: validate-namespace-labels
     resources:
       - bad-ns
     kind: Namespace
     result: fail
+  # malformed jurisdiction value ('global' not in ca|us|fr) → rejected
   - policy: require-namespace-labels
-    rule: namespace-labels
+    rule: validate-namespace-labels
     resources:
-      - good-ns
+      - bad-ns-jurisdiction-value
     kind: Namespace
+    result: fail
+  # missing jurisdiction label → rejected
+  - policy: require-namespace-labels
+    rule: validate-namespace-labels
+    resources:
+      - bad-ns-jurisdiction-missing
+    kind: Namespace
+    result: fail
+  # mutation: author-set operator-control 'rathsted' is overwritten to the rendered literal
+  - policy: require-namespace-labels
+    rule: stamp-operator-control
+    resources:
+      - author-control-ns
+    kind: Namespace
+    patchedResources: resources/patched/author-control-namespace.yaml
     result: pass
 
   # --- drop-all-capabilities tests ---

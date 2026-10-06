@@ -1,0 +1,38 @@
+# A ghcr.io image from a NON-first-party org. Compliant with every other
+# baseline control, so it isolates the registry check: restrict-registries must
+# DENY it now that the allowlist is scoped to ghcr.io/rathsted/* (previously
+# ghcr.io/* admitted any org unsigned).
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-registry-ghcr-other
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: app
+      image: ghcr.io/notrathsted/evil:latest
+      securityContext:
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+      resources:
+        requests:
+          cpu: "50m"
+          memory: "64Mi"
+        limits:
+          cpu: "100m"
+          memory: "128Mi"
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 80
+      readinessProbe:
+        httpGet:
+          path: /
+          port: 80

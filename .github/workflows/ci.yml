@@ -59,9 +59,9 @@ jobs:
         run: |
           tmp="$(mktemp -d)"
           curl --fail -sSL --proto '=https' --tlsv1.2 \
-            https://github.com/kyverno/kyverno/releases/download/v1.17.1/kyverno-cli_v1.17.1_linux_x86_64.tar.gz \
+            https://github.com/kyverno/kyverno/releases/download/v1.19.1/kyverno-cli_v1.19.1_linux_x86_64.tar.gz \
             -o "${tmp}/kyverno.tar.gz"
-          echo "d0c0f52e8fc8d66a3663b63942b131e5f91b63f7644b3e446546f79142d1b7a3  ${tmp}/kyverno.tar.gz" | sha256sum -c -
+          echo "b38228f367fc0fdc2b08f4c83ea50ac5f16c60ff8d62d76a66157c33c47b70ae  ${tmp}/kyverno.tar.gz" | sha256sum -c -
           sudo tar -xz -C /usr/local/bin kyverno < "${tmp}/kyverno.tar.gz"
           rm -rf "$tmp"
           kyverno test ./tests/kyverno

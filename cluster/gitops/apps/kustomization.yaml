@@ -1,6 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  # Kyverno ClusterPolicies reconciled by Flux (rathsted-sync, prune:true) so a
+  # deleted or weakened policy self-heals within the reconcile interval. Bootstrap
+  # still applies these once as the pre-Flux seed; Flux owns them thereafter.
+  - ../../../policies
   - ../../../examples/hello-gitops-app
 images:
   - name: nginx

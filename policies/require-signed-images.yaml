@@ -23,7 +23,7 @@ spec:
             - flux-system
             - kyverno
       verifyImages:
-        - mutateDigest: false
+        - mutateDigest: true
           imageReferences:
             - "ghcr.io/rathsted/*"
           attestors:
@@ -31,6 +31,6 @@ spec:
                 - keys:
                     publicKeys: |-
                       -----BEGIN PUBLIC KEY-----
-                      MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEMtL2R7+LyDsxF7TklkFwaEaZA1P2
-                      jnVfErk6TlEOPTxbY9EbXpQLXxLIWkKRpgyfC8L1wAxfAA21F3vMkwZuVA==
+                      MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEVzrZFHwgfsJ8l10tBxHBl/tLcDcQ
+                      yIVYpfn6sUMn/XRFHYAVs+aGn8r+7KVFUUkfhccMI1csoK0ADY8VPdGLGw==
                       -----END PUBLIC KEY-----

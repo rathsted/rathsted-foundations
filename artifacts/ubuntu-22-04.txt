@@ -1,17 +1,17 @@
 # Rathsted Foundations — ubuntu:22.04 Compatibility Evidence
-# Date: 2026-06-11T00:07:41Z
+# Date: 2026-10-06T06:16:15Z
 # Source: https://github.com/rathsted/rathsted-foundations.git
 #
 
 # Pins: current
-#   k3s=v1.35.1+k3s1  kyverno=v1.17.1  flux=2.8.1
-#   changed=2026-03-04/2026-03-04/2026-03-04
+#   k3s=v1.35.9+k3s1  kyverno=v1.19.1  flux=2.9.6
+#   changed=2026-10-02/2026-10-02/2026-10-02
 
-[rathsted 17:07:41] Using VM: rathsted-compat-ubuntu-22-04
-[rathsted 17:07:41] Using image: ubuntu:22.04
-[rathsted 17:07:41] Repo: bundled tarball from invoking workspace
-[rathsted 17:07:41] Creating VM (ubuntu:22.04)...
-[rathsted 17:07:54] Installing prerequisites inside VM...
+[rathsted 23:16:15] Using VM: rathsted-compat-ubuntu-22-04
+[rathsted 23:16:15] Using image: ubuntu:22.04
+[rathsted 23:16:15] Repo: bundled tarball from invoking workspace
+[rathsted 23:16:15] Creating VM (ubuntu:22.04)...
+[rathsted 23:16:32] Installing prerequisites inside VM...
 Hit:1 http://ports.ubuntu.com/ubuntu-ports jammy InRelease
 Hit:2 http://ports.ubuntu.com/ubuntu-ports jammy-updates InRelease
 Hit:3 http://ports.ubuntu.com/ubuntu-ports jammy-security InRelease
@@ -19,7 +19,7 @@ Reading package lists...
 Reading package lists...
 Building dependency tree...
 Reading state information...
-curl is already the newest version (7.81.0-1ubuntu1.24).
+curl is already the newest version (7.81.0-1ubuntu1.29).
 python3 is already the newest version (3.10.6-1~22.04.1).
 The following additional packages will be installed:
   git-man libcurl3-gnutls liberror-perl libgdbm-compat4 libgdbm6 libperl5.34
@@ -32,26 +32,26 @@ Suggested packages:
 The following NEW packages will be installed:
   git git-man libcurl3-gnutls liberror-perl libgdbm-compat4 libgdbm6
   libperl5.34 make patch perl perl-modules-5.34
-0 upgraded, 11 newly installed, 0 to remove and 15 not upgraded.
+0 upgraded, 11 newly installed, 0 to remove and 0 not upgraded.
 Need to get 12.7 MB of archives.
 After this operation, 69.6 MB of additional disk space will be used.
-Get:1 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 perl-modules-5.34 all 5.34.0-3ubuntu1.5 [2,977 kB]
+Get:1 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 perl-modules-5.34 all 5.34.0-3ubuntu1.9 [2,977 kB]
 Get:2 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libgdbm6 arm64 1.23-1 [34.1 kB]
 Get:3 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 libgdbm-compat4 arm64 1.23-1 [6,294 B]
-Get:4 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libperl5.34 arm64 5.34.0-3ubuntu1.5 [4,721 kB]
-Get:5 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 perl arm64 5.34.0-3ubuntu1.5 [232 kB]
-Get:6 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libcurl3-gnutls arm64 7.81.0-1ubuntu1.24 [279 kB]
+Get:4 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libperl5.34 arm64 5.34.0-3ubuntu1.9 [4,724 kB]
+Get:5 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 perl arm64 5.34.0-3ubuntu1.9 [232 kB]
+Get:6 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 libcurl3-gnutls arm64 7.81.0-1ubuntu1.29 [281 kB]
 Get:7 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 liberror-perl all 0.17029-1 [26.5 kB]
 Get:8 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 git-man all 1:2.34.1-1ubuntu1.17 [954 kB]
 Get:9 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 git arm64 1:2.34.1-1ubuntu1.17 [3,222 kB]
 Get:10 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 make arm64 4.3-4.1build1 [177 kB]
 Get:11 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 patch arm64 2.7.6-7build2 [105 kB]
 dpkg-preconfigure: unable to re-open stdin: No such file or directory
-Fetched 12.7 MB in 0s (44.6 MB/s)
+Fetched 12.7 MB in 2s (6,067 kB/s)
 Selecting previously unselected package perl-modules-5.34.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 16481 files and directories currently installed.)
-Preparing to unpack .../00-perl-modules-5.34_5.34.0-3ubuntu1.5_all.deb ...
-Unpacking perl-modules-5.34 (5.34.0-3ubuntu1.5) ...
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 16457 files and directories currently installed.)
+Preparing to unpack .../00-perl-modules-5.34_5.34.0-3ubuntu1.9_all.deb ...
+Unpacking perl-modules-5.34 (5.34.0-3ubuntu1.9) ...
 Selecting previously unselected package libgdbm6:arm64.
 Preparing to unpack .../01-libgdbm6_1.23-1_arm64.deb ...
 Unpacking libgdbm6:arm64 (1.23-1) ...
@@ -59,14 +59,14 @@ Selecting previously unselected package libgdbm-compat4:arm64.
 Preparing to unpack .../02-libgdbm-compat4_1.23-1_arm64.deb ...
 Unpacking libgdbm-compat4:arm64 (1.23-1) ...
 Selecting previously unselected package libperl5.34:arm64.
-Preparing to unpack .../03-libperl5.34_5.34.0-3ubuntu1.5_arm64.deb ...
-Unpacking libperl5.34:arm64 (5.34.0-3ubuntu1.5) ...
+Preparing to unpack .../03-libperl5.34_5.34.0-3ubuntu1.9_arm64.deb ...
+Unpacking libperl5.34:arm64 (5.34.0-3ubuntu1.9) ...
 Selecting previously unselected package perl.
-Preparing to unpack .../04-perl_5.34.0-3ubuntu1.5_arm64.deb ...
-Unpacking perl (5.34.0-3ubuntu1.5) ...
+Preparing to unpack .../04-perl_5.34.0-3ubuntu1.9_arm64.deb ...
+Unpacking perl (5.34.0-3ubuntu1.9) ...
 Selecting previously unselected package libcurl3-gnutls:arm64.
-Preparing to unpack .../05-libcurl3-gnutls_7.81.0-1ubuntu1.24_arm64.deb ...
-Unpacking libcurl3-gnutls:arm64 (7.81.0-1ubuntu1.24) ...
+Preparing to unpack .../05-libcurl3-gnutls_7.81.0-1ubuntu1.29_arm64.deb ...
+Unpacking libcurl3-gnutls:arm64 (7.81.0-1ubuntu1.29) ...
 Selecting previously unselected package liberror-perl.
 Preparing to unpack .../06-liberror-perl_0.17029-1_all.deb ...
 Unpacking liberror-perl (0.17029-1) ...
@@ -82,40 +82,40 @@ Unpacking make (4.3-4.1build1) ...
 Selecting previously unselected package patch.
 Preparing to unpack .../10-patch_2.7.6-7build2_arm64.deb ...
 Unpacking patch (2.7.6-7build2) ...
-Setting up libcurl3-gnutls:arm64 (7.81.0-1ubuntu1.24) ...
-Setting up perl-modules-5.34 (5.34.0-3ubuntu1.5) ...
+Setting up libcurl3-gnutls:arm64 (7.81.0-1ubuntu1.29) ...
+Setting up perl-modules-5.34 (5.34.0-3ubuntu1.9) ...
 Setting up make (4.3-4.1build1) ...
 Setting up patch (2.7.6-7build2) ...
 Setting up git-man (1:2.34.1-1ubuntu1.17) ...
 Setting up libgdbm6:arm64 (1.23-1) ...
 Setting up libgdbm-compat4:arm64 (1.23-1) ...
-Setting up libperl5.34:arm64 (5.34.0-3ubuntu1.5) ...
-Setting up perl (5.34.0-3ubuntu1.5) ...
+Setting up libperl5.34:arm64 (5.34.0-3ubuntu1.9) ...
+Setting up perl (5.34.0-3ubuntu1.9) ...
 Setting up liberror-perl (0.17029-1) ...
 Setting up git (1:2.34.1-1ubuntu1.17) ...
-Processing triggers for libc-bin (2.35-0ubuntu3.13) ...
-[rathsted 17:08:22] Copying local repo into VM rathsted-compat-ubuntu-22-04 (/srv/rathsted-foundations)...
-[rathsted 17:08:25] Running E2E inside VM rathsted-compat-ubuntu-22-04...
-[rathsted 17:08:25] Decrypting SSH key (removing passphrase for Flux compatibility)...
-[rathsted 17:08:25] SSH key decrypted successfully
+Processing triggers for libc-bin (2.35-0ubuntu3.15) ...
+[rathsted 23:16:48] Copying local repo into VM rathsted-compat-ubuntu-22-04 (/srv/rathsted-foundations)...
+[rathsted 23:16:50] Running E2E inside VM rathsted-compat-ubuntu-22-04...
+[rathsted 23:16:50] Decrypting SSH key (removing passphrase for Flux compatibility)...
+[rathsted 23:16:51] SSH key decrypted successfully
 ./scripts/orbstack-e2e.sh
 [rathsted] OrbStack E2E starting
-[rathsted] Host: Linux rathsted-compat-ubuntu-22-04 7.0.11-orbstack-00360-gc9bc4d96ac70 #1 SMP PREEMPT Thu Jun  4 16:40:25 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
+[rathsted] Host: Linux rathsted-compat-ubuntu-22-04 7.0.14-orbstack-00380-ga7e0a2dc9535 #1 SMP PREEMPT Fri Aug  7 03:48:40 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
 [rathsted] Detected OS: ubuntu 22.04
 
 ━━━ 1/6  OS Detection ━━━
 
 [rathsted] Detected OS: ubuntu 22.04 (debian family)
-[rathsted] Version pins: k3s=v1.35.1+k3s1 kyverno=v1.17.1 flux=2.8.1
-[rathsted] Version pins: cosign=v3.0.5 syft=v1.42.1 grype=v0.109.0
+[rathsted] Version pins: k3s=v1.35.9+k3s1 kyverno=v1.19.1 flux=2.9.6
+[rathsted] Version pins: cosign=v3.1.3 syft=v1.54.0 grype=v0.120.0
 
 ━━━ 2/6  k3s ━━━
 
 [rathsted] Audit policy installed
 [rathsted] Installing k3s...
-[INFO]  Using v1.35.1+k3s1 as release
-[INFO]  Downloading hash https://github.com/k3s-io/k3s/releases/download/v1.35.1%2Bk3s1/sha256sum-arm64.txt
-[INFO]  Downloading binary https://github.com/k3s-io/k3s/releases/download/v1.35.1%2Bk3s1/k3s-arm64
+[INFO]  Using v1.35.9+k3s1 as release
+[INFO]  Downloading hash https://github.com/k3s-io/k3s/releases/download/v1.35.9%2Bk3s1/sha256sum-arm64.txt
+[INFO]  Downloading binary https://github.com/k3s-io/k3s/releases/download/v1.35.9%2Bk3s1/k3s-arm64
 [INFO]  Verifying binary download
 [INFO]  Installing k3s to /usr/local/bin/k3s
 [INFO]  Skipping installation of SELinux RPM
@@ -135,24 +135,24 @@ Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc
 ━━━ 3/6  Flux + Supply Chain Tools ━━━
 
 [rathsted] Installing Flux CLI...
-[INFO]  Downloading metadata https://api.github.com/repos/fluxcd/flux2/releases/tags/v2.8.1
-[INFO]  Using 2.8.1 as release
-[INFO]  Downloading hash https://github.com/fluxcd/flux2/releases/download/v2.8.1/flux_2.8.1_checksums.txt
-[INFO]  Downloading binary https://github.com/fluxcd/flux2/releases/download/v2.8.1/flux_2.8.1_linux_arm64.tar.gz
+[INFO]  Downloading metadata https://api.github.com/repos/fluxcd/flux2/releases/tags/v2.9.6
+[INFO]  Using 2.9.6 as release
+[INFO]  Downloading hash https://github.com/fluxcd/flux2/releases/download/v2.9.6/flux_2.9.6_checksums.txt
+[INFO]  Downloading binary https://github.com/fluxcd/flux2/releases/download/v2.9.6/flux_2.9.6_linux_arm64.tar.gz
 [INFO]  Verifying binary download
 [INFO]  Installing flux to /usr/local/bin/flux
 [rathsted] Installing cosign...
 [rathsted] Installing syft...
-[info] checking github for release tag='v1.42.1' 
-[info] fetching release script for tag='v1.42.1' 
-[info] checking github for release tag='v1.42.1' 
-[info] using release tag='v1.42.1' version='1.42.1' os='linux' arch='arm64' 
+[info] checking github for release tag='v1.54.0' 
+[info] fetching release script for tag='v1.54.0' 
+[info] checking github for release tag='v1.54.0' 
+[info] using release tag='v1.54.0' version='1.54.0' os='linux' arch='arm64' 
 [info] installed /usr/local/bin/syft 
 [rathsted] Installing grype...
-[info] checking github for release tag='v0.109.0' 
-[info] fetching release script for tag='v0.109.0' 
-[info] checking github for release tag='v0.109.0' 
-[info] using release tag='v0.109.0' version='0.109.0' os='linux' arch='arm64' 
+[info] checking github for release tag='v0.120.0' 
+[info] fetching release script for tag='v0.120.0' 
+[info] checking github for release tag='v0.120.0' 
+[info] using release tag='v0.120.0' version='0.120.0' os='linux' arch='arm64' 
 [info] installed /usr/local/bin/grype 
 [rathsted] Installing Flux controllers...
 ✚ generating manifests
@@ -201,11 +201,8 @@ configmap/rathsted-foundations-contract created
 ━━━ 4/6  Kyverno ━━━
 
 [rathsted] Installing Kyverno...
-customresourcedefinition.apiextensions.k8s.io/admissionreports.kyverno.io created
-customresourcedefinition.apiextensions.k8s.io/backgroundscanreports.kyverno.io created
+[rathsted] Kyverno v1.19.1: vendored manifest
 customresourcedefinition.apiextensions.k8s.io/cleanuppolicies.kyverno.io created
-customresourcedefinition.apiextensions.k8s.io/clusteradmissionreports.kyverno.io created
-customresourcedefinition.apiextensions.k8s.io/clusterbackgroundscanreports.kyverno.io created
 customresourcedefinition.apiextensions.k8s.io/clustercleanuppolicies.kyverno.io created
 customresourcedefinition.apiextensions.k8s.io/clusterpolicies.kyverno.io created
 customresourcedefinition.apiextensions.k8s.io/globalcontextentries.kyverno.io created
@@ -216,11 +213,21 @@ customresourcedefinition.apiextensions.k8s.io/clusterephemeralreports.reports.ky
 customresourcedefinition.apiextensions.k8s.io/ephemeralreports.reports.kyverno.io created
 customresourcedefinition.apiextensions.k8s.io/clusterpolicyreports.wgpolicyk8s.io created
 customresourcedefinition.apiextensions.k8s.io/policyreports.wgpolicyk8s.io created
+customresourcedefinition.apiextensions.k8s.io/deletingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/generatingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/imagevalidatingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/mutatingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/namespaceddeletingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/namespacedgeneratingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/namespacedimagevalidatingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/namespacedmutatingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/namespacedvalidatingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/policyexceptions.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/validatingpolicies.policies.kyverno.io created
 namespace/kyverno serverside-applied
 serviceaccount/kyverno-admission-controller serverside-applied
 serviceaccount/kyverno-background-controller serverside-applied
 serviceaccount/kyverno-cleanup-controller serverside-applied
-serviceaccount/kyverno-cleanup-jobs serverside-applied
 serviceaccount/kyverno-reports-controller serverside-applied
 configmap/kyverno serverside-applied
 configmap/kyverno-metrics serverside-applied
@@ -230,7 +237,6 @@ clusterrole.rbac.authorization.k8s.io/kyverno:background-controller serverside-a
 clusterrole.rbac.authorization.k8s.io/kyverno:background-controller:core serverside-applied
 clusterrole.rbac.authorization.k8s.io/kyverno:cleanup-controller serverside-applied
 clusterrole.rbac.authorization.k8s.io/kyverno:cleanup-controller:core serverside-applied
-clusterrole.rbac.authorization.k8s.io/kyverno:cleanup-jobs serverside-applied
 clusterrole.rbac.authorization.k8s.io/kyverno:rbac:admin:policies serverside-applied
 clusterrole.rbac.authorization.k8s.io/kyverno:rbac:view:policies serverside-applied
 clusterrole.rbac.authorization.k8s.io/kyverno:rbac:admin:policyreports serverside-applied
@@ -242,10 +248,12 @@ clusterrole.rbac.authorization.k8s.io/kyverno:rbac:view:updaterequests serversid
 clusterrole.rbac.authorization.k8s.io/kyverno:reports-controller serverside-applied
 clusterrole.rbac.authorization.k8s.io/kyverno:reports-controller:core serverside-applied
 clusterrolebinding.rbac.authorization.k8s.io/kyverno:admission-controller serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/kyverno:admission-controller:view serverside-applied
 clusterrolebinding.rbac.authorization.k8s.io/kyverno:background-controller serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/kyverno:background-controller:view serverside-applied
 clusterrolebinding.rbac.authorization.k8s.io/kyverno:cleanup-controller serverside-applied
-clusterrolebinding.rbac.authorization.k8s.io/kyverno:cleanup-jobs serverside-applied
 clusterrolebinding.rbac.authorization.k8s.io/kyverno:reports-controller serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/kyverno:reports-controller:view serverside-applied
 role.rbac.authorization.k8s.io/kyverno:admission-controller serverside-applied
 role.rbac.authorization.k8s.io/kyverno:background-controller serverside-applied
 role.rbac.authorization.k8s.io/kyverno:cleanup-controller serverside-applied
@@ -264,16 +272,12 @@ deployment.apps/kyverno-admission-controller serverside-applied
 deployment.apps/kyverno-background-controller serverside-applied
 deployment.apps/kyverno-cleanup-controller serverside-applied
 deployment.apps/kyverno-reports-controller serverside-applied
-cronjob.batch/kyverno-cleanup-admission-reports serverside-applied
-cronjob.batch/kyverno-cleanup-cluster-admission-reports serverside-applied
-cronjob.batch/kyverno-cleanup-cluster-ephemeral-reports serverside-applied
-cronjob.batch/kyverno-cleanup-ephemeral-reports serverside-applied
-cronjob.batch/kyverno-cleanup-update-requests serverside-applied
 
 ━━━ 5/6  Policies ━━━
 
 [rathsted] Applying baseline policies...
-[rathsted] Policy apply attempt 1/3 (timeout 60s)...
+[rathsted] Policy apply attempt 1/10 (timeout 60s)...
+Warning: kyverno.io/v1 ClusterPolicy is deprecated and will be removed in a future release; migrate to ValidatingPolicy, MutatingPolicy, GeneratingPolicy or ImageValidatingPolicy (policies.kyverno.io), see https://kyverno.io/docs/guides/migration-to-cel/
 clusterpolicy.kyverno.io/baseline-networkpolicy created
 clusterpolicy.kyverno.io/disallow-host-namespaces created
 clusterpolicy.kyverno.io/disallow-privileged created
@@ -281,6 +285,7 @@ clusterpolicy.kyverno.io/drop-all-capabilities created
 clusterpolicy.kyverno.io/require-namespace-labels created
 clusterpolicy.kyverno.io/require-non-root created
 clusterpolicy.kyverno.io/require-probes created
+Warning: Policies that match Pods apply to all Pods including those created and managed by controllers excluded from autogen. Use preconditions to exclude the Pods managed by controllers which are excluded from autogen. Refer to https://kyverno.io/docs/policy-types/cluster-policy/autogen/ for details.
 clusterpolicy.kyverno.io/require-readonly-rootfs created
 clusterpolicy.kyverno.io/require-resources created
 clusterpolicy.kyverno.io/require-seccomp created
@@ -300,76 +305,80 @@ kustomization.kustomize.toolkit.fluxcd.io/rathsted-sync created
 == Environment ==
   Foundations version: untagged
   Hostname:           rathsted-compat-ubuntu-22-04
-  Date:               2026-06-11T00:09:36Z
+  Date:               2026-10-06T06:18:02Z
   Verify mode:        self-hosted
   OS:                 Ubuntu 22.04.5 LTS
-  Kernel:             7.0.11-orbstack-00360-gc9bc4d96ac70
-[ok 17:09:36] Environment recorded
+  Kernel:             7.0.14-orbstack-00380-ga7e0a2dc9535
+[ok 23:18:02] Environment recorded
 
 == Cluster ==
-[ok 17:09:36] cluster-info ok
-[ok 17:09:36] cluster nodes accessible
-  Contract series:    1.x
+[ok 23:18:02] cluster-info ok
+[ok 23:18:02] cluster nodes accessible
+  Contract series:    2.x
   Contract install:   self-hosted
   Decks v0 support:   true
-[ok 17:09:36] Foundations contract marker present
+  Topology:           single-node (supported nodes 1-1)
+[ok 23:18:03] Foundations contract marker present
 
 == Hardening ==
-  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (4.6M, 3715 entries)
-[ok 17:09:36] API server audit logging active
-[ok 17:09:36] Audit policy file present
-[ok 17:09:36] Secrets encryption at rest enabled (encryption config present)
+  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (5.0M, 3940 entries)
+[ok 23:18:03] API server audit logging active
+[ok 23:18:03] Audit policy file present
+[ok 23:18:03] Secrets encryption at rest enabled (encryption config present)
 
 == Flux ==
-[ok 17:09:37] Flux check passed
-[ok 17:09:37] Flux installed
-[ok 17:09:37] Flux pods present
+[ok 23:18:03] Flux check passed
+[ok 23:18:04] Flux installed
+[ok 23:18:04] Flux pods present
 
 == Kyverno ==
-[ok 17:09:37] Kyverno installed
-[ok 17:09:37] Kyverno pods present
-[ok 17:09:38] Kyverno policies present
+[ok 23:18:04] Kyverno installed
+[ok 23:18:04] Kyverno pods present
+[ok 23:18:04] Kyverno policies present
+[info 23:18:04] kyverno image: ghcr.io/kyverno/kyverno:v1.19.1
+[info 23:18:04] kyverno image: ghcr.io/kyverno/background-controller:v1.19.1
+[info 23:18:04] kyverno image: ghcr.io/kyverno/cleanup-controller:v1.19.1
+[info 23:18:04] kyverno image: ghcr.io/kyverno/reports-controller:v1.19.1
 
 == GitOps ==
-[ok 17:09:38] GitOps sync present
-[ok 17:09:38] Flux kustomizations listed
-[ok 17:09:38] Flux Git sources listed
+[ok 23:18:04] GitOps sync present
+[ok 23:18:04] Flux kustomizations listed
+[ok 23:18:04] Flux Git sources listed
 
 == Demo App ==
-[ok 17:09:38] Demo app objects present
-[ok 17:09:53] Demo app Ready
-[ok 17:09:53] Signature policy installed
+[warn 23:18:04] Demo namespace not present (non-fatal: GitOps reconciliation may still be in progress)
+[ok 23:18:04] Signature policy installed
 
 == Supply Chain ==
-[ok 17:09:57] SBOM generated (local containerd)
-[skip 17:09:57] Cosign skipped (cosign.pub not configured; use --release to enforce)
+[ok 23:18:10] SBOM generated (local containerd)
+[skip 23:18:10] Cosign skipped (cosign.pub not configured; use --release to enforce)
 
 == Vulnerability Scan ==
-[ok 17:11:18] Grype scan complete (63 lines)
   Results: /srv/rathsted-foundations/supply-chain/sbom/output/foundations-demo.grype.txt
-  Critical: 2  High: 22
+  Critical: 28  High: 102
+[ok 23:21:49] Grype scan complete (informational; the High+ release gate applies under --release)
 
 == Negative Tests ==
-[ok 17:11:18] Kyverno webhooks detected, waiting 15s for policies to settle...
-[ok 17:11:34] Policy rejected as expected: default-namespace-pod.yaml
-[ok 17:11:34] Policy rejected as expected: disallowed-registry.yaml
-[ok 17:11:35] Policy rejected as expected: host-namespaces-pod.yaml
-[ok 17:11:35] Policy rejected as expected: hostpath-pod.yaml
-[ok 17:11:35] Policy rejected as expected: no-drop-capabilities-pod.yaml
-[ok 17:11:36] Policy rejected as expected: no-namespace-labels.yaml
-[ok 17:11:36] Policy rejected as expected: no-probes-pod.yaml
-[ok 17:11:36] Policy rejected as expected: no-resources-pod.yaml
-[ok 17:11:36] Policy rejected as expected: no-seccomp-pod.yaml
-[ok 17:11:37] Policy rejected as expected: privileged-pod.yaml
-[ok 17:11:37] Policy rejected as expected: readonly-rootfs-pod.yaml
-[ok 17:11:37] Policy rejected as expected: root-pod.yaml
-[ok 17:11:39] Policy rejected as expected: unsigned-image-pod.yaml
+[ok 23:21:50] Kyverno webhooks detected, waiting 15s for policies to settle...
+[ok 23:22:06] Policy rejected as expected: default-namespace-pod.yaml
+[ok 23:22:06] Policy rejected as expected: disallowed-registry.yaml
+[ok 23:22:07] Policy rejected as expected: host-namespaces-pod.yaml
+[ok 23:22:07] Policy rejected as expected: hostpath-pod.yaml
+[ok 23:22:07] Policy rejected as expected: no-drop-capabilities-pod.yaml
+[ok 23:22:07] Policy rejected as expected: no-namespace-labels.yaml
+[ok 23:22:07] Policy rejected as expected: no-probes-pod.yaml
+[ok 23:22:08] Policy rejected as expected: no-resources-pod.yaml
+[ok 23:22:08] Policy rejected as expected: no-seccomp-pod.yaml
+[ok 23:22:09] Policy rejected as expected: privileged-pod.yaml
+[ok 23:22:09] Policy rejected as expected: readonly-rootfs-pod.yaml
+[ok 23:22:09] Policy rejected as expected: root-pod.yaml
+[ok 23:22:11] Policy rejected as expected: unsigned-image-pod.yaml
 
 == Positive Admission Tests ==
-[skip 17:11:39] Positive admission tests skipped (use --release / RATHSTED_VERIFY_RELEASE=1 to enforce)
+[skip 23:22:11] Positive admission tests skipped (use --release / RATHSTED_VERIFY_RELEASE=1 to enforce)
 
 == Access Control (RBAC) ==
-  ClusterRoleBindings + RoleBindings: 78
+  ClusterRoleBindings + RoleBindings: 80
     cluster-admin
     cluster-reconciler-flux-system
     clustercidrs-node
@@ -378,10 +387,12 @@ kustomization.kustomize.toolkit.fluxcd.io/rathsted-sync created
     k3s-cloud-controller-manager-auth-delegator
     kube-apiserver-kubelet-admin
     kyverno:admission-controller
+    kyverno:admission-controller:view
     kyverno:background-controller
+    kyverno:background-controller:view
     kyverno:cleanup-controller
-    kyverno:cleanup-jobs
     kyverno:reports-controller
+    kyverno:reports-controller:view
     local-path-provisioner-bind
     metrics-server:system:auth-delegator
     system:basic-user
@@ -435,23 +446,23 @@ kustomization.kustomize.toolkit.fluxcd.io/rathsted-sync created
     system:public-info-viewer
     system:service-account-issuer-discovery
     system:volume-scheduler
-[ok 17:11:39] RBAC snapshot recorded
+[ok 23:22:11] RBAC snapshot recorded
 
 == Network Policies ==
   NetworkPolicies across all namespaces: 3
     flux-system          allow-egress
     flux-system          allow-scraping
     flux-system          allow-webhooks
-[ok 17:11:39] NetworkPolicy snapshot recorded
+[ok 23:22:12] NetworkPolicy snapshot recorded
 
 == Summary ==
-  Passed:   37
-  Warnings: 2
+  Passed:   35
+  Warnings: 3
   Failed:   0
 
-[ok 17:11:39] Verification passed
+[ok 23:22:12] Verification passed
 [rathsted] E2E complete
-[rathsted 17:11:39] Host-side OrbStack E2E complete
+[rathsted 23:22:12] Host-side OrbStack E2E complete
 
 # Exit code: 0
-# Completed: 2026-06-11T00:11:39Z
+# Completed: 2026-10-06T06:22:12Z

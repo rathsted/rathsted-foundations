@@ -9,6 +9,13 @@
 # The rendered policy lives at config/rendered/require-signed-images.yaml.
 # If it does not exist yet, run make configure first.
 # Tracked policy source files (policies/templates/*) are never modified.
+#
+# NOTE: the policy actually APPLIED by `policies/kustomization.yaml` is the
+# committed `policies/require-signed-images.yaml`, NOT config/rendered/. After
+# rotating the keypair, sync the applied policy and commit it:
+#   scripts/check-signing-key.py --sync
+# CI (`make verify-signing-key`, ci.yml) fails if the applied policy key ever
+# drifts from supply-chain/cosign/cosign.pub.
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"

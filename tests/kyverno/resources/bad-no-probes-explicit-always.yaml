@@ -1,0 +1,26 @@
+# The evasion attempt the restartPolicy exemption must refuse: a long-running pod
+# with no probes. Spelling out restartPolicy: Always changes nothing, and neither
+# does omitting it (see bad-no-probes.yaml, where it is absent and defaults).
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-no-probes-explicit-always
+  namespace: default
+spec:
+  restartPolicy: Always
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: app
+      image: ghcr.io/rathsted/example:1.0.0
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: ["ALL"]
+      resources:
+        requests: {cpu: "10m", memory: "16Mi"}
+        limits: {cpu: "50m", memory: "64Mi"}

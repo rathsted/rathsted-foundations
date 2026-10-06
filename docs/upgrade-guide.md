@@ -8,6 +8,51 @@ Upgrades are performed by updating the version pin and re-running the bootstrap 
 
 ---
 
+## Upgrading from 1.x to 2.0
+
+2.0 changes the namespace label contract, so it needs one manual step **before** you upgrade.
+
+| | 1.x | 2.0 |
+|---|---|---|
+| Jurisdiction label | `jurisdiction`, any non-empty value | `rathsted.io/jurisdiction`, one of `ca`, `us`, `fr` |
+| Operator control | not used | `rathsted.io/operator-control`, stamped by the platform at admission |
+| Contract `foundations_series` | `1.x` | `2.x` |
+
+After the upgrade, a namespace without a valid `rathsted.io/jurisdiction` is rejected on its next create or update, including when Flux re-applies it. The bare `jurisdiction` label is ignored.
+
+**1. Relabel while still on 1.x.** 1.x accepts the extra label, so this is safe to do first. Keep the old label for now so a rollback to 1.x still works.
+
+```bash
+kubectl get ns -L jurisdiction,rathsted.io/jurisdiction
+
+for ns in $(kubectl get ns -o jsonpath='{.items[*].metadata.name}'); do
+  case "$ns" in kube-system|kube-public|kube-node-lease|kyverno) continue ;; esac
+  [[ -n "$(kubectl get ns "$ns" -o jsonpath='{.metadata.labels.rathsted\.io/jurisdiction}')" ]] && continue
+  old="$(kubectl get ns "$ns" -o jsonpath='{.metadata.labels.jurisdiction}')"
+  case "$old" in
+    ca|us|fr) kubectl label ns "$ns" "rathsted.io/jurisdiction=${old}" ;;
+    *)        echo "decide manually: ${ns} (jurisdiction='${old}')" ;;
+  esac
+done
+```
+
+Label anything reported as "decide manually" with the right value yourself. Update the same labels in your GitOps manifests, or Flux will later re-apply namespaces without them.
+
+**2. Do not set `rathsted.io/operator-control`.** 2.0 stamps it on each namespace at admission and overwrites any value you set. Existing namespaces get it on their next update.
+
+**3. Update tooling that checks the contract series.** Anything that requires `foundations_series` to be `1.x` must accept `2.x`. Decks releases from before this change refuse a `2.x` cluster in preflight.
+
+**4. Upgrade and verify** with Method 1 or 2 below, then:
+
+```bash
+make verify
+kubectl get ns -L rathsted.io/jurisdiction,rathsted.io/operator-control
+```
+
+Once you are not going to roll back, you can remove the old label: `kubectl label ns <name> jurisdiction-`.
+
+---
+
 ## Pre-Upgrade Checklist
 
 Before starting an upgrade:

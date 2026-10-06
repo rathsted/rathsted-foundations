@@ -31,7 +31,7 @@ jobs:
 
       - name: Install Flux
         run: |
-          VERSION="2.8.1"
+          VERSION="2.9.6"
           ARCH="$(uname -m)"
           case "$ARCH" in
             x86_64) ARCH="amd64" ;;

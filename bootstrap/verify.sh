@@ -86,9 +86,13 @@ if kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" >/dev/null 2>&1;
   contract_series="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.foundations_series}' 2>/dev/null || true)"
   contract_mode="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.install_mode}' 2>/dev/null || true)"
   contract_decks="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.decks_v0_supported}' 2>/dev/null || true)"
+  contract_topology="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.topology_mode}' 2>/dev/null || true)"
+  contract_node_min="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.supported_node_min}' 2>/dev/null || true)"
+  contract_node_max="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.supported_node_max}' 2>/dev/null || true)"
   echo "  Contract series:    ${contract_series:-unknown}"
   echo "  Contract install:   ${contract_mode:-unknown}"
   echo "  Decks v0 support:   ${contract_decks:-unknown}"
+  echo "  Topology:           ${contract_topology:-unknown} (supported nodes ${contract_node_min:-?}-${contract_node_max:-?})"
   ok "Foundations contract marker present"
 else
   warn "Foundations contract marker missing (${CONTRACT_NS}/${CONTRACT_NAME})"
@@ -153,11 +157,25 @@ if kubectl get pods -n kyverno >/dev/null; then
 else
   warn "Kyverno pods missing"
 fi
-if kubectl get cpol >/dev/null; then
+# shellcheck source=bootstrap/lib/policies.sh
+source "${ROOT_DIR}/bootstrap/lib/policies.sh"
+if wait_for_policies_present; then
   ok "Kyverno policies present"
 else
   warn "Kyverno policies missing"
+  FAIL=1
 fi
+# Informational: record images actually running in the kyverno namespace so
+# compat logs capture reality, not just the pin.  Safe under set -euo pipefail:
+# the subshell error is suppressed; an empty result is silently skipped.
+kyverno_imgs="$(kubectl get deploy -n kyverno \
+  -o jsonpath='{range .items[*]}{.spec.template.spec.containers[*].image}{"\n"}{end}' \
+  2>/dev/null)" || kyverno_imgs=""
+while IFS= read -r img; do
+  if [[ -n "$img" ]]; then
+    echo "[info $(date +%H:%M:%S)] kyverno image: $img"
+  fi
+done <<<"$kyverno_imgs"
 
 section "GitOps"
 if [[ "${MANAGED_MODE}" == "true" ]]; then
@@ -292,18 +310,33 @@ fi
 if command -v grype >/dev/null 2>&1 && [[ "$SBOM_OK" == "true" ]]; then
   section "Vulnerability Scan"
   GRYPE_OUT="${ROOT_DIR}/supply-chain/sbom/output/foundations-demo.grype.txt"
-  if grype "sbom:${SBOM_OUT}" -o table > "$GRYPE_OUT" 2>/dev/null; then
-    VULN_COUNT="$(wc -l < "$GRYPE_OUT" | tr -d ' ')"
-    ok "Grype scan complete (${VULN_COUNT} lines)"
-    echo "  Results: ${GRYPE_OUT}"
-    # Show critical/high counts if any
-    CRIT="$(grep -c ' Critical ' "$GRYPE_OUT" 2>/dev/null || true)"
-    HIGH="$(grep -c ' High ' "$GRYPE_OUT" 2>/dev/null || true)"
-    if [[ "${CRIT:-0}" -gt 0 || "${HIGH:-0}" -gt 0 ]]; then
-      echo "  Critical: ${CRIT:-0}  High: ${HIGH:-0}"
+  # Human-readable table for the evidence artifact (never blocks on its own).
+  grype "sbom:${SBOM_OUT}" -o table > "$GRYPE_OUT" 2>/dev/null || true
+  CRIT="$(grep -c ' Critical ' "$GRYPE_OUT" 2>/dev/null || true)"
+  HIGH="$(grep -c ' High ' "$GRYPE_OUT" 2>/dev/null || true)"
+  echo "  Results: ${GRYPE_OUT}"
+  echo "  Critical: ${CRIT:-0}  High: ${HIGH:-0}"
+  if [[ "${RELEASE_MODE}" == "true" ]]; then
+    # Release gate: block on High+ severity. Time-boxed exceptions live in
+    # .grype.yaml at the repo root; grype exits non-zero when a finding at or
+    # above the threshold remains after those ignores are applied.
+    if grype "sbom:${SBOM_OUT}" --fail-on high -q -o table >/dev/null 2>&1; then
+      ok "Grype release gate passed (no High+ findings after .grype.yaml ignores)"
+    else
+      fail "Grype release gate: High/Critical vulnerabilities present (see ${GRYPE_OUT}); fix them, or add a time-boxed exception in .grype.yaml"
+      FAIL=1
     fi
   else
-    ok "Grype scan skipped (scan failed; non-blocking)"
+    ok "Grype scan complete (informational; the High+ release gate applies under --release)"
+  fi
+else
+  # Under --release the gate is required: a missing grype or SBOM means we cannot
+  # prove the shipped image is clean, so refuse to pass rather than skip silently.
+  if [[ "${RELEASE_MODE}" == "true" ]]; then
+    fail "Vulnerability gate cannot run (grype or SBOM unavailable) — required for --release"
+    FAIL=1
+  else
+    skip "Grype scan skipped (grype or SBOM unavailable)"
   fi
 fi
 

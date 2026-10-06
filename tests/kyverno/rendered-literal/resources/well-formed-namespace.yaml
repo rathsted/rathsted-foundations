@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: well-formed-ns
+  labels:
+    owner: platform
+    environment: demo
+    # Author declares everything correctly. The namespace is only rejected
+    # because the POLICY's rendered operator-control literal is invalid — which
+    # is exactly what R3 test #5 must catch.
+    rathsted.io/jurisdiction: ca

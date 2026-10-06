@@ -7,12 +7,12 @@ export PATH="/usr/local/bin:${PATH}"
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 K3S_CONFIG="${ROOT_DIR}/cluster/k3s/config.yaml"
 # Version pins (overridable via env vars for version matrix testing)
-K3S_VERSION="${RATHSTED_K3S_VERSION:-v1.35.1+k3s1}"
-KYVERNO_VERSION="${RATHSTED_KYVERNO_VERSION:-v1.17.1}"
-FLUX_VERSION="${RATHSTED_FLUX_VERSION:-2.8.1}"
-COSIGN_VERSION="${RATHSTED_COSIGN_VERSION:-v3.0.5}"
-SYFT_VERSION="${RATHSTED_SYFT_VERSION:-v1.42.1}"
-GRYPE_VERSION="${RATHSTED_GRYPE_VERSION:-v0.109.0}"
+K3S_VERSION="${RATHSTED_K3S_VERSION:-v1.35.9+k3s1}"
+KYVERNO_VERSION="${RATHSTED_KYVERNO_VERSION:-v1.19.1}"
+FLUX_VERSION="${RATHSTED_FLUX_VERSION:-2.9.6}"
+COSIGN_VERSION="${RATHSTED_COSIGN_VERSION:-v3.1.3}"
+SYFT_VERSION="${RATHSTED_SYFT_VERSION:-v1.54.0}"
+GRYPE_VERSION="${RATHSTED_GRYPE_VERSION:-v0.120.0}"
 
 require_cmd() {
   command -v "$1" >/dev/null 2>&1 || return 1
@@ -36,10 +36,14 @@ metadata:
 data:
   contract_version: "${contract_version}"
   foundations_version: "${foundations_version}"
-  foundations_series: "1.x"
+  foundations_series: "2.x"
   install_mode: "${install_mode}"
   decks_v0_supported: "true"
   policy_exception_support: "true"
+  topology_mode: "single-node"
+  topology_support_level: "baseline"
+  supported_node_min: "1"
+  supported_node_max: "1"
 EOF
 }
 
@@ -143,7 +147,13 @@ fi
 
 if [[ "${need_kyverno_install}" == "true" ]]; then
   info "Installing Kyverno..."
-  if grep -q "^apiVersion:" "${ROOT_DIR}/cluster/policies/kyverno-install.yaml" 2>/dev/null; then
+  # Use the vendored manifest only when its version label matches the pin.
+  # Reads app.kubernetes.io/version from the first matching line (awk exits early to
+  # avoid SIGPIPE on a large file under pipefail).
+  VENDORED_KYVERNO_VER="$(awk '/app\.kubernetes\.io\/version:/{print $2; exit}' \
+    "${ROOT_DIR}/cluster/policies/kyverno-install.yaml" 2>/dev/null || true)"
+  if [[ "${VENDORED_KYVERNO_VER}" == "${KYVERNO_VERSION}" ]]; then
+    info "Kyverno ${KYVERNO_VERSION}: vendored manifest"
     # Split CRDs from other resources to avoid annotation size issues
     tmpdir=$(mktemp -d)
     crd_file="${tmpdir}/crds.yaml"
@@ -169,6 +179,7 @@ if [[ "${need_kyverno_install}" == "true" ]]; then
     kubectl apply --server-side --force-conflicts -f "${rest_file}"
     rm -rf "${tmpdir}"
   else
+    info "Kyverno ${KYVERNO_VERSION}: upstream release manifest (vendored is ${VENDORED_KYVERNO_VER:-none})"
     kubectl apply --server-side --force-conflicts -f "https://github.com/kyverno/kyverno/releases/download/${KYVERNO_VERSION}/install.yaml"
   fi
 else
@@ -186,33 +197,9 @@ kubectl wait --for=condition=available deployment/kyverno-reports-controller -n 
 step "5/6  Policies"
 info "Applying baseline policies..."
 
-# Retry wrapper for policy application. k3s v1.34.4 can timeout on large policy batches.
-# This ensures policies apply even if the API server is slow.
-apply_policies_with_retry() {
-  local max_attempts=3
-  local attempt=1
-  local timeout_seconds=60
-
-  while (( attempt <= max_attempts )); do
-    info "Policy apply attempt $attempt/$max_attempts (timeout ${timeout_seconds}s)..."
-    if timeout "${timeout_seconds}" kubectl apply -k "${ROOT_DIR}/policies"; then
-      return 0
-    fi
-    local rc=$?
-    if (( rc == 124 )); then
-      info "API server timeout (exit 124). Retrying..."
-      sleep 5
-    else
-      return $rc
-    fi
-    (( attempt++ )) || true
-  done
-
-  error "Failed to apply policies after $max_attempts attempts"
-  return 1
-}
-
-apply_policies_with_retry
+# shellcheck source=bootstrap/lib/policies.sh
+source "${ROOT_DIR}/bootstrap/lib/policies.sh"
+apply_policies_with_retry || { fail "Baseline policies are not in place; refusing to continue"; exit 1; }
 
 step "6/6  GitOps Bootstrap"
 info "Bootstrapping GitOps sync..."
@@ -253,9 +240,22 @@ elif [[ -n "${RATHSTED_GIT_TOKEN:-}" ]]; then
   SECRET_REF=$'  secretRef:\n    name: rathsted-git-auth'
 fi
 
+# Pin the Flux GitRepository to the release tag when HEAD is exactly on one,
+# so reconciliation follows the pinned artifact instead of a moving branch.
+# Override with RATHSTED_GIT_REF (e.g. "tag: v1.0.3" or "branch: main").
+GIT_REF="${RATHSTED_GIT_REF:-}"
+if [[ -z "${GIT_REF}" ]]; then
+  if _tag="$(git -C "${ROOT_DIR}" describe --tags --exact-match 2>/dev/null)"; then
+    GIT_REF="tag: ${_tag}"
+  else
+    GIT_REF="branch: main"
+  fi
+fi
+
 TMPL="${ROOT_DIR}/cluster/gitops/sync/gitrepository.yaml.tmpl" \
 OUT="$tmpdir/gitrepository.yaml" \
 GIT_URL="${GIT_URL}" \
+GIT_REF="${GIT_REF}" \
 SECRET_REF="${SECRET_REF}" \
 python3 - <<'PY'
 import os
@@ -264,10 +264,12 @@ from pathlib import Path
 tmpl = Path(os.environ["TMPL"])
 out = Path(os.environ["OUT"])
 git_url = os.environ["GIT_URL"]
+git_ref = os.environ["GIT_REF"]
 secret_ref = os.environ.get("SECRET_REF", "")
 
 text = tmpl.read_text()
 text = text.replace("REPLACE_GIT_URL", git_url)
+text = text.replace("REPLACE_GIT_REF", git_ref)
 text = text.replace("__SECRET_REF__", secret_ref)
 out.write_text(text)
 PY

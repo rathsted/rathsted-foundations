@@ -1,19 +1,19 @@
 {
-  "timestamp": "2026-06-11T00:14:58Z",
+  "timestamp": "2026-10-06T06:25:58Z",
   "source": "https://github.com/rathsted/rathsted-foundations.git",
   "parallel": true,
   "passed": 10,
   "failed": 0,
   "pin_change_dates": {
-    "current": {"k3s": "2026-03-04", "kyverno": "2026-03-04", "flux": "2026-03-04", "pin_set": "2026-03-04"},
-    "previous": {"k3s": "2026-03-04", "kyverno": "2026-03-04", "flux": "2026-03-04", "pin_set": "2026-03-04"}
+    "current": {"k3s": "2026-10-02", "kyverno": "2026-10-02", "flux": "2026-10-02", "pin_set": "2026-10-02"},
+    "previous": {"k3s": "2026-10-02", "kyverno": "2026-10-02", "flux": "2026-10-02", "pin_set": "2026-10-02"}
   },
   "pin_change_age_days": {
-    "current": {"k3s": 99, "kyverno": 99, "flux": 99, "pin_set": 99},
-    "previous": {"k3s": 99, "kyverno": 99, "flux": 99, "pin_set": 99}
+    "current": {"k3s": 4, "kyverno": 4, "flux": 4, "pin_set": 4},
+    "previous": {"k3s": 4, "kyverno": 4, "flux": 4, "pin_set": 4}
   },
   "pin_change_count_180d": {
-    "current": {"k3s": 3, "kyverno": 3, "flux": 3},
+    "current": {"k3s": 1, "kyverno": 1, "flux": 1},
     "previous": {"k3s": 1, "kyverno": 1, "flux": 1}
   },
   "results": [

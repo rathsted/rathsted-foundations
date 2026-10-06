@@ -70,10 +70,14 @@ metadata:
 data:
   contract_version: "${contract_version}"
   foundations_version: "${foundations_version}"
-  foundations_series: "1.x"
+  foundations_series: "2.x"
   install_mode: "${install_mode}"
   decks_v0_supported: "true"
   policy_exception_support: "true"
+  topology_mode: "single-node"
+  topology_support_level: "baseline"
+  supported_node_min: "1"
+  supported_node_max: "1"
 EOF
 }
 
@@ -105,10 +109,11 @@ info "Kubernetes version: ${KUBE_VERSION}"
 step "2/5  Flux + Supply Chain Tools"
 
 # Version pins — same as install.sh
-FLUX_VERSION="${RATHSTED_FLUX_VERSION:-2.8.1}"
-COSIGN_VERSION="${RATHSTED_COSIGN_VERSION:-v3.0.5}"
-SYFT_VERSION="${RATHSTED_SYFT_VERSION:-v1.42.1}"
-GRYPE_VERSION="${RATHSTED_GRYPE_VERSION:-v0.109.0}"
+KYVERNO_VERSION="${RATHSTED_KYVERNO_VERSION:-v1.19.1}"
+FLUX_VERSION="${RATHSTED_FLUX_VERSION:-2.9.6}"
+COSIGN_VERSION="${RATHSTED_COSIGN_VERSION:-v3.1.3}"
+SYFT_VERSION="${RATHSTED_SYFT_VERSION:-v1.54.0}"
+GRYPE_VERSION="${RATHSTED_GRYPE_VERSION:-v0.120.0}"
 
 # Install Flux CLI if not present
 if ! command -v flux >/dev/null 2>&1; then
@@ -150,7 +155,11 @@ step "3/5  Kyverno"
 
 if ! kubectl get deployment -n kyverno kyverno-admission-controller >/dev/null 2>&1; then
   info "Installing Kyverno..."
-  if [[ -f "${ROOT_DIR}/cluster/policies/kyverno-install.yaml" ]]; then
+  # Use the vendored manifest only when its version label matches the pin.
+  VENDORED_KYVERNO_VER="$(awk '/app\.kubernetes\.io\/version:/{print $2; exit}' \
+    "${ROOT_DIR}/cluster/policies/kyverno-install.yaml" 2>/dev/null || true)"
+  if [[ "${VENDORED_KYVERNO_VER}" == "${KYVERNO_VERSION}" ]]; then
+    info "Kyverno ${KYVERNO_VERSION}: vendored manifest"
     tmpdir=$(mktemp -d)
     CLEANUP_DIRS+=("${tmpdir}")
     crd_file="${tmpdir}/crds.yaml"
@@ -169,13 +178,16 @@ if ! kubectl get deployment -n kyverno kyverno-admission-controller >/dev/null 2
       kubectl create -f "${crd_file}" 2>/dev/null || kubectl apply -f "${crd_file}"
     fi
     kubectl apply -f "${rest_file}"
-    info "Waiting for Kyverno to be ready..."
-    kubectl wait --for=condition=available deployment/kyverno-admission-controller -n kyverno --timeout=300s
-    kubectl wait --for=condition=available deployment/kyverno-background-controller -n kyverno --timeout=300s
-    kubectl wait --for=condition=available deployment/kyverno-cleanup-controller -n kyverno --timeout=300s
-    kubectl wait --for=condition=available deployment/kyverno-reports-controller -n kyverno --timeout=300s
-    wait_for_endpoints kyverno kyverno-svc 300
+  else
+    info "Kyverno ${KYVERNO_VERSION}: upstream release manifest (vendored is ${VENDORED_KYVERNO_VER:-none})"
+    kubectl apply --server-side --force-conflicts -f "https://github.com/kyverno/kyverno/releases/download/${KYVERNO_VERSION}/install.yaml"
   fi
+  info "Waiting for Kyverno to be ready..."
+  kubectl wait --for=condition=available deployment/kyverno-admission-controller -n kyverno --timeout=300s
+  kubectl wait --for=condition=available deployment/kyverno-background-controller -n kyverno --timeout=300s
+  kubectl wait --for=condition=available deployment/kyverno-cleanup-controller -n kyverno --timeout=300s
+  kubectl wait --for=condition=available deployment/kyverno-reports-controller -n kyverno --timeout=300s
+  wait_for_endpoints kyverno kyverno-svc 300
 else
   info "Kyverno already installed"
 fi
@@ -240,7 +252,19 @@ github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAA
     SECRET_REF=$'  secretRef:\n    name: rathsted-git-auth'
   fi
 
+  # Pin to the release tag when HEAD is exactly on one; override with
+  # RATHSTED_GIT_REF (e.g. "tag: v1.0.3" or "branch: main").
+  GIT_REF="${RATHSTED_GIT_REF:-}"
+  if [[ -z "${GIT_REF}" ]]; then
+    if _tag="$(git -C "${ROOT_DIR}" describe --tags --exact-match 2>/dev/null)"; then
+      GIT_REF="tag: ${_tag}"
+    else
+      GIT_REF="branch: main"
+    fi
+  fi
+
   sed -e "s|REPLACE_GIT_URL|${RATHSTED_GIT_URL}|g" \
+      -e "s|REPLACE_GIT_REF|${GIT_REF}|g" \
       -e "s|__SECRET_REF__|${SECRET_REF}|g" \
       "${ROOT_DIR}/cluster/gitops/sync/gitrepository.yaml.tmpl" | kubectl apply -f -
   kubectl apply -f "${ROOT_DIR}/cluster/gitops/sync/kustomization.yaml"

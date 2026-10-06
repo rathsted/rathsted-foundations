@@ -1,23 +1,17 @@
+# Test fixture ONLY — a deliberately mis-rendered variant of
+# policies/require-namespace-labels.yaml where the overlay rendered an invalid
+# operator-control literal ("foreign" instead of "foreign-provider"). Proves R3
+# test #5: a bad rendered literal is rejected by the validate rule, so a broken
+# render fails closed instead of stamping an out-of-vocabulary control value.
+# NOT installed on any cluster.
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: require-namespace-labels
-  annotations:
-    # R3 sovereignty contract. See R3-jurisdiction-plan.md.
-    # rathsted.io/operator-control is a cluster fact: it is STAMPED here from a
-    # value rendered by the deploy overlay from the single canonical sovereignty
-    # stanza — Kyverno does NOT read a runtime ConfigMap for this. Changing the
-    # cluster's operator-control requires a GitOps/render commit, not a kubectl edit.
-    # System namespaces (kube-system, kube-public, kube-node-lease) are excluded
-    # cluster-wide by Kyverno's resourceFilters, so no explicit exclude is needed.
-    rathsted.io/operator-control-source: overlay-rendered-literal
+  name: require-namespace-labels-bad-literal
 spec:
   validationFailureAction: Enforce
   background: true
   rules:
-    # 1) MUTATE — overwrite operator-control from the rendered cluster literal.
-    #    Overwrite semantics (not fill-if-absent): an author cannot assert their
-    #    own control boundary; the cluster fact always wins.
     - name: stamp-operator-control
       match:
         any:
@@ -28,12 +22,7 @@ spec:
         patchStrategicMerge:
           metadata:
             labels:
-              # OVERLAY-RENDERED LITERAL — base default; overlays patch this value.
-              rathsted.io/operator-control: foreign-provider
-    # 2) VALIDATE — shape + vocabulary. Runs after mutation, so operator-control
-    #    reflects the stamped value; this rule also rejects a bad *rendered*
-    #    literal (R3 test #5). Enum is an explicit allowed-set, not a broad regex:
-    #    denying surprise values is the point.
+              rathsted.io/operator-control: foreign   # BAD literal (not in enum)
     - name: validate-namespace-labels
       match:
         any:

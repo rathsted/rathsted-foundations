@@ -1,0 +1,18 @@
+apiVersion: cli.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: rathsted-r3-bad-rendered-literal
+# R3 test #5: if the overlay renders an invalid operator-control literal into the
+# policy, a well-formed namespace is rejected by the validate rule (fail-closed)
+# rather than admitted with an out-of-vocabulary control value.
+policies:
+  - bad-literal-policy.yaml
+resources:
+  - resources/well-formed-namespace.yaml
+results:
+  - policy: require-namespace-labels-bad-literal
+    rule: validate-namespace-labels
+    resources:
+      - well-formed-ns
+    kind: Namespace
+    result: fail

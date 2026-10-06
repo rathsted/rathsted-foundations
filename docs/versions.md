@@ -4,12 +4,12 @@ These are the versions installed by `bootstrap/install.sh` and should be reflect
 
 | Component | Version | Notes |
 | --- | --- | --- |
-| k3s | v1.35.1+k3s1 | Installed via the pinned `get.k3s.io` installer script with `INSTALL_K3S_VERSION`. |
-| Flux | 2.8.1 | Installed via the upstream install script with `FLUX_VERSION` pinned. No local checksum verification of the installer script. |
-| Kyverno | v1.17.1 | Install manifest pinned in `bootstrap/install.sh`. |
-| Cosign | v3.0.5 | Binary download. Backward-compatible with v2 key-based signing. |
-| Syft | v1.42.1 | Installed via the pinned upstream installer script; if that fetch fails, bootstrap exits with an error. Update the pin in docs/versions.md if the version has been removed upstream. |
-| Grype | v0.109.0 | Installed via the pinned upstream installer script; if that fetch fails, bootstrap exits with an error. Update the pin in docs/versions.md if the version has been removed upstream. |
+| k3s | v1.35.9+k3s1 | Installed via the pinned `get.k3s.io` installer script with `INSTALL_K3S_VERSION`. |
+| Flux | 2.9.6 | Installed via the upstream install script with `FLUX_VERSION` pinned. No local checksum verification of the installer script. |
+| Kyverno | v1.19.1 | Install manifest vendored in `cluster/policies/kyverno-install.yaml`; bootstrap uses the vendored file when it matches the pin, otherwise downloads the release. The vendored file is the upstream v1.19.1 `install.yaml` (sha256 `d3322cb3…24b88e6`) with one change: its five images pull from `ghcr.io/kyverno/` instead of `reg.kyverno.io/kyverno/` (the same images, without the download-analytics proxy in the pull path). |
+| Cosign | v3.1.3 | Binary download. Backward-compatible with v2 key-based signing. |
+| Syft | v1.54.0 | Installed via the pinned upstream installer script; if that fetch fails, bootstrap exits with an error. Update the pin in docs/versions.md if the version has been removed upstream. |
+| Grype | v0.120.0 | Installed via the pinned upstream installer script; if that fetch fails, bootstrap exits with an error. Update the pin in docs/versions.md if the version has been removed upstream. |
 
 If you update any version, update this document and re‑run `bootstrap/install.sh` in a clean environment.
 
@@ -19,11 +19,11 @@ Tested via `make compat-test` (OrbStack E2E matrix). Each run produces evidence 
 
 | OS | Image | Status | Last Validated |
 | --- | --- | --- | --- |
-| Ubuntu 22.04 LTS | `ubuntu:22.04` | Primary supported | 2026-06-10 |
-| Ubuntu 24.04 LTS | `ubuntu:24.04` | Primary supported | 2026-06-10 |
-| Ubuntu 24.04 CIS L1 | `ubuntu:24.04-cis` | Validated hardened path | 2026-06-10 |
-| Debian 12 | `debian:12` | Validated compatibility path | 2026-06-10 |
-| Rocky Linux 9 | `rocky:9` | Validated compatibility path | 2026-06-10 |
+| Ubuntu 22.04 LTS | `ubuntu:22.04` | Primary supported | 2026-10-05 |
+| Ubuntu 24.04 LTS | `ubuntu:24.04` | Primary supported | 2026-10-05 |
+| Ubuntu 24.04 CIS L1 | `ubuntu:24.04-cis` | Validated hardened path | 2026-10-05 |
+| Debian 12 | `debian:12` | Validated compatibility path | 2026-10-05 |
+| Rocky Linux 9 | `rocky:9` | Validated compatibility path | 2026-10-05 |
 | RHEL 9 | — | Compatible (same family as Rocky 9) | — |
 | AlmaLinux 9 | — | Compatible (same family as Rocky 9) | — |
 
