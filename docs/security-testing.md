@@ -4,92 +4,96 @@ How to verify Rathsted Foundations is secure, and when to run each check.
 
 ## Quick Reference
 
+The following targets are available in the **public Makefile**:
+
 | Target | What it checks | When to run |
 |---|---|---|
-| `make security-check` | Everything below | Before every release |
-| `make supply-chain-check` | Download integrity, pinned versions, no pipe-to-shell | Every CI run |
-| `make leak-check` | Secrets, private files, internal references | Every CI run |
-| `make policy-audit` | Kyverno policy gaps (init containers, workload kinds, test coverage) | Before release, after policy changes |
-| `make shell-lint` | Shellcheck on critical scripts | Before release |
-| `make policy-test` | Kyverno CLI policy tests (existing) | Every CI run |
+| `make policy-test` | Kyverno CLI policy tests | Every CI run |
 | `make verify` | Cluster health, policy enforcement, evidence generation | After install, before release |
-| `make compat-test` | E2E across supported distros | Nightly / before release |
-| `make dependency-watch` | Pinned versions vs upstream releases | Weekly |
+| `make verify-release` | Release-grade verification (registry, signatures enforced) | Before release |
+| `make verify-all` | Full acceptance checks (verify + policy-test + jurisdiction-scan) | Before release |
+
+The following targets are **maintainer CI tooling** — they are not included in this repository and are run from the private source:
+
+| Target | What it checks | When to run (maintainer CI) |
+|---|---|---|
+| `make security-check` | Everything below | Before every release (maintainer CI) |
+| `make supply-chain-check` | Download integrity, pinned versions, no pipe-to-shell | Every CI run (maintainer CI) |
+| `make leak-check` | Secrets, private files, internal references | Every CI run (maintainer CI) |
+| `make policy-audit` | Kyverno policy gaps (workload kinds, test coverage) | Before release, after policy changes (maintainer CI) |
+| `make shell-lint` | Shellcheck on critical scripts | Before release (maintainer CI) |
+| `make compat-test` | E2E across supported distros | Nightly / before release (maintainer CI) |
+| `make dependency-watch` | Pinned versions vs upstream releases | Weekly (maintainer CI) |
 
 ## Check Categories
 
-### Automated / Every CI Run
+### What You Can Run
 
-These should run on every push. They are fast and need no cluster.
+These targets are in the public Makefile and can be run by any operator.
 
-- **`make supply-chain-check`** -- Verifies all binary downloads have checksums, no pipe-to-shell patterns, no mutable upstream installer references, GitHub Actions pinned to commit SHAs, pip installs pinned.
-- **`make leak-check`** -- Scans for hardcoded credential patterns (API keys, tokens, private keys), checks for .env files, private key files, and internal references in public-facing YAML.
-- **`make policy-test`** -- Runs Kyverno CLI tests against policy definitions. Requires `kyverno` CLI.
+- **`make policy-test`** — Runs Kyverno CLI policy tests against policy definitions. Requires the `kyverno` CLI. Run on every change; it is fast and needs no cluster.
+- **`make verify`** — Cluster health, policy enforcement, evidence generation. Run after install, before release, and after policy changes.
+- **`make verify-release`** — Release-grade verification (registry reachability and image signature enforcement).
+- **`make verify-all`** — Full acceptance checks (verify + policy-test + jurisdiction-scan).
 
-### Automated / Nightly or Weekly
+### Maintainer CI Checks
 
-These are slower or need external data.
+These run from the private release source and are not in this repository. They are documented here so reviewers understand what the pre-release suite covers.
 
-- **`make compat-test`** -- Full E2E install + verify on Ubuntu 22.04, Ubuntu 24.04, Rocky 9, Debian 12. Produces evidence artifacts. Run nightly or before release.
-- **`make dependency-watch`** -- Checks pinned dependency versions against upstream releases. Run weekly to catch stale pins.
+**Every CI run** (fast, no cluster needed):
 
-### Before Release
+- **`make supply-chain-check`** (maintainer CI only) — Verifies all binary downloads have checksums, no pipe-to-shell patterns, no mutable upstream installer references, GitHub Actions pinned to commit SHAs, pip installs pinned.
+- **`make leak-check`** (maintainer CI only) — Scans for hardcoded credential patterns (API keys, tokens, private keys), checks for .env files, private key files, and internal references in public-facing YAML.
 
-Run the full suite before cutting a release.
+**Nightly or weekly**:
 
-- **`make security-check`** -- Runs all security checks (supply chain, leaks, policy audit, shell lint, YAML validation). This is the gate.
-- **`make verify-all`** -- Full acceptance checks (cluster verify + policy test + jurisdiction scan).
-- **`make evidence-bundle RELEASE_TAG=vX.Y.Z`** -- Generates release evidence package. Supply `CI_RUN_URL`, `REGISTRY_AUDIT_REF`, and `KEY_AUDIT_REF` when you want those references embedded in the bundle.
-- **`make verify-public-snapshot PUBLIC_DIR=/path/to/rathsted-foundations`** -- Verifies that the generated public repo is self-contained, free of known private-only files, and still passes core public validation checks.
+- **`make compat-test`** (maintainer CI only) — Full E2E install + verify on Ubuntu 22.04, Ubuntu 24.04, Rocky 9, Debian 12. Produces evidence artifacts in `artifacts/`.
+- **`make dependency-watch`** (maintainer CI only) — Checks pinned dependency versions against upstream releases.
 
-### On-demand / As-needed
+**Before every release**:
 
-These are manual or situational.
+- **`make security-check`** (maintainer CI only) — Runs all security checks (supply chain, leaks, policy audit, shell lint, YAML validation). This is the release gate.
+- **`make evidence-bundle RELEASE_TAG=vX.Y.Z`** (maintainer CI only) — Generates release evidence package. Supply `CI_RUN_URL`, `REGISTRY_AUDIT_REF`, and `KEY_AUDIT_REF` when you want those references embedded in the bundle.
+- **`make verify-public-snapshot PUBLIC_DIR=/path/to/rathsted-foundations`** (maintainer CI only) — Verifies the generated public repo is self-contained, free of known private-only files, and still passes core public validation checks.
 
-- **Policy bypass testing** -- After changing Kyverno policies, manually test with init containers and ephemeral containers to confirm they are covered. Use `kubectl run --image=... --overrides='...'` with initContainer specs.
-- **Public repo review** -- After `make publish`, clone the public repo fresh and review it as a new visitor would. Check for leaked private files, broken links, and professionalism.
-- **Public snapshot verification** -- After `make publish`, run `make verify-public-snapshot PUBLIC_DIR=/path/to/rathsted-foundations` before committing or tagging the public repo.
-- **Supply chain signing flow** -- After changing cosign/signing workflows, test end-to-end: sign an image, verify the signature, generate SBOM, verify SBOM.
+**On-demand (maintainer)**:
+
+- **Policy bypass testing** — After changing Kyverno policies, manually test with init containers and ephemeral containers to confirm they are covered. Use `kubectl run --image=... --overrides='...'` with initContainer specs.
+- **Public repo review** (maintainer) — After publishing a new release, clone the public repo fresh and review as a new visitor. Check for leaked private files, broken links, and professionalism.
+- **Supply chain signing flow** — After changing cosign/signing workflows, test end-to-end: sign an image, verify the signature, generate SBOM, verify SBOM.
 
 ## Known Policy Gaps (Tracked)
 
-These are surfaced by `make policy-audit` as warnings:
+These gaps are surfaced by `make policy-audit` (maintainer CI only). Verified current as of v2.0.1.
 
-1. **initContainers and ephemeralContainers** -- Not covered by any container-level policy. An init container can bypass all security rules.
-2. **Workload kinds** -- Policies only match `Pod`. Should also match Deployment, StatefulSet, DaemonSet, Job, CronJob for defense in depth.
-3. **Network policy scope** -- `baseline-networkpolicy.yaml` only generates for the `demo` namespace. All other namespaces have no default-deny.
-4. **Test coverage** -- Several policies have no Kyverno CLI test coverage. Test fixtures use Docker Hub images instead of ghcr.io, which may mask registry restriction failures.
-5. **Probe types** -- `require-probes.yaml` only accepts `httpGet` probes at path `/`. Rejects valid `tcpSocket`, `exec`, and `grpc` probes.
+1. **Workload kinds** — Policies only match `Pod`. Kyverno autogenerates matching rules for higher-level resources (Deployment, StatefulSet, DaemonSet, Job, CronJob), but explicit top-level resource coverage provides additional defense in depth.
+2. **Test coverage** — Several policies have no Kyverno CLI test coverage. Test fixtures use Docker Hub images instead of ghcr.io, which may mask registry restriction failures.
+3. **hostPort and procMount** — Not restricted by any policy. An app with `hostPort` exposes a port on the host network stack; `procMount` access is not checked.
+4. **Controller-level policy reports** — Kyverno's policy report for a Deployment may show as passing while the individual pods it owns are blocked. Admission enforcement is pod-level; the controller's status depends on when it created the pods.
+5. **grpc probes** — `require-probes.yaml` accepts `httpGet`, `tcpSocket`, and `exec` probes. `grpc` probes may be rejected; validate before using gRPC health checks.
 
 ## CI Integration
 
-Add to `.github/workflows/ci.yml`:
+Add to `.github/workflows/ci.yml` (public targets only):
 
 ```yaml
-- name: Security checks
-  run: |
-    make supply-chain-check
-    make leak-check
+- name: Policy tests
+  run: make policy-test
 ```
 
-Add to nightly workflow:
-
-```yaml
-- name: Full security audit
-  run: make security-check
-```
+Maintainer CI also runs supply-chain and leak checks on every push from the private source.
 
 ## Adding New Checks
 
-Security checks live in `scripts/security-checks.sh`. The script is organized into functions:
+The maintainer security check script is not included in this repository — it is part of the private release tooling. The checks are organized into these categories:
 
-- `check_supply_chain` -- download integrity
-- `check_leaks` -- secret and file leak detection
-- `check_policies` -- Kyverno policy analysis
-- `check_shell_lint` -- shellcheck
-- `check_yaml_validation` -- kustomize builds
+- `check_supply_chain` — download integrity
+- `check_leaks` — secret and file leak detection
+- `check_policies` — Kyverno policy analysis
+- `check_shell_lint` — shellcheck
+- `check_yaml_validation` — kustomize builds
 
-To add a new check, add it to the appropriate function or create a new one. Use `ok`, `warn`, or `fail` for output. `fail` causes a non-zero exit. `warn` is informational.
+To request a new check or report a gap, open an issue.
 
 ## CVE Response Guidance
 
@@ -99,7 +103,7 @@ The weekly CVE check (`.github/workflows/dependency-cve-check.yml`) queries OSV.
 
 | Severity | Action | Timeline |
 |---|---|---|
-| **CRITICAL/HIGH** (remote code execution, auth bypass, actively exploited) | Bump pinned version + checksum immediately. Run `make security-check` and `make compat-test` to verify. | Same day |
+| **CRITICAL/HIGH** (remote code execution, auth bypass, actively exploited) | Bump pinned version + checksum immediately. Run `make verify` and `make policy-test` to confirm no regressions. (Maintainer CI additionally runs `make security-check` and `make compat-test` before tagging.) | Same day |
 | **MEDIUM** (requires local access, specific conditions, limited impact) | Plan to patch. Document risk and any mitigating factors. | Within one week |
 | **LOW** (theoretical, informational, already mitigated by policies) | Patch on next regular update cycle. | Next release |
 
@@ -132,10 +136,10 @@ When bumping a dependency:
 # 1. Update the version in bootstrap/install.sh (and CI workflows if applicable)
 # 2. Get the new checksum
 curl -fsSL <new-release-url> | sha256sum
-# 3. Update the checksum in install.sh, CI workflows, and orbstack-host-e2e.sh
+# 3. Update the checksum in install.sh and CI workflows
 # 4. Update docs/versions.md
-# 5. Verify
-make security-check
-make compat-test
+# 5. Verify (public targets)
+make verify
+make policy-test
 # 6. Update the version in .github/workflows/dependency-cve-check.yml DEPS array
 ```

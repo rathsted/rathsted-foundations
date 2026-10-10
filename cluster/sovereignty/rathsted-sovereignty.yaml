@@ -1,12 +1,17 @@
-# Cluster sovereignty facts — DISPLAY / INSPECTION output only.
+# Rathsted reference sovereignty stanza — Rathsted's OVH deployment.
 #
-# This ConfigMap is NOT read by Kyverno at admission. It is a rendered view of
-# the single canonical sovereignty stanza, published so operators and the
-# evidence layer can read the cluster's declared sovereignty. The admission
-# stamp (policies/require-namespace-labels.yaml) carries the SAME operator-control
-# value as a rendered literal; the ops-ledger config carries the same stanza.
-# The consistency check (.tools/check-sovereignty-consistency.py) fails CI if
-# these three drift. Changing sovereignty = a GitOps commit here, not a runtime edit.
+# This is the rendered sovereignty ConfigMap for Rathsted's own reference
+# deployment on OVH. It is NOT installed by bootstrap or GitOps by default.
+# An operator who wants it in-cluster must render their own values and apply it.
+#
+# The data values (provider, region, jurisdiction) are specific to OVH/ca-bhs/fr
+# and must not be applied unchanged to a different deployment.
+#
+# This ConfigMap is NOT read by Kyverno at admission. The admission stamp
+# (policies/require-namespace-labels.yaml) carries the operator-control value as
+# a rendered literal. The ops-ledger config carries the same stanza. The
+# consistency check (.tools/check-sovereignty-consistency.py) fails CI if these
+# three drift. Changing sovereignty = a deliberate commit updating all three.
 apiVersion: v1
 kind: ConfigMap
 metadata:

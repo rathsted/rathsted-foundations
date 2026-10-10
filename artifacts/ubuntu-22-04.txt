@@ -1,5 +1,5 @@
 # Rathsted Foundations — ubuntu:22.04 Compatibility Evidence
-# Date: 2026-10-06T06:16:15Z
+# Date: 2026-10-09T21:47:34Z
 # Source: https://github.com/rathsted/rathsted-foundations.git
 #
 
@@ -7,11 +7,11 @@
 #   k3s=v1.35.9+k3s1  kyverno=v1.19.1  flux=2.9.6
 #   changed=2026-10-02/2026-10-02/2026-10-02
 
-[rathsted 23:16:15] Using VM: rathsted-compat-ubuntu-22-04
-[rathsted 23:16:15] Using image: ubuntu:22.04
-[rathsted 23:16:15] Repo: bundled tarball from invoking workspace
-[rathsted 23:16:15] Creating VM (ubuntu:22.04)...
-[rathsted 23:16:32] Installing prerequisites inside VM...
+[rathsted 14:47:34] Using VM: rathsted-compat-ubuntu-22-04
+[rathsted 14:47:34] Using image: ubuntu:22.04
+[rathsted 14:47:34] Repo: bundled tarball from invoking workspace
+[rathsted 14:47:35] Creating VM (ubuntu:22.04)...
+[rathsted 14:47:49] Installing prerequisites inside VM...
 Hit:1 http://ports.ubuntu.com/ubuntu-ports jammy InRelease
 Hit:2 http://ports.ubuntu.com/ubuntu-ports jammy-updates InRelease
 Hit:3 http://ports.ubuntu.com/ubuntu-ports jammy-security InRelease
@@ -32,7 +32,7 @@ Suggested packages:
 The following NEW packages will be installed:
   git git-man libcurl3-gnutls liberror-perl libgdbm-compat4 libgdbm6
   libperl5.34 make patch perl perl-modules-5.34
-0 upgraded, 11 newly installed, 0 to remove and 0 not upgraded.
+0 upgraded, 11 newly installed, 0 to remove and 2 not upgraded.
 Need to get 12.7 MB of archives.
 After this operation, 69.6 MB of additional disk space will be used.
 Get:1 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 perl-modules-5.34 all 5.34.0-3ubuntu1.9 [2,977 kB]
@@ -47,7 +47,7 @@ Get:9 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 git arm64 1:
 Get:10 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 make arm64 4.3-4.1build1 [177 kB]
 Get:11 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 patch arm64 2.7.6-7build2 [105 kB]
 dpkg-preconfigure: unable to re-open stdin: No such file or directory
-Fetched 12.7 MB in 2s (6,067 kB/s)
+Fetched 12.7 MB in 1s (8,975 kB/s)
 Selecting previously unselected package perl-modules-5.34.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 16457 files and directories currently installed.)
 Preparing to unpack .../00-perl-modules-5.34_5.34.0-3ubuntu1.9_all.deb ...
@@ -94,10 +94,14 @@ Setting up perl (5.34.0-3ubuntu1.9) ...
 Setting up liberror-perl (0.17029-1) ...
 Setting up git (1:2.34.1-1ubuntu1.17) ...
 Processing triggers for libc-bin (2.35-0ubuntu3.15) ...
-[rathsted 23:16:48] Copying local repo into VM rathsted-compat-ubuntu-22-04 (/srv/rathsted-foundations)...
-[rathsted 23:16:50] Running E2E inside VM rathsted-compat-ubuntu-22-04...
-[rathsted 23:16:50] Decrypting SSH key (removing passphrase for Flux compatibility)...
-[rathsted 23:16:51] SSH key decrypted successfully
+[rathsted 14:48:05] Copying local repo into VM rathsted-compat-ubuntu-22-04 (/srv/rathsted-foundations)...
+[rathsted 14:48:08] Running E2E inside VM rathsted-compat-ubuntu-22-04...
+[rathsted 14:48:08] Decrypting SSH key (removing passphrase for Flux compatibility)...
+[rathsted 14:48:08] SSH key decrypted successfully
+vm.overcommit_memory = 0
+vm.panic_on_oom = 0
+kernel.panic = 0
+kernel.panic_on_oops = 0
 ./scripts/orbstack-e2e.sh
 [rathsted] OrbStack E2E starting
 [rathsted] Host: Linux rathsted-compat-ubuntu-22-04 7.0.14-orbstack-00380-ga7e0a2dc9535 #1 SMP PREEMPT Fri Aug  7 03:48:40 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
@@ -113,9 +117,10 @@ Processing triggers for libc-bin (2.35-0ubuntu3.15) ...
 
 [rathsted] Audit policy installed
 [rathsted] Installing k3s...
+[rathsted] Writing /etc/sysctl.d/90-kubelet.conf (required by protect-kernel-defaults)
 [INFO]  Using v1.35.9+k3s1 as release
-[INFO]  Downloading hash https://github.com/k3s-io/k3s/releases/download/v1.35.9%2Bk3s1/sha256sum-arm64.txt
-[INFO]  Downloading binary https://github.com/k3s-io/k3s/releases/download/v1.35.9%2Bk3s1/k3s-arm64
+[INFO]  Downloading hash https://github.com/k3s-io/k3s/releases/download/v1.35.9+k3s1/sha256sum-arm64.txt
+[INFO]  Downloading binary https://github.com/k3s-io/k3s/releases/download/v1.35.9+k3s1/k3s-arm64
 [INFO]  Verifying binary download
 [INFO]  Installing k3s to /usr/local/bin/k3s
 [INFO]  Skipping installation of SELinux RPM
@@ -135,29 +140,14 @@ Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc
 ━━━ 3/6  Flux + Supply Chain Tools ━━━
 
 [rathsted] Installing Flux CLI...
-[INFO]  Downloading metadata https://api.github.com/repos/fluxcd/flux2/releases/tags/v2.9.6
-[INFO]  Using 2.9.6 as release
-[INFO]  Downloading hash https://github.com/fluxcd/flux2/releases/download/v2.9.6/flux_2.9.6_checksums.txt
-[INFO]  Downloading binary https://github.com/fluxcd/flux2/releases/download/v2.9.6/flux_2.9.6_linux_arm64.tar.gz
-[INFO]  Verifying binary download
-[INFO]  Installing flux to /usr/local/bin/flux
 [rathsted] Installing cosign...
 [rathsted] Installing syft...
-[info] checking github for release tag='v1.54.0' 
-[info] fetching release script for tag='v1.54.0' 
-[info] checking github for release tag='v1.54.0' 
-[info] using release tag='v1.54.0' version='1.54.0' os='linux' arch='arm64' 
-[info] installed /usr/local/bin/syft 
 [rathsted] Installing grype...
-[info] checking github for release tag='v0.120.0' 
-[info] fetching release script for tag='v0.120.0' 
-[info] checking github for release tag='v0.120.0' 
-[info] using release tag='v0.120.0' version='0.120.0' os='linux' arch='arm64' 
-[info] installed /usr/local/bin/grype 
 [rathsted] Installing Flux controllers...
 ✚ generating manifests
 ✔ manifests build completed
 ► installing components in flux-system namespace
+◎ verifying installation
 CustomResourceDefinition/alerts.notification.toolkit.fluxcd.io created
 CustomResourceDefinition/buckets.source.toolkit.fluxcd.io created
 CustomResourceDefinition/externalartifacts.source.toolkit.fluxcd.io created
@@ -190,7 +180,6 @@ Deployment/flux-system/source-controller created
 NetworkPolicy/flux-system/allow-egress created
 NetworkPolicy/flux-system/allow-scraping created
 NetworkPolicy/flux-system/allow-webhooks created
-◎ verifying installation
 ✔ helm-controller: deployment ready
 ✔ kustomize-controller: deployment ready
 ✔ notification-controller: deployment ready
@@ -292,6 +281,7 @@ clusterpolicy.kyverno.io/require-seccomp created
 clusterpolicy.kyverno.io/require-signed-images created
 clusterpolicy.kyverno.io/restrict-hostpath created
 clusterpolicy.kyverno.io/restrict-registries created
+[rathsted] Using default policies (run 'make configure' to customize registry/image signing).
 
 ━━━ 6/6  GitOps Bootstrap ━━━
 
@@ -305,77 +295,78 @@ kustomization.kustomize.toolkit.fluxcd.io/rathsted-sync created
 == Environment ==
   Foundations version: untagged
   Hostname:           rathsted-compat-ubuntu-22-04
-  Date:               2026-10-06T06:18:02Z
+  Date:               2026-10-09T21:49:41Z
   Verify mode:        self-hosted
   OS:                 Ubuntu 22.04.5 LTS
   Kernel:             7.0.14-orbstack-00380-ga7e0a2dc9535
-[ok 23:18:02] Environment recorded
+[ok 14:49:41] Environment recorded
 
 == Cluster ==
-[ok 23:18:02] cluster-info ok
-[ok 23:18:02] cluster nodes accessible
+[ok 14:49:41] cluster-info ok
+[ok 14:49:41] cluster nodes accessible
   Contract series:    2.x
   Contract install:   self-hosted
   Decks v0 support:   true
   Topology:           single-node (supported nodes 1-1)
-[ok 23:18:03] Foundations contract marker present
+[ok 14:49:42] Foundations contract marker present
 
 == Hardening ==
-  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (5.0M, 3940 entries)
-[ok 23:18:03] API server audit logging active
-[ok 23:18:03] Audit policy file present
-[ok 23:18:03] Secrets encryption at rest enabled (encryption config present)
+  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (4.6M, 3725 entries)
+[ok 14:49:42] API server audit logging active
+[ok 14:49:42] Audit policy file present
+[ok 14:49:42] Secrets encryption at rest enabled (encryption config present)
 
 == Flux ==
-[ok 23:18:03] Flux check passed
-[ok 23:18:04] Flux installed
-[ok 23:18:04] Flux pods present
+[ok 14:49:43] Flux check passed
+[ok 14:49:43] Flux installed
+[ok 14:49:44] Flux pods present
 
 == Kyverno ==
-[ok 23:18:04] Kyverno installed
-[ok 23:18:04] Kyverno pods present
-[ok 23:18:04] Kyverno policies present
-[info 23:18:04] kyverno image: ghcr.io/kyverno/kyverno:v1.19.1
-[info 23:18:04] kyverno image: ghcr.io/kyverno/background-controller:v1.19.1
-[info 23:18:04] kyverno image: ghcr.io/kyverno/cleanup-controller:v1.19.1
-[info 23:18:04] kyverno image: ghcr.io/kyverno/reports-controller:v1.19.1
+[ok 14:49:44] Kyverno installed
+[ok 14:49:44] Kyverno pods present
+[ok 14:49:44] Kyverno policies present
+[info 14:49:45] kyverno image: ghcr.io/kyverno/kyverno:v1.19.1
+[info 14:49:45] kyverno image: ghcr.io/kyverno/background-controller:v1.19.1
+[info 14:49:45] kyverno image: ghcr.io/kyverno/cleanup-controller:v1.19.1
+[info 14:49:45] kyverno image: ghcr.io/kyverno/reports-controller:v1.19.1
 
 == GitOps ==
-[ok 23:18:04] GitOps sync present
-[ok 23:18:04] Flux kustomizations listed
-[ok 23:18:04] Flux Git sources listed
+[ok 14:49:45] GitOps sync present
+[ok 14:49:45] Flux kustomizations listed
+[ok 14:49:45] Flux Git sources listed
 
 == Demo App ==
-[warn 23:18:04] Demo namespace not present (non-fatal: GitOps reconciliation may still be in progress)
-[ok 23:18:04] Signature policy installed
+[ok 14:49:45] Demo app objects present
+[warn 14:49:46] Demo app not Ready (non-fatal: GitOps reconciliation may still be in progress)
+[ok 14:49:46] Signature policy installed
 
 == Supply Chain ==
-[ok 23:18:10] SBOM generated (local containerd)
-[skip 23:18:10] Cosign skipped (cosign.pub not configured; use --release to enforce)
+[ok 14:49:50] SBOM generated (local containerd)
+[skip 14:49:50] Cosign skipped (cosign.pub not configured; use --release to enforce)
 
 == Vulnerability Scan ==
   Results: /srv/rathsted-foundations/supply-chain/sbom/output/foundations-demo.grype.txt
-  Critical: 28  High: 102
-[ok 23:21:49] Grype scan complete (informational; the High+ release gate applies under --release)
+  Critical: 28  High: 111
+[ok 14:54:27] Grype scan complete (informational; the High+ release gate applies under --release)
 
 == Negative Tests ==
-[ok 23:21:50] Kyverno webhooks detected, waiting 15s for policies to settle...
-[ok 23:22:06] Policy rejected as expected: default-namespace-pod.yaml
-[ok 23:22:06] Policy rejected as expected: disallowed-registry.yaml
-[ok 23:22:07] Policy rejected as expected: host-namespaces-pod.yaml
-[ok 23:22:07] Policy rejected as expected: hostpath-pod.yaml
-[ok 23:22:07] Policy rejected as expected: no-drop-capabilities-pod.yaml
-[ok 23:22:07] Policy rejected as expected: no-namespace-labels.yaml
-[ok 23:22:07] Policy rejected as expected: no-probes-pod.yaml
-[ok 23:22:08] Policy rejected as expected: no-resources-pod.yaml
-[ok 23:22:08] Policy rejected as expected: no-seccomp-pod.yaml
-[ok 23:22:09] Policy rejected as expected: privileged-pod.yaml
-[ok 23:22:09] Policy rejected as expected: readonly-rootfs-pod.yaml
-[ok 23:22:09] Policy rejected as expected: root-pod.yaml
-[ok 23:22:11] Policy rejected as expected: unsigned-image-pod.yaml
+[ok 14:54:27] Kyverno webhooks detected, waiting 15s for policies to settle...
+[ok 14:54:43] Policy rejected as expected: default-namespace-pod.yaml
+[ok 14:54:43] Policy rejected as expected: disallowed-registry.yaml
+[ok 14:54:44] Policy rejected as expected: host-namespaces-pod.yaml
+[ok 14:54:44] Policy rejected as expected: hostpath-pod.yaml
+[ok 14:54:44] Policy rejected as expected: no-drop-capabilities-pod.yaml
+[ok 14:54:44] Policy rejected as expected: no-namespace-labels.yaml
+[ok 14:54:44] Policy rejected as expected: no-probes-pod.yaml
+[ok 14:54:45] Policy rejected as expected: no-resources-pod.yaml
+[ok 14:54:45] Policy rejected as expected: no-seccomp-pod.yaml
+[ok 14:54:45] Policy rejected as expected: privileged-pod.yaml
+[ok 14:54:45] Policy rejected as expected: readonly-rootfs-pod.yaml
+[ok 14:54:45] Policy rejected as expected: root-pod.yaml
+[ok 14:54:47] Policy rejected as expected: unsigned-image-pod.yaml
 
 == Positive Admission Tests ==
-[skip 23:22:11] Positive admission tests skipped (use --release / RATHSTED_VERIFY_RELEASE=1 to enforce)
+[skip 14:54:47] Positive admission tests skipped (use --release to enforce)
 
 == Access Control (RBAC) ==
   ClusterRoleBindings + RoleBindings: 80
@@ -446,23 +437,24 @@ kustomization.kustomize.toolkit.fluxcd.io/rathsted-sync created
     system:public-info-viewer
     system:service-account-issuer-discovery
     system:volume-scheduler
-[ok 23:22:11] RBAC snapshot recorded
+[ok 14:54:47] RBAC snapshot recorded
 
 == Network Policies ==
-  NetworkPolicies across all namespaces: 3
+  NetworkPolicies across all namespaces: 4
+    demo                 default-deny
     flux-system          allow-egress
     flux-system          allow-scraping
     flux-system          allow-webhooks
-[ok 23:22:12] NetworkPolicy snapshot recorded
+[ok 14:54:47] NetworkPolicy snapshot recorded
 
 == Summary ==
-  Passed:   35
+  Passed:   36
   Warnings: 3
   Failed:   0
 
-[ok 23:22:12] Verification passed
+[ok 14:54:47] Verification passed
 [rathsted] E2E complete
-[rathsted 23:22:12] Host-side OrbStack E2E complete
+[rathsted 14:54:47] Host-side OrbStack E2E complete
 
 # Exit code: 0
-# Completed: 2026-10-06T06:22:12Z
+# Completed: 2026-10-09T21:54:47Z

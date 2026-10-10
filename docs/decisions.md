@@ -45,8 +45,8 @@ This document explains why Foundations uses the current narrow stack and operati
 - Require liveness/readiness probes
 - Restrict image registries to allowlist (configured registry prefix / localhost)
 - Require image signatures (as feasible)
-- Enforce namespace labeling (owner, environment, jurisdiction)
-- Baseline NetworkPolicy (default deny + allow DNS) for demo namespaces
+- Enforce namespace labeling (`owner`, `environment`, and `rathsted.io/jurisdiction` — `ca`, `us`, or `fr`; `rathsted.io/operator-control` is stamped by the platform)
+- Baseline NetworkPolicy (default deny + allow DNS) generated in every newly created namespace except kube-system, kube-public, kube-node-lease, flux-system, kyverno, and default
 
 ## Why The Baseline Is Not "Maximum Hardening" By Default
 

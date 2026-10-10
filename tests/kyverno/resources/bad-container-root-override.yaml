@@ -1,0 +1,20 @@
+# Pod-level runAsNonRoot: true, but the container overrides it and runs as
+# UID 0. Container-level securityContext wins in Kubernetes, so this pod runs
+# as root and must be rejected (SME review 2026-10-07).
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-container-root-override
+  namespace: default
+spec:
+  securityContext:
+    runAsNonRoot: true
+  containers:
+    - name: app
+      image: ghcr.io/rathsted/foundations-demo:2.0.0
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]

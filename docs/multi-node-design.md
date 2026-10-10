@@ -24,7 +24,7 @@ rules.
 
 ## Current Position
 
-Today Foundations `v1.0.0` is intentionally narrow:
+Foundations 2.x is intentionally narrow:
 
 - single-node `k3s`
 - GitOps
@@ -33,7 +33,7 @@ Today Foundations `v1.0.0` is intentionally narrow:
 - SBOM generation
 
 That boundary was the right first release boundary. Multi-node is the next
-substrate expansion, not a correction to `v1.0.0`.
+substrate expansion, not a correction to the 2.x baseline.
 
 ## First Supported Multi-Node Shape
 
@@ -108,10 +108,10 @@ But verify and policy docs will need to acknowledge:
 The first multi-node pass should extend the contract marker and verify flow to
 include:
 
-- topology mode
-- supported node count floor
+- topology mode (already in `install.sh`: `topology_mode: "single-node"`)
+- supported node count floor (already in `install.sh`: `supported_node_min`, `supported_node_max`)
 - current install mode
-- whether Decks `v0` can consume the substrate
+- whether Decks `v0` can consume the substrate (already in `install.sh`: `decks_v0_supported: "true"`)
 
 The verify path should also add:
 

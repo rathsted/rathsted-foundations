@@ -41,5 +41,6 @@ Run:
 make configure
 make policy-test
 make verify
-make compat-test
 ```
+
+For maintainer-only distro compatibility testing: `make compat-test` (runs install across supported distro VMs; not part of this repository's public tooling).

@@ -3,7 +3,7 @@
 This quickstart is easiest to follow if you start with one rule:
 
 - `make doctor`, `make configure`, and `make validate-config` are workstation tasks
-- `./bootstrap/install.sh` and `./bootstrap/verify.sh` are Linux host tasks (the k3s installer checksum is pinned in the script)
+- `./bootstrap/install.sh` and `./bootstrap/verify.sh` are Linux host tasks (the k3s installer script is downloaded from the release tag and verified against a sha256 pin in the script)
 
 Foundations always runs on Linux. Your local machine can be macOS, Linux, or Windows with WSL, but the actual cluster install happens on the Linux machine that will host `k3s`.
 
@@ -22,8 +22,10 @@ Use the path that matches how you are evaluating the repo:
 3. Run `make configure`.
 4. Optionally run `make validate-config`.
 5. On the target Linux host, run `./bootstrap/install.sh`.
-   The k3s installer checksum is pinned in the script. Override with
-   `RATHSTED_K3S_INSTALLER_SHA256` if the upstream installer changes.
+   The k3s installer script is downloaded from the k3s release tag and verified
+   against a sha256 checksum pinned in the script before it runs. Override the
+   checksum with `RATHSTED_K3S_INSTALLER_SHA256` when deliberately changing the
+   k3s version.
 6. On the target Linux host, run `./bootstrap/verify.sh`.
 
 ## Prerequisites
@@ -87,10 +89,26 @@ Optional validation before install:
 make validate-config
 ```
 
+> **Current limitation:** `install.sh` applies the rendered registry/signature
+> policies during bootstrap only. Flux then reconciles the default policies from
+> git and may restore the default `ghcr.io/rathsted/*` allowlist at its next
+> reconcile. For a persistent custom registry, carry equivalent policy changes
+> in your GitOps source. A tracked-overlay workflow is planned.
+
 ## 4) Install On The Target Linux Host
 ```bash
 ./bootstrap/install.sh
 ```
+
+Install changes the host, not just the cluster. Before starting k3s it writes
+`/etc/sysctl.d/90-kubelet.conf` and applies it: `vm.overcommit_memory=1`,
+`vm.panic_on_oom=0`, `kernel.panic=10`, `kernel.panic_on_oops=1`,
+`kernel.keys.root_maxkeys=1000000`, `kernel.keys.root_maxbytes=25000000`. The
+kubelet refuses to start without them because `cluster/k3s/config.yaml` enables
+`protect-kernel-defaults`. They persist across reboots; `kernel.panic=10` means
+the host reboots 10 seconds after a kernel panic. Install also places the k3s
+binary and systemd unit, the audit policy under `/var/lib/rancher/k3s/server/`,
+and the Flux, Cosign, Syft and Grype binaries in `/usr/local/bin`.
 
 ## 5) Verify On The Target Linux Host
 ```bash
@@ -109,7 +127,7 @@ Typical flow:
 
 1. Clone the repo on macOS.
 2. Run `make doctor` and `make configure` on macOS.
-3. Create a Linux VM with at least 4 CPU / 8 GB RAM / 20 GB disk.
+3. Create a Linux VM (minimum 2 CPU / 4 GB RAM, recommended 4 CPU / 8 GB RAM, 20 GB disk).
 4. Copy the repo to the VM or clone it again inside the VM.
 5. Run `./bootstrap/install.sh` and `./bootstrap/verify.sh` inside the VM.
 
@@ -146,7 +164,7 @@ If you want a local evaluation path on one machine, create a Linux VM and run th
 
 ## Supply Chain (Optional But Recommended)
 
-If you ran `make configure` with your own image, the policies and deployment manifest are already pointed at it.
+If you ran `make configure` with your own image, the deployment manifest is already pointed at it, and the rendered policies are applied at bootstrap (see the limitation note above about Flux restoring the defaults).
 
 Generate a cosign keypair and apply it to the signing policy:
 
@@ -194,7 +212,7 @@ Rathsted Foundations follows a **sovereign infrastructure** model: one cluster p
 
 This is a deliberate design choice. In regulated and public-sector environments, a stronger practical isolation boundary for this baseline is separate nodes and clusters. Kubernetes namespace-level multi-tenancy introduces shared kernel, network, and storage attack surfaces that conflict with the auditability and determinism goals of this project. A dedicated single-node k3s instance per team gives you a clean blast radius, simpler compliance scope, and reproducible state — without the complexity of tenant RBAC, NetworkPolicies, and resource quota arbitration.
 
-The baseline intentionally does not include multi-tenant primitives (NetworkPolicies, per-tenant RBAC, ResourceQuotas). If your deployment model requires shared clusters, add these before exposing workloads to untrusted tenants.
+The baseline generates a default-deny NetworkPolicy in every newly created namespace (except kube-system, kube-public, kube-node-lease, flux-system, kyverno, and default). It does not include per-tenant RBAC, ResourceQuotas, or cross-namespace isolation policy. If your deployment model requires shared clusters, add those before exposing workloads to untrusted tenants.
 
 ## Notes
 - `RATHSTED_GIT_SSH_KEY` must contain the private key contents (not a file path).

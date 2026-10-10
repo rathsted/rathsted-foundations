@@ -115,6 +115,17 @@ COSIGN_VERSION="${RATHSTED_COSIGN_VERSION:-v3.1.3}"
 SYFT_VERSION="${RATHSTED_SYFT_VERSION:-v1.54.0}"
 GRYPE_VERSION="${RATHSTED_GRYPE_VERSION:-v0.120.0}"
 
+# Version mismatch guard — compare any already-installed Kyverno against the pin.
+# On a managed cluster the kubelet version is not a k3s string, so the k3s
+# portion of the check is skipped automatically.
+# shellcheck source=bootstrap/lib/versions.sh
+source "${ROOT_DIR}/bootstrap/lib/versions.sh"
+check_installed_versions || { info "Version mismatch: see above. Reinstall on a clean host."; exit 1; }
+
+# Cluster readiness helpers (wait_for_api)
+# shellcheck source=bootstrap/lib/cluster.sh
+source "${ROOT_DIR}/bootstrap/lib/cluster.sh"
+
 # Install Flux CLI if not present
 if ! command -v flux >/dev/null 2>&1; then
   info "Installing Flux CLI..."
@@ -139,6 +150,11 @@ for tool_info in "cosign:${COSIGN_VERSION}" "syft:${SYFT_VERSION}" "grype:${GRYP
     info "Installing ${tool}..."
   fi
 done
+
+# Wait for the Kubernetes API to be ready before installing cluster components.
+# Managed clusters are typically already healthy; this guards against transient
+# control-plane restarts or slow starts.
+wait_for_api || { info "Kubernetes API did not become ready; aborting" >&2; exit 1; }
 
 # Install Flux controllers
 if ! kubectl get namespace flux-system >/dev/null 2>&1; then
@@ -202,13 +218,24 @@ wait_for_endpoints kyverno kyverno-svc 300
 # ── Policies ──
 
 step "4/5  Policies"
+# shellcheck source=bootstrap/lib/policies.sh
+source "${ROOT_DIR}/bootstrap/lib/policies.sh"
+info "Applying baseline policies..."
+apply_policies_with_retry || { echo "[rathsted] Baseline policies failed; refusing to continue" >&2; exit 1; }
 
-if [[ -d "${ROOT_DIR}/config/rendered" ]] && ls "${ROOT_DIR}/config/rendered/"*.yaml >/dev/null 2>&1; then
-  info "Applying rendered policies from config/rendered/..."
-  kubectl apply -f "${ROOT_DIR}/config/rendered/"
+# Overlay rendered policies from config/rendered/ if `make configure` has been run.
+# These rendered files replace the two ClusterPolicies (restrict-registries,
+# require-signed-images) with customer-specific versions; the baseline presence
+# check above still guards the full policy set.
+RENDERED_POLICIES="${ROOT_DIR}/config/rendered"
+if [[ -f "${RENDERED_POLICIES}/restrict-registries.yaml" && \
+      -f "${RENDERED_POLICIES}/require-signed-images.yaml" ]]; then
+  info "Applying rendered policies from config/rendered/ (operator-configured)..."
+  kubectl apply -f "${RENDERED_POLICIES}/restrict-registries.yaml"
+  kubectl apply -f "${RENDERED_POLICIES}/require-signed-images.yaml"
+  info "Rendered registry/signing policies applied."
 else
-  info "Applying policies from policies/..."
-  kubectl apply -k "${ROOT_DIR}/policies/"
+  info "Using default policies (run 'make configure' to customize registry/image signing)."
 fi
 
 # ── GitOps Bootstrap ──
@@ -230,24 +257,38 @@ else
     # Pinned GitHub host keys
     KNOWN_HOSTS="github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
 github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg="
+    cred_tmpdir="$(mktemp -d)"
+    chmod 700 "${cred_tmpdir}"
+    CLEANUP_DIRS+=("${cred_tmpdir}")
+    # Write key to file — preserves exactly one trailing newline; never on argv.
+    printf '%s\n' "${RATHSTED_GIT_SSH_KEY%$'\n'}" > "${cred_tmpdir}/identity"
+    chmod 600 "${cred_tmpdir}/identity"
     kubectl_args=(
       create secret generic rathsted-git-auth
       -n flux-system
-      --from-literal=identity="${RATHSTED_GIT_SSH_KEY}"
+      --from-file=identity="${cred_tmpdir}/identity"
       --from-literal=known_hosts="${KNOWN_HOSTS}"
     )
     if [[ -n "${RATHSTED_GIT_SSH_PASSPHRASE:-}" ]]; then
-      kubectl_args+=(--from-literal=identity_passphrase="${RATHSTED_GIT_SSH_PASSPHRASE}")
+      printf '%s' "${RATHSTED_GIT_SSH_PASSPHRASE}" > "${cred_tmpdir}/identity_passphrase"
+      chmod 600 "${cred_tmpdir}/identity_passphrase"
+      kubectl_args+=(--from-file=identity_passphrase="${cred_tmpdir}/identity_passphrase")
     fi
     kubectl_args+=(--dry-run=client -o yaml)
     kubectl "${kubectl_args[@]}" | kubectl apply -f -
     SECRET_REF=$'  secretRef:\n    name: rathsted-git-auth'
   elif [[ -n "${RATHSTED_GIT_TOKEN:-}" ]]; then
     info "Configuring Flux GitRepository auth (HTTPS token)"
+    cred_tmpdir="$(mktemp -d)"
+    chmod 700 "${cred_tmpdir}"
+    CLEANUP_DIRS+=("${cred_tmpdir}")
+    printf '%s' "x-access-token" > "${cred_tmpdir}/username"
+    printf '%s' "${RATHSTED_GIT_TOKEN}" > "${cred_tmpdir}/password"
+    chmod 600 "${cred_tmpdir}/username" "${cred_tmpdir}/password"
     kubectl create secret generic rathsted-git-auth \
       -n flux-system \
-      --from-literal=username="x-access-token" \
-      --from-literal=password="${RATHSTED_GIT_TOKEN}" \
+      --from-file=username="${cred_tmpdir}/username" \
+      --from-file=password="${cred_tmpdir}/password" \
       --dry-run=client -o yaml | kubectl apply -f -
     SECRET_REF=$'  secretRef:\n    name: rathsted-git-auth'
   fi
@@ -263,10 +304,28 @@ github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAA
     fi
   fi
 
-  sed -e "s|REPLACE_GIT_URL|${RATHSTED_GIT_URL}|g" \
-      -e "s|REPLACE_GIT_REF|${GIT_REF}|g" \
-      -e "s|__SECRET_REF__|${SECRET_REF}|g" \
-      "${ROOT_DIR}/cluster/gitops/sync/gitrepository.yaml.tmpl" | kubectl apply -f -
+  TMPL="${ROOT_DIR}/cluster/gitops/sync/gitrepository.yaml.tmpl" \
+  OUT="${tmpdir}/gitrepository.yaml" \
+  GIT_URL="${RATHSTED_GIT_URL}" \
+  GIT_REF="${GIT_REF}" \
+  SECRET_REF="${SECRET_REF}" \
+  python3 - <<'PY'
+import os
+from pathlib import Path
+
+tmpl = Path(os.environ["TMPL"])
+out = Path(os.environ["OUT"])
+git_url = os.environ["GIT_URL"]
+git_ref = os.environ["GIT_REF"]
+secret_ref = os.environ.get("SECRET_REF", "")
+
+text = tmpl.read_text()
+text = text.replace("REPLACE_GIT_URL", git_url)
+text = text.replace("REPLACE_GIT_REF", git_ref)
+text = text.replace("__SECRET_REF__", secret_ref)
+out.write_text(text)
+PY
+  kubectl apply -f "${tmpdir}/gitrepository.yaml"
   kubectl apply -f "${ROOT_DIR}/cluster/gitops/sync/kustomization.yaml"
 fi
 

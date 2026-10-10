@@ -4,7 +4,9 @@
 
 Foundations uses tagged releases (`vX.Y.Z`). Each release pins specific versions of k3s, Flux, and Kyverno to a tested combination. Customer instances reference a specific Foundations version via `foundations-version.env`.
 
-Upgrades are performed by updating the version pin and re-running the bootstrap script. There is no in-place migration tooling — the bootstrap script is idempotent and handles reconciling the existing cluster to the target state.
+**In-place upgrades are not supported in 2.0.x.** `install.sh` detects an existing cluster whose k3s or Kyverno version differs from the release pins and refuses to continue, telling you to reinstall on a clean host. Real in-place upgrades are planned for a future release.
+
+To upgrade: relabel namespaces if needed (see 1.x→2.0 section below), back up your cluster state, then reinstall on a clean host and restore workloads from backup or let Flux redeploy them.
 
 ---
 
@@ -42,14 +44,23 @@ Label anything reported as "decide manually" with the right value yourself. Upda
 
 **3. Update tooling that checks the contract series.** Anything that requires `foundations_series` to be `1.x` must accept `2.x`. Decks releases from before this change refuse a `2.x` cluster in preflight.
 
-**4. Upgrade and verify** with Method 1 or 2 below, then:
+**4. Reinstall on a clean host.** Back up cluster state first (`k3s kubectl get all -A -o yaml > pre-upgrade-backup.yaml`), then uninstall the old cluster and run a fresh `./bootstrap/install.sh` from the 2.x tag. Flux will redeploy managed workloads automatically; non-Flux workloads must be restored from backup.
 
 ```bash
-make verify
+# On the old host — back up first
+k3s kubectl get all -A -o yaml > pre-upgrade-backup.yaml
+
+# Uninstall the 1.x cluster
+./bootstrap/uninstall.sh
+
+# Check out 2.x and install fresh
+git checkout v2.0.0   # or the target 2.x tag
+./bootstrap/install.sh
+./bootstrap/verify.sh
 kubectl get ns -L rathsted.io/jurisdiction,rathsted.io/operator-control
 ```
 
-Once you are not going to roll back, you can remove the old label: `kubectl label ns <name> jurisdiction-`.
+Once the 2.x cluster is verified, you can remove the old bare `jurisdiction` label from your GitOps manifests.
 
 ---
 
@@ -96,33 +107,40 @@ If any item above is unknown, treat the upgrade as blocked until ownership and r
 
 ## Upgrade Steps
 
-### Method 1: Git Tag (recommended for Foundations repo itself)
+### Method 1: Git Tag (clean host required in 2.0.x)
 
-Use this when upgrading the Foundations repository directly.
+Use this when upgrading the Foundations repository directly. Because in-place upgrades are not supported, run this on a clean host after uninstalling the previous cluster.
 
 ```bash
+# Uninstall current cluster first
+./bootstrap/uninstall.sh
+
+# Check out the target release and reinstall
 git fetch --tags
 git checkout vX.Y.Z
 ./bootstrap/install.sh
 ./bootstrap/verify.sh
 ```
 
-### Method 2: Customer Instance
+### Method 2: Customer Instance (clean host required in 2.0.x)
 
-Use this when upgrading a customer instance that pins Foundations via `foundations-version.env`.
+Use this when upgrading a customer instance that pins Foundations via `foundations-version.env`. Same clean-host requirement applies.
 
 ```bash
+# Uninstall current cluster first
+./bootstrap/uninstall.sh
+
 # Update the version pin
 # Edit foundations-version.env and set:
 FOUNDATIONS_VERSION=vX.Y.Z
 
-# Re-run bootstrap to apply the new version
+# Reinstall on the clean host
 ./bootstrap.sh
 ```
 
 ### Method 3: Track main (development only)
 
-Not recommended for production. Use only for testing against the latest development state.
+Not recommended for production. Use only for testing against the latest development state, on a fresh or already-uninstalled host.
 
 ```bash
 git pull origin main
@@ -164,15 +182,14 @@ If any check fails, do not proceed. Investigate before treating the upgrade as c
 
 ### Git-based rollback
 
-Check out the previous release and re-run bootstrap:
+Only applicable when the k3s and Kyverno versions have not changed between the current and previous release. If those versions differ, the installer will refuse; use the full reinstall path below.
 
 ```bash
+./bootstrap/uninstall.sh
 git checkout v<previous-version>
 ./bootstrap/install.sh
 ./bootstrap/verify.sh
 ```
-
-This works reliably when the k3s version has not changed between releases. Bootstrap is idempotent and will reconcile the cluster back to the previous state.
 
 ### Full reinstall (nuclear option)
 
@@ -198,7 +215,7 @@ Key points:
 - Upgrading Foundations may upgrade one or more of these components.
 - Downgrading to a release with the same k3s version is supported via git checkout and re-running bootstrap.
 - Downgrading across a k3s version boundary requires a full uninstall and reinstall.
-- Flux and Kyverno upgrades are handled by bootstrap and do not require cluster teardown.
+- In 2.0.x, any change to the k3s or Kyverno version requires a clean reinstall. `install.sh` detects version mismatches and refuses to continue.
 
 ---
 
@@ -221,7 +238,7 @@ flux logs --level=error -n flux-system
 
 New releases may add Kyverno policies that block existing workloads. Check the CHANGELOG for new policies, then either:
 - Update affected workloads to comply with the new policy
-- Add a policy exception via `docs/policy-exceptions.md` if the violation is intentional
+- Add a policy exception (see [Policy Exceptions](policy-exceptions.md)) if the violation is intentional
 
 **k3s version mismatch**
 

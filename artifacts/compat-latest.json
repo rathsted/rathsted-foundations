@@ -1,6 +1,9 @@
 {
-  "timestamp": "2026-10-06T06:25:58Z",
+  "timestamp": "2026-10-09T21:58:17Z",
   "source": "https://github.com/rathsted/rathsted-foundations.git",
+  "arch": "arm64",
+  "commit": "c0b54e5562ee76f79b5fed1daca2fc92a7a7a09b",
+  "commit_dirty": false,
   "parallel": true,
   "passed": 10,
   "failed": 0,
@@ -9,8 +12,8 @@
     "previous": {"k3s": "2026-10-02", "kyverno": "2026-10-02", "flux": "2026-10-02", "pin_set": "2026-10-02"}
   },
   "pin_change_age_days": {
-    "current": {"k3s": 4, "kyverno": 4, "flux": 4, "pin_set": 4},
-    "previous": {"k3s": 4, "kyverno": 4, "flux": 4, "pin_set": 4}
+    "current": {"k3s": 7, "kyverno": 7, "flux": 7, "pin_set": 7},
+    "previous": {"k3s": 7, "kyverno": 7, "flux": 7, "pin_set": 7}
   },
   "pin_change_count_180d": {
     "current": {"k3s": 1, "kyverno": 1, "flux": 1},

@@ -1,5 +1,9 @@
 # Policy Pack Implementation Sketch
 
+> **Design proposal — not implemented in 2.0.x.** This document describes a proposed
+> future direction. The commands and repo layout shown here do not exist in the current
+> release.
+
 This document turns the policy-pack UX proposal into a concrete first implementation
 shape for Rathsted.
 
@@ -52,7 +56,7 @@ policies/
     baseline-networkpolicy.yaml
   hardened/
     kustomization.yaml
-    require-read-only-rootfs.yaml
+    require-readonly-rootfs.yaml
     restrict-service-types.yaml
     restrict-host-ports.yaml
   packs/
@@ -121,15 +125,13 @@ resources:
   - ../../packs/network
 ```
 
-## Suggested Commands
+## Proposed Commands
 
-These can start as Make targets and later become a proper `rathsted` wrapper CLI.
+These are the proposed interface. None of these targets exist yet in 2.0.x.
 
 ### List packs
 
-```bash
-make policy-list
-```
+Proposed: `policy-list`
 
 Behavior:
 - reads pack directories
@@ -137,9 +139,7 @@ Behavior:
 
 ### Show active set
 
-```bash
-make policy-status
-```
+Proposed: `policy-status`
 
 Behavior:
 - prints base profile
@@ -148,9 +148,7 @@ Behavior:
 
 ### Enable a pack
 
-```bash
-make policy-enable PACK=hardened
-```
+Proposed: `policy-enable PACK=hardened`
 
 Behavior:
 - updates `config/policy-packs.yaml`
@@ -159,9 +157,7 @@ Behavior:
 
 ### Disable a pack
 
-```bash
-make policy-disable PACK=hardened
-```
+Proposed: `policy-disable PACK=hardened`
 
 Behavior:
 - updates config
@@ -170,9 +166,7 @@ Behavior:
 
 ### Validate the chosen set
 
-```bash
-make policy-validate
-```
+Proposed: `policy-validate`
 
 Behavior:
 - renders the generated bundle
@@ -181,9 +175,7 @@ Behavior:
 
 ### Apply the active set
 
-```bash
-make policy-apply
-```
+Proposed: `policy-apply`
 
 Behavior:
 - `kubectl apply -k policies/generated/active`

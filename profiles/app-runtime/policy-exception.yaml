@@ -2,7 +2,7 @@ apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: app-runtime-registry-exception
-  namespace: app-runtime
+  namespace: kyverno
   annotations:
     rathsted.io/reason: "Allow docker.io images only for named runtime components (not all pods in namespace)"
 spec:

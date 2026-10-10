@@ -407,8 +407,8 @@ done
 # may be a placeholder), and we'd produce false negatives. Matches the gating used
 # by the cosign signature-verification step earlier in this file.
 section "Positive Admission Tests"
-if [[ "${RATHSTED_VERIFY_RELEASE:-}" != "1" ]]; then
-  skip "Positive admission tests skipped (use --release / RATHSTED_VERIFY_RELEASE=1 to enforce)"
+if [[ "${RELEASE_MODE}" != "true" && "${RATHSTED_VERIFY_RELEASE:-}" != "1" ]]; then
+  skip "Positive admission tests skipped (use --release to enforce)"
 else
   shopt -s nullglob
   GOOD_MANIFESTS=("${ROOT_DIR}"/tests/good-manifests/*.yaml)

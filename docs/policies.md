@@ -9,11 +9,12 @@ This baseline ships Kyverno policies that enforce common secure-by-default rules
 - Deny hostPath volumes
 - Require resource requests/limits
 - Require liveness/readiness probes
-- Restrict image registries to the configured customer namespace
-- Require image signatures for the configured customer namespace
-- Enforce namespace labels (owner, environment, jurisdiction)
-- Baseline NetworkPolicy for `demo` namespace
-- Default-deny NetworkPolicy for the optional `app-runtime` profile
+- Restrict image registries to `ghcr.io/rathsted/*` and `localhost/*` by default; `make configure` renders policy for your own registry and `install.sh` applies it when present
+- Require image signatures for `ghcr.io/rathsted/*` by default; `make configure` renders policy for your own registry and `install.sh` applies it when present
+  - Rendered registry/signature policies are applied at bootstrap only; Flux reconciles the defaults from git and may restore them. For a persistent custom registry, carry the policy change in your GitOps source (tracked-overlay workflow planned).
+- Enforce namespace labels (`owner`, `environment`, and `rathsted.io/jurisdiction` — `ca`, `us`, or `fr`; `rathsted.io/operator-control` is stamped by the platform)
+- Default-deny NetworkPolicy in every newly created namespace except kube-system, kube-public, kube-node-lease, flux-system, kyverno, and default
+- Default-deny NetworkPolicy for the optional `app-runtime` profile (applied explicitly by the profile, not generated)
 
 ## What These Policies Mean In Plain Language
 
@@ -28,8 +29,7 @@ Today the baseline rules mean:
 - do not pull images from unapproved registries
 - do not use unsigned images where signature verification is expected
 - do not create namespaces without required labels
-- apply a default-deny network policy in the demo namespace
-- apply a default-deny network policy in the optional app-runtime namespace
+- generate a default-deny NetworkPolicy in every newly created namespace except kube-system, kube-public, kube-node-lease, flux-system, kyverno, and default
 
 For a policy-by-policy explanation of what each one enforces, when it is useful,
 and when it may be too strict, see [Policy Catalog](policy-catalog.md).
@@ -56,10 +56,10 @@ metadata:
 ```
 
 ### Registry allowlist
-Run `make configure` to render `policies/restrict-registries.yaml` for your image namespace. Defaults in `config/foundations.env` use `docker.io/library` with an `nginx` example image; set `RATHSTED_REGISTRY` and `RATHSTED_IMAGE` to **your** registry and workload image for production. `make configure` now rejects image references without an explicit tag or digest.
+The shipped default policy (`policies/restrict-registries.yaml`) allows `ghcr.io/rathsted/*` and `localhost/*`. Run `make configure` to render a version for your own registry into `config/rendered/`; `bootstrap/install.sh` applies the rendered policy when it is present. `make configure` rejects image references without an explicit tag or digest.
 
 ### Signature verification
-Run `make configure` to render `policies/require-signed-images.yaml` for your image namespace. Then add your `cosign.pub` with `./supply-chain/cosign/update-policy.sh`.
+The shipped default policy (`policies/require-signed-images.yaml`) requires signatures for `ghcr.io/rathsted/*`. Run `make configure` to render a version for your own registry into `config/rendered/`; `bootstrap/install.sh` applies the rendered policy when it is present. Then add your `cosign.pub` with `./supply-chain/cosign/update-policy.sh`.
 
 ## Testing
 Run Kyverno policy tests:
@@ -90,8 +90,9 @@ The short workflow is:
 make configure
 make policy-test
 make verify
-make compat-test
 ```
+
+For maintainer-only distro compatibility testing: `make compat-test` (runs install across supported distro VMs; not part of this repository's public tooling).
 
 See [Policy Authoring and Verification](policy-authoring.md) for the full workflow.
 Use [Policy Addition Checklist](policy-checklist.md) before merging a policy change.
@@ -102,7 +103,7 @@ The current baseline is intentionally opinionated but not maximally strict. Poli
 that often make sense as optional packs include:
 
 - disallow `:latest` tags or require immutable image references
-- require read-only root filesystem where practical
+- block `procMount: Unmasked` in container security context
 - restrict `NodePort` and `LoadBalancer` usage
 - restrict host ports
 - require NetworkPolicy coverage for every workload namespace

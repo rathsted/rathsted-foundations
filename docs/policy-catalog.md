@@ -157,12 +157,12 @@ Policy:
 - `require-namespace-labels`
 
 What it enforces:
-- namespaces must include `owner`, `environment`, and `jurisdiction` labels
+- namespaces must include `owner`, `environment`, and `rathsted.io/jurisdiction` (`ca`, `us`, or `fr`) labels; `rathsted.io/operator-control` is stamped by the platform
 
 Good when:
 - you want clearer ownership and operational context
 - you want policy, reporting, and evidence to carry business-relevant metadata
-- you want jurisdiction to be visible as part of the operating model
+- you want `rathsted.io/jurisdiction` to be visible as part of the operating model
 
 Not always right when:
 - a team wants to create quick throwaway namespaces with no metadata discipline
@@ -174,16 +174,67 @@ Policy:
 - `baseline-networkpolicy`
 
 What it enforces:
-- when the `demo` namespace exists, a default-deny NetworkPolicy is generated there
-- DNS egress is still allowed
+- a default-deny NetworkPolicy is generated in every newly created namespace except kube-system, kube-public, kube-node-lease, flux-system, kyverno, and default
+- DNS egress is still allowed; intra-namespace traffic is unrestricted
 
 Good when:
-- you want the demo environment to start from a deny-by-default network posture
-- you want a visible example of network isolation as part of the baseline
+- you want every new namespace to start from a deny-by-default network posture
+- you want network isolation as a baseline across all workload namespaces
 
 Not always right when:
-- a workload needs broader network access and no explicit policy has been added yet
-- the team expects the same generated behavior in every namespace, which the current baseline does not yet do
+- a workload needs cross-namespace or external network access and no explicit allow policy has been added yet
+
+## Require Read-Only Root Filesystem
+
+Policy:
+- `require-readonly-rootfs`
+
+What it enforces:
+- all containers, initContainers, and ephemeralContainers must set `securityContext.readOnlyRootFilesystem: true`
+- applies to Pod, Deployment, StatefulSet, DaemonSet, Job, and CronJob; excludes kube-system, flux-system, and kyverno namespaces
+
+Good when:
+- you want to prevent workloads from writing to the container filesystem at runtime
+- you want to make filesystem tampering or persistence harder
+- you want a stronger immutability story for container workloads
+
+Not always right when:
+- a workload writes to the filesystem as part of normal operation and has not yet been updated to use emptyDir or a mounted volume instead
+
+## Require Seccomp
+
+Policy:
+- `require-seccomp`
+
+What it enforces:
+- every container, initContainer, and ephemeralContainer must have a seccomp profile set to `RuntimeDefault` or `Localhost`, either at the pod level or container level
+- applies to Pod, Deployment, StatefulSet, DaemonSet, Job, and CronJob; excludes kube-system, flux-system, and kyverno namespaces
+
+Good when:
+- you want to restrict the syscall surface available to every workload
+- you want to align with CIS Kubernetes Benchmark and NSA/CISA guidance
+- you want a baseline that rejects workloads that never set a seccomp profile
+
+Not always right when:
+- a workload requires syscalls that RuntimeDefault does not permit and has not yet been updated with a Localhost profile
+
+## Drop All Capabilities
+
+Policy:
+- `drop-all-capabilities`
+
+What it enforces:
+- every container, initContainer, and ephemeralContainer must include `ALL` in `securityContext.capabilities.drop`
+- only `NET_BIND_SERVICE` may be added; any other added capability is rejected
+- applies to Pod, Deployment, StatefulSet, DaemonSet, Job, and CronJob; excludes kube-system, flux-system, and kyverno namespaces
+
+Good when:
+- you want workloads to run with the minimum Linux capability set by default
+- you want to prevent privilege escalation via Linux capabilities
+- you want to enforce the principle of least privilege at the container level
+
+Not always right when:
+- a workload requires a specific capability (for example `NET_ADMIN`) and a PolicyException has not yet been created in the `kyverno` namespace
 
 ## What This Catalog Is For
 

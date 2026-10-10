@@ -83,7 +83,7 @@ Rathsted Foundations does not by itself guarantee:
 
 - that every supporting tool already runs in Canada
 - that your CI, registry, or key storage choices automatically satisfy every customer
-- that the full surrounding platform, including secrets, backup, and observability, is already solved in `v1.0.0`
+- that the full surrounding platform, including secrets, backup, and observability, is already solved by this release
 - that the hosting model itself becomes sovereign just because Foundations is installed
 
 In practical terms, the right question is not "Is Rathsted sovereign in the abstract?"

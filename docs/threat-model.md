@@ -21,7 +21,7 @@ This is a lightweight statement of what Foundations is meant to reduce risk arou
 
 **Not yet addressed**
 - Runtime sandboxing beyond baseline K8s defaults
-- Zero‑trust network segmentation
+- Zero‑trust network segmentation beyond the generated per-namespace default-deny NetworkPolicy (no service-to-service identity or mTLS)
 - Full compliance controls
 
 ## Related Docs

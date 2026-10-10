@@ -20,6 +20,7 @@ graph TD
 - `Kyverno`: Policy enforcement and image verification
 - `Cosign`: Signing and verification
 - `Syft`: SBOM generation
+- `Grype`: Vulnerability scanning of the SBOM
 
 ## Current Boundary
 

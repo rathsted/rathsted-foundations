@@ -1,5 +1,5 @@
 # Rathsted Foundations — rocky:9 Compatibility Evidence
-# Date: 2026-10-06T06:09:45Z
+# Date: 2026-10-09T21:40:58Z
 # Source: https://github.com/rathsted/rathsted-foundations.git
 #
 
@@ -7,12 +7,12 @@
 #   k3s=v1.35.9+k3s1  kyverno=v1.19.1  flux=2.9.6
 #   changed=2026-10-02/2026-10-02/2026-10-02
 
-[rathsted 23:09:45] Using VM: rathsted-compat-rocky-9
-[rathsted 23:09:45] Using image: rocky:9
-[rathsted 23:09:45] Repo: bundled tarball from invoking workspace
-[rathsted 23:09:45] Creating VM (rocky:9)...
-[rathsted 23:10:48] Installing prerequisites inside VM...
-Last metadata expiration check: 0:00:11 ago on Mon 05 Oct 2026 11:10:38 PM PDT.
+[rathsted 14:40:58] Using VM: rathsted-compat-rocky-9
+[rathsted 14:40:58] Using image: rocky:9
+[rathsted 14:40:58] Repo: bundled tarball from invoking workspace
+[rathsted 14:40:58] Creating VM (rocky:9)...
+[rathsted 14:41:34] Installing prerequisites inside VM...
+Last metadata expiration check: 0:00:04 ago on Fri 09 Oct 2026 02:41:30 PM PDT.
 Package curl-7.76.1-40.el9_8.7.aarch64 is already installed.
 Dependencies resolved.
 ================================================================================
@@ -99,78 +99,78 @@ Install  70 Packages
 Total download size: 17 M
 Installed size: 75 M
 Downloading Packages:
-(1/70): make-4.3-8.el9.aarch64.rpm              1.0 MB/s | 526 kB     00:00    
-(2/70): less-590-6.el9.aarch64.rpm              295 kB/s | 159 kB     00:00    
-(3/70): groff-base-1.22.4-10.el9.0.1.aarch64.rp 1.4 MB/s | 1.0 MB     00:00    
-(4/70): which-2.21-30.el9_6.aarch64.rpm         196 kB/s |  40 kB     00:00    
-(5/70): ncurses-6.2-12.20210508.el9.aarch64.rpm 1.4 MB/s | 398 kB     00:00    
-(6/70): git-2.52.0-1.el9.aarch64.rpm            313 kB/s |  39 kB     00:00    
-(7/70): git-core-doc-2.52.0-1.el9.noarch.rpm    9.0 MB/s | 2.8 MB     00:00    
-(8/70): perl-AutoLoader-5.74-484.el9_8.noarch.r  80 kB/s |  20 kB     00:00    
-(9/70): perl-B-1.80-484.el9_8.aarch64.rpm       1.8 MB/s | 178 kB     00:00    
-(10/70): perl-Carp-1.50-460.el9.0.1.noarch.rpm  231 kB/s |  29 kB     00:00    
-(11/70): git-core-2.52.0-1.el9.aarch64.rpm      9.9 MB/s | 5.1 MB     00:00    
-(12/70): perl-Class-Struct-0.66-484.el9_8.noarc 213 kB/s |  21 kB     00:00    
-(13/70): perl-Data-Dumper-2.174-462.el9.aarch64 505 kB/s |  54 kB     00:00    
-(14/70): perl-Digest-1.19-4.el9.0.1.noarch.rpm  252 kB/s |  25 kB     00:00    
-(15/70): perl-Digest-MD5-2.58-4.el9.aarch64.rpm 357 kB/s |  36 kB     00:00    
-(16/70): perl-DynaLoader-1.47-484.el9_8.aarch64 255 kB/s |  24 kB     00:00    
-(17/70): perl-Errno-1.30-484.el9_8.aarch64.rpm  136 kB/s |  14 kB     00:00    
-(18/70): perl-Error-0.17029-7.el9.0.1.noarch.rp 426 kB/s |  41 kB     00:00    
-(19/70): perl-Encode-3.08-462.el9.aarch64.rpm   8.0 MB/s | 1.7 MB     00:00    
-(20/70): perl-Exporter-5.74-461.el9.noarch.rpm  342 kB/s |  31 kB     00:00    
-(21/70): perl-Fcntl-1.13-484.el9_8.aarch64.rpm  222 kB/s |  19 kB     00:00    
-(22/70): perl-File-Basename-2.85-484.el9_8.noar 159 kB/s |  16 kB     00:00    
-(23/70): perl-File-Path-2.18-4.el9.noarch.rpm   335 kB/s |  35 kB     00:00    
-(24/70): perl-File-Temp-0.231.100-4.el9.noarch. 564 kB/s |  59 kB     00:00    
-(25/70): perl-File-stat-1.09-484.el9_8.noarch.r 150 kB/s |  16 kB     00:00    
-(26/70): perl-FileHandle-2.03-484.el9_8.noarch. 154 kB/s |  14 kB     00:00    
-(27/70): perl-Getopt-Long-2.52-4.el9.noarch.rpm 657 kB/s |  60 kB     00:00    
-(28/70): perl-Getopt-Std-1.12-484.el9_8.noarch. 144 kB/s |  14 kB     00:00    
-(29/70): perl-Git-2.52.0-1.el9.noarch.rpm       375 kB/s |  37 kB     00:00    
-(30/70): perl-HTTP-Tiny-0.076-462.el9.noarch.rp 577 kB/s |  53 kB     00:00    
-(31/70): perl-IO-1.43-484.el9_8.aarch64.rpm     874 kB/s |  85 kB     00:00    
-(32/70): perl-IPC-Open3-1.21-484.el9_8.noarch.r 229 kB/s |  22 kB     00:00    
-(33/70): perl-IO-Socket-IP-0.41-5.el9.noarch.rp 232 kB/s |  42 kB     00:00    
-(34/70): perl-IO-Socket-SSL-2.073-2.el9.noarch. 1.3 MB/s | 214 kB     00:00    
-(35/70): perl-Mozilla-CA-20200520-6.el9.noarch. 137 kB/s |  12 kB     00:00    
-(36/70): perl-MIME-Base64-3.16-4.el9.aarch64.rp 320 kB/s |  30 kB     00:00    
-(37/70): perl-NDBM_File-1.15-484.el9_8.aarch64. 223 kB/s |  20 kB     00:00    
-(38/70): perl-POSIX-1.94-484.el9_8.aarch64.rpm  978 kB/s |  95 kB     00:00    
-(39/70): perl-Net-SSLeay-1.94-3.el9.aarch64.rpm 3.3 MB/s | 391 kB     00:00    
-(40/70): perl-PathTools-3.78-461.el9.aarch64.rp 796 kB/s |  85 kB     00:00    
-(41/70): perl-Pod-Escapes-1.07-460.el9.0.1.noar 231 kB/s |  20 kB     00:00    
-(42/70): perl-Pod-Perldoc-3.28.01-461.el9.noarc 975 kB/s |  83 kB     00:00    
-(43/70): perl-Pod-Simple-3.42-4.el9.noarch.rpm  2.0 MB/s | 215 kB     00:00    
-(44/70): perl-Pod-Usage-2.01-4.el9.noarch.rpm   419 kB/s |  40 kB     00:00    
-(45/70): perl-Scalar-List-Utils-1.56-462.el9.aa 678 kB/s |  68 kB     00:00    
-(46/70): perl-SelectSaver-1.02-484.el9_8.noarch 116 kB/s |  10 kB     00:00    
-(47/70): perl-Socket-2.031-4.el9.aarch64.rpm    526 kB/s |  54 kB     00:00    
-(48/70): perl-Storable-3.21-460.el9.aarch64.rpm 917 kB/s |  93 kB     00:00    
-(49/70): perl-Symbol-1.08-484.el9_8.noarch.rpm  128 kB/s |  13 kB     00:00    
-(50/70): perl-Term-ANSIColor-5.01-461.el9.0.1.n 482 kB/s |  48 kB     00:00    
-(51/70): perl-Term-Cap-1.17-460.el9.0.1.noarch. 225 kB/s |  22 kB     00:00    
-(52/70): perl-TermReadKey-2.38-11.el9.aarch64.r 345 kB/s |  35 kB     00:00    
-(53/70): perl-Text-ParseWords-3.30-460.el9.noar 167 kB/s |  16 kB     00:00    
-(54/70): perl-Text-Tabs+Wrap-2013.0523-460.el9. 225 kB/s |  23 kB     00:00    
-(55/70): perl-Time-Local-1.300-7.el9.noarch.rpm 331 kB/s |  33 kB     00:00    
-(56/70): perl-URI-5.09-3.el9.0.1.noarch.rpm     1.1 MB/s | 124 kB     00:00    
-(57/70): perl-base-2.27-484.el9_8.noarch.rpm    149 kB/s |  15 kB     00:00    
-(58/70): perl-constant-1.33-461.el9.0.1.noarch. 217 kB/s |  23 kB     00:00    
-(59/70): perl-if-0.60.800-484.el9_8.noarch.rpm  132 kB/s |  13 kB     00:00    
-(60/70): perl-interpreter-5.32.1-484.el9_8.aarc 674 kB/s |  69 kB     00:00    
-(61/70): perl-lib-0.65-484.el9_8.aarch64.rpm    138 kB/s |  14 kB     00:00    
-(62/70): perl-libnet-3.13-4.el9.noarch.rpm      1.1 MB/s | 125 kB     00:00    
-(63/70): perl-mro-1.23-484.el9_8.aarch64.rpm    258 kB/s |  26 kB     00:00    
-(64/70): perl-libs-5.32.1-484.el9_8.aarch64.rpm  14 MB/s | 2.0 MB     00:00    
-(65/70): perl-overload-1.31-484.el9_8.noarch.rp 445 kB/s |  44 kB     00:00    
-(66/70): perl-overloading-0.02-484.el9_8.noarch 140 kB/s |  12 kB     00:00    
-(67/70): perl-parent-0.238-460.el9.noarch.rpm   137 kB/s |  14 kB     00:00    
-(68/70): perl-podlators-4.14-460.el9.0.1.noarch 1.0 MB/s | 117 kB     00:00    
-(69/70): perl-subs-1.03-484.el9_8.noarch.rpm    101 kB/s |  10 kB     00:00    
-(70/70): perl-vars-1.05-484.el9_8.noarch.rpm    122 kB/s |  12 kB     00:00    
+(1/70): less-590-6.el9.aarch64.rpm              619 kB/s | 159 kB     00:00    
+(2/70): make-4.3-8.el9.aarch64.rpm              1.6 MB/s | 526 kB     00:00    
+(3/70): which-2.21-30.el9_6.aarch64.rpm         860 kB/s |  40 kB     00:00    
+(4/70): ncurses-6.2-12.20210508.el9.aarch64.rpm 3.1 MB/s | 398 kB     00:00    
+(5/70): groff-base-1.22.4-10.el9.0.1.aarch64.rp 2.6 MB/s | 1.0 MB     00:00    
+(6/70): git-2.52.0-1.el9.aarch64.rpm            599 kB/s |  39 kB     00:00    
+(7/70): perl-AutoLoader-5.74-484.el9_8.noarch.r 806 kB/s |  20 kB     00:00    
+(8/70): perl-B-1.80-484.el9_8.aarch64.rpm       3.7 MB/s | 178 kB     00:00    
+(9/70): git-core-doc-2.52.0-1.el9.noarch.rpm     22 MB/s | 2.8 MB     00:00    
+(10/70): git-core-2.52.0-1.el9.aarch64.rpm       32 MB/s | 5.1 MB     00:00    
+(11/70): perl-Carp-1.50-460.el9.0.1.noarch.rpm  765 kB/s |  29 kB     00:00    
+(12/70): perl-Class-Struct-0.66-484.el9_8.noarc 845 kB/s |  21 kB     00:00    
+(13/70): perl-Digest-1.19-4.el9.0.1.noarch.rpm  865 kB/s |  25 kB     00:00    
+(14/70): perl-Data-Dumper-2.174-462.el9.aarch64 1.6 MB/s |  54 kB     00:00    
+(15/70): perl-Digest-MD5-2.58-4.el9.aarch64.rpm 883 kB/s |  36 kB     00:00    
+(16/70): perl-DynaLoader-1.47-484.el9_8.aarch64 1.0 MB/s |  24 kB     00:00    
+(17/70): perl-Errno-1.30-484.el9_8.aarch64.rpm  468 kB/s |  14 kB     00:00    
+(18/70): perl-Encode-3.08-462.el9.aarch64.rpm    32 MB/s | 1.7 MB     00:00    
+(19/70): perl-Error-0.17029-7.el9.0.1.noarch.rp 1.1 MB/s |  41 kB     00:00    
+(20/70): perl-Exporter-5.74-461.el9.noarch.rpm  1.3 MB/s |  31 kB     00:00    
+(21/70): perl-File-Basename-2.85-484.el9_8.noar 421 kB/s |  16 kB     00:00    
+(22/70): perl-Fcntl-1.13-484.el9_8.aarch64.rpm  447 kB/s |  19 kB     00:00    
+(23/70): perl-File-Path-2.18-4.el9.noarch.rpm   818 kB/s |  35 kB     00:00    
+(24/70): perl-File-stat-1.09-484.el9_8.noarch.r 451 kB/s |  16 kB     00:00    
+(25/70): perl-File-Temp-0.231.100-4.el9.noarch. 1.4 MB/s |  59 kB     00:00    
+(26/70): perl-FileHandle-2.03-484.el9_8.noarch. 355 kB/s |  14 kB     00:00    
+(27/70): perl-Getopt-Long-2.52-4.el9.noarch.rpm 1.5 MB/s |  60 kB     00:00    
+(28/70): perl-Getopt-Std-1.12-484.el9_8.noarch. 373 kB/s |  14 kB     00:00    
+(29/70): perl-Git-2.52.0-1.el9.noarch.rpm       1.0 MB/s |  37 kB     00:00    
+(30/70): perl-HTTP-Tiny-0.076-462.el9.noarch.rp 1.4 MB/s |  53 kB     00:00    
+(31/70): perl-IO-1.43-484.el9_8.aarch64.rpm     2.3 MB/s |  85 kB     00:00    
+(32/70): perl-IO-Socket-IP-0.41-5.el9.noarch.rp 1.0 MB/s |  42 kB     00:00    
+(33/70): perl-IPC-Open3-1.21-484.el9_8.noarch.r 506 kB/s |  22 kB     00:00    
+(34/70): perl-IO-Socket-SSL-2.073-2.el9.noarch. 1.6 MB/s | 214 kB     00:00    
+(35/70): perl-MIME-Base64-3.16-4.el9.aarch64.rp 260 kB/s |  30 kB     00:00    
+(36/70): perl-Mozilla-CA-20200520-6.el9.noarch. 129 kB/s |  12 kB     00:00    
+(37/70): perl-NDBM_File-1.15-484.el9_8.aarch64. 751 kB/s |  20 kB     00:00    
+(38/70): perl-POSIX-1.94-484.el9_8.aarch64.rpm  2.6 MB/s |  95 kB     00:00    
+(39/70): perl-Net-SSLeay-1.94-3.el9.aarch64.rpm 8.6 MB/s | 391 kB     00:00    
+(40/70): perl-PathTools-3.78-461.el9.aarch64.rp 2.0 MB/s |  85 kB     00:00    
+(41/70): perl-Pod-Escapes-1.07-460.el9.0.1.noar 677 kB/s |  20 kB     00:00    
+(42/70): perl-Pod-Perldoc-3.28.01-461.el9.noarc 2.9 MB/s |  83 kB     00:00    
+(43/70): perl-Pod-Simple-3.42-4.el9.noarch.rpm  4.3 MB/s | 215 kB     00:00    
+(44/70): perl-Pod-Usage-2.01-4.el9.noarch.rpm   862 kB/s |  40 kB     00:00    
+(45/70): perl-SelectSaver-1.02-484.el9_8.noarch 347 kB/s |  10 kB     00:00    
+(46/70): perl-Socket-2.031-4.el9.aarch64.rpm    1.2 MB/s |  54 kB     00:00    
+(47/70): perl-Storable-3.21-460.el9.aarch64.rpm 2.3 MB/s |  93 kB     00:00    
+(48/70): perl-Scalar-List-Utils-1.56-462.el9.aa 624 kB/s |  68 kB     00:00    
+(49/70): perl-Symbol-1.08-484.el9_8.noarch.rpm  356 kB/s |  13 kB     00:00    
+(50/70): perl-Term-ANSIColor-5.01-461.el9.0.1.n 1.2 MB/s |  48 kB     00:00    
+(51/70): perl-Term-Cap-1.17-460.el9.0.1.noarch. 552 kB/s |  22 kB     00:00    
+(52/70): perl-TermReadKey-2.38-11.el9.aarch64.r 709 kB/s |  35 kB     00:00    
+(53/70): perl-Text-Tabs+Wrap-2013.0523-460.el9. 534 kB/s |  23 kB     00:00    
+(54/70): perl-Text-ParseWords-3.30-460.el9.noar 321 kB/s |  16 kB     00:00    
+(55/70): perl-Time-Local-1.300-7.el9.noarch.rpm 858 kB/s |  33 kB     00:00    
+(56/70): perl-base-2.27-484.el9_8.noarch.rpm    406 kB/s |  15 kB     00:00    
+(57/70): perl-URI-5.09-3.el9.0.1.noarch.rpm     2.5 MB/s | 124 kB     00:00    
+(58/70): perl-constant-1.33-461.el9.0.1.noarch. 579 kB/s |  23 kB     00:00    
+(59/70): perl-if-0.60.800-484.el9_8.noarch.rpm  462 kB/s |  13 kB     00:00    
+(60/70): perl-interpreter-5.32.1-484.el9_8.aarc 2.6 MB/s |  69 kB     00:00    
+(61/70): perl-lib-0.65-484.el9_8.aarch64.rpm    585 kB/s |  14 kB     00:00    
+(62/70): perl-libnet-3.13-4.el9.noarch.rpm      3.7 MB/s | 125 kB     00:00    
+(63/70): perl-libs-5.32.1-484.el9_8.aarch64.rpm  33 MB/s | 2.0 MB     00:00    
+(64/70): perl-mro-1.23-484.el9_8.aarch64.rpm    471 kB/s |  26 kB     00:00    
+(65/70): perl-overload-1.31-484.el9_8.noarch.rp 1.1 MB/s |  44 kB     00:00    
+(66/70): perl-overloading-0.02-484.el9_8.noarch 446 kB/s |  12 kB     00:00    
+(67/70): perl-parent-0.238-460.el9.noarch.rpm   314 kB/s |  14 kB     00:00    
+(68/70): perl-podlators-4.14-460.el9.0.1.noarch 2.4 MB/s | 117 kB     00:00    
+(69/70): perl-subs-1.03-484.el9_8.noarch.rpm    276 kB/s |  10 kB     00:00    
+(70/70): perl-vars-1.05-484.el9_8.noarch.rpm    290 kB/s |  12 kB     00:00    
 --------------------------------------------------------------------------------
-Total                                           4.8 MB/s |  17 MB     00:03     
+Total                                            10 MB/s |  17 MB     00:01     
 Running transaction check
 Transaction check succeeded.
 Running transaction test
@@ -394,10 +394,14 @@ Installed:
   which-2.21-30.el9_6.aarch64                                                   
 
 Complete!
-[rathsted 23:10:59] Copying local repo into VM rathsted-compat-rocky-9 (/srv/rathsted-foundations)...
-[rathsted 23:11:02] Running E2E inside VM rathsted-compat-rocky-9...
-[rathsted 23:11:02] Decrypting SSH key (removing passphrase for Flux compatibility)...
-[rathsted 23:11:02] SSH key decrypted successfully
+[rathsted 14:41:40] Copying local repo into VM rathsted-compat-rocky-9 (/srv/rathsted-foundations)...
+[rathsted 14:41:41] Running E2E inside VM rathsted-compat-rocky-9...
+[rathsted 14:41:41] Decrypting SSH key (removing passphrase for Flux compatibility)...
+[rathsted 14:41:41] SSH key decrypted successfully
+vm.overcommit_memory = 0
+vm.panic_on_oom = 0
+kernel.panic = 0
+kernel.panic_on_oops = 0
 ./scripts/orbstack-e2e.sh
 [rathsted] OrbStack E2E starting
 [rathsted] Host: Linux rathsted-compat-rocky-9 7.0.14-orbstack-00380-ga7e0a2dc9535 #1 SMP PREEMPT Fri Aug  7 03:48:40 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
@@ -413,9 +417,10 @@ Complete!
 
 [rathsted] Audit policy installed
 [rathsted] Installing k3s...
+[rathsted] Writing /etc/sysctl.d/90-kubelet.conf (required by protect-kernel-defaults)
 [INFO]  Using v1.35.9+k3s1 as release
-[INFO]  Downloading hash https://github.com/k3s-io/k3s/releases/download/v1.35.9%2Bk3s1/sha256sum-arm64.txt
-[INFO]  Downloading binary https://github.com/k3s-io/k3s/releases/download/v1.35.9%2Bk3s1/k3s-arm64
+[INFO]  Downloading hash https://github.com/k3s-io/k3s/releases/download/v1.35.9+k3s1/sha256sum-arm64.txt
+[INFO]  Downloading binary https://github.com/k3s-io/k3s/releases/download/v1.35.9+k3s1/k3s-arm64
 [INFO]  Verifying binary download
 [INFO]  Installing k3s to /usr/local/bin/k3s
 [INFO]  Skipping installation of SELinux RPM
@@ -425,9 +430,9 @@ Complete!
 [INFO]  Creating killall script /usr/local/bin/k3s-killall.sh
 [INFO]  Creating uninstall script /usr/local/bin/k3s-uninstall.sh
 [INFO]  env: Creating environment file /etc/systemd/system/k3s.service.env
+Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
 [INFO]  systemd: Creating service file /etc/systemd/system/k3s.service
 [INFO]  systemd: Enabling k3s unit
-Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
 [INFO]  Host iptables-save/iptables-restore tools not found
 [INFO]  Host ip6tables-save/ip6tables-restore tools not found
 [INFO]  systemd: Starting k3s
@@ -435,26 +440,9 @@ Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc
 ━━━ 3/6  Flux + Supply Chain Tools ━━━
 
 [rathsted] Installing Flux CLI...
-[INFO]  Downloading metadata https://api.github.com/repos/fluxcd/flux2/releases/tags/v2.9.6
-[INFO]  Using 2.9.6 as release
-[INFO]  Downloading hash https://github.com/fluxcd/flux2/releases/download/v2.9.6/flux_2.9.6_checksums.txt
-[INFO]  Downloading binary https://github.com/fluxcd/flux2/releases/download/v2.9.6/flux_2.9.6_linux_arm64.tar.gz
-[INFO]  Verifying binary download
-which: no shasum in (/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin)
-[INFO]  Installing flux to /usr/local/bin/flux
 [rathsted] Installing cosign...
 [rathsted] Installing syft...
-[info] checking github for release tag='v1.54.0' 
-[info] fetching release script for tag='v1.54.0' 
-[info] checking github for release tag='v1.54.0' 
-[info] using release tag='v1.54.0' version='1.54.0' os='linux' arch='arm64' 
-[info] installed /usr/local/bin/syft 
 [rathsted] Installing grype...
-[info] checking github for release tag='v0.120.0' 
-[info] fetching release script for tag='v0.120.0' 
-[info] checking github for release tag='v0.120.0' 
-[info] using release tag='v0.120.0' version='0.120.0' os='linux' arch='arm64' 
-[info] installed /usr/local/bin/grype 
 [rathsted] Installing Flux controllers...
 ✚ generating manifests
 ✔ manifests build completed
@@ -585,14 +573,15 @@ clusterpolicy.kyverno.io/disallow-privileged created
 clusterpolicy.kyverno.io/drop-all-capabilities created
 clusterpolicy.kyverno.io/require-namespace-labels created
 clusterpolicy.kyverno.io/require-non-root created
-Warning: Policies that match Pods apply to all Pods including those created and managed by controllers excluded from autogen. Use preconditions to exclude the Pods managed by controllers which are excluded from autogen. Refer to https://kyverno.io/docs/policy-types/cluster-policy/autogen/ for details.
 clusterpolicy.kyverno.io/require-probes created
+Warning: Policies that match Pods apply to all Pods including those created and managed by controllers excluded from autogen. Use preconditions to exclude the Pods managed by controllers which are excluded from autogen. Refer to https://kyverno.io/docs/policy-types/cluster-policy/autogen/ for details.
 clusterpolicy.kyverno.io/require-readonly-rootfs created
 clusterpolicy.kyverno.io/require-resources created
 clusterpolicy.kyverno.io/require-seccomp created
 clusterpolicy.kyverno.io/require-signed-images created
 clusterpolicy.kyverno.io/restrict-hostpath created
 clusterpolicy.kyverno.io/restrict-registries created
+[rathsted] Using default policies (run 'make configure' to customize registry/image signing).
 
 ━━━ 6/6  GitOps Bootstrap ━━━
 
@@ -606,77 +595,78 @@ kustomization.kustomize.toolkit.fluxcd.io/rathsted-sync created
 == Environment ==
   Foundations version: untagged
   Hostname:           rathsted-compat-rocky-9
-  Date:               2026-10-06T06:12:48Z
+  Date:               2026-10-09T21:42:56Z
   Verify mode:        self-hosted
   OS:                 Rocky Linux 9.8 (Blue Onyx)
   Kernel:             7.0.14-orbstack-00380-ga7e0a2dc9535
-[ok 23:12:48] Environment recorded
+[ok 14:42:56] Environment recorded
 
 == Cluster ==
-[ok 23:12:48] cluster-info ok
-[ok 23:12:48] cluster nodes accessible
+[ok 14:42:56] cluster-info ok
+[ok 14:42:56] cluster nodes accessible
   Contract series:    2.x
   Contract install:   self-hosted
   Decks v0 support:   true
   Topology:           single-node (supported nodes 1-1)
-[ok 23:12:50] Foundations contract marker present
+[ok 14:42:58] Foundations contract marker present
 
 == Hardening ==
-  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (4.4M, 3641 entries)
-[ok 23:12:50] API server audit logging active
-[ok 23:12:50] Audit policy file present
-[ok 23:12:50] Secrets encryption at rest enabled (encryption config present)
+  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (4.6M, 3739 entries)
+[ok 14:42:58] API server audit logging active
+[ok 14:42:58] Audit policy file present
+[ok 14:42:58] Secrets encryption at rest enabled (encryption config present)
 
 == Flux ==
-[ok 23:12:51] Flux check passed
-[ok 23:12:51] Flux installed
-[ok 23:12:52] Flux pods present
+[ok 14:42:59] Flux check passed
+[ok 14:42:59] Flux installed
+[ok 14:42:59] Flux pods present
 
 == Kyverno ==
-[ok 23:12:52] Kyverno installed
-[ok 23:12:52] Kyverno pods present
-[ok 23:12:53] Kyverno policies present
-[info 23:12:53] kyverno image: ghcr.io/kyverno/kyverno:v1.19.1
-[info 23:12:53] kyverno image: ghcr.io/kyverno/background-controller:v1.19.1
-[info 23:12:53] kyverno image: ghcr.io/kyverno/cleanup-controller:v1.19.1
-[info 23:12:53] kyverno image: ghcr.io/kyverno/reports-controller:v1.19.1
+[ok 14:42:59] Kyverno installed
+[ok 14:43:00] Kyverno pods present
+[ok 14:43:00] Kyverno policies present
+[info 14:43:01] kyverno image: ghcr.io/kyverno/kyverno:v1.19.1
+[info 14:43:01] kyverno image: ghcr.io/kyverno/background-controller:v1.19.1
+[info 14:43:01] kyverno image: ghcr.io/kyverno/cleanup-controller:v1.19.1
+[info 14:43:01] kyverno image: ghcr.io/kyverno/reports-controller:v1.19.1
 
 == GitOps ==
-[ok 23:12:54] GitOps sync present
-[ok 23:12:54] Flux kustomizations listed
-[ok 23:12:54] Flux Git sources listed
+[ok 14:43:01] GitOps sync present
+[ok 14:43:01] Flux kustomizations listed
+[ok 14:43:01] Flux Git sources listed
 
 == Demo App ==
-[warn 23:12:54] Demo namespace not present (non-fatal: GitOps reconciliation may still be in progress)
-[ok 23:12:54] Signature policy installed
+[ok 14:43:01] Demo app objects present
+[warn 14:43:02] Demo app not Ready (non-fatal: GitOps reconciliation may still be in progress)
+[ok 14:43:02] Signature policy installed
 
 == Supply Chain ==
-[ok 23:13:03] SBOM generated (local containerd)
-[skip 23:13:03] Cosign skipped (cosign.pub not configured; use --release to enforce)
+[ok 14:43:12] SBOM generated (local containerd)
+[skip 14:43:12] Cosign skipped (cosign.pub not configured; use --release to enforce)
 
 == Vulnerability Scan ==
   Results: /srv/rathsted-foundations/supply-chain/sbom/output/foundations-demo.grype.txt
-  Critical: 28  High: 102
-[ok 23:16:31] Grype scan complete (informational; the High+ release gate applies under --release)
+  Critical: 28  High: 111
+[ok 14:47:21] Grype scan complete (informational; the High+ release gate applies under --release)
 
 == Negative Tests ==
-[ok 23:16:32] Kyverno webhooks detected, waiting 15s for policies to settle...
-[ok 23:16:47] Policy rejected as expected: default-namespace-pod.yaml
-[ok 23:16:47] Policy rejected as expected: disallowed-registry.yaml
-[ok 23:16:47] Policy rejected as expected: host-namespaces-pod.yaml
-[ok 23:16:48] Policy rejected as expected: hostpath-pod.yaml
-[ok 23:16:48] Policy rejected as expected: no-drop-capabilities-pod.yaml
-[ok 23:16:48] Policy rejected as expected: no-namespace-labels.yaml
-[ok 23:16:48] Policy rejected as expected: no-probes-pod.yaml
-[ok 23:16:48] Policy rejected as expected: no-resources-pod.yaml
-[ok 23:16:48] Policy rejected as expected: no-seccomp-pod.yaml
-[ok 23:16:48] Policy rejected as expected: privileged-pod.yaml
-[ok 23:16:49] Policy rejected as expected: readonly-rootfs-pod.yaml
-[ok 23:16:49] Policy rejected as expected: root-pod.yaml
-[ok 23:16:50] Policy rejected as expected: unsigned-image-pod.yaml
+[ok 14:47:21] Kyverno webhooks detected, waiting 15s for policies to settle...
+[ok 14:47:37] Policy rejected as expected: default-namespace-pod.yaml
+[ok 14:47:37] Policy rejected as expected: disallowed-registry.yaml
+[ok 14:47:38] Policy rejected as expected: host-namespaces-pod.yaml
+[ok 14:47:38] Policy rejected as expected: hostpath-pod.yaml
+[ok 14:47:39] Policy rejected as expected: no-drop-capabilities-pod.yaml
+[ok 14:47:39] Policy rejected as expected: no-namespace-labels.yaml
+[ok 14:47:39] Policy rejected as expected: no-probes-pod.yaml
+[ok 14:47:39] Policy rejected as expected: no-resources-pod.yaml
+[ok 14:47:40] Policy rejected as expected: no-seccomp-pod.yaml
+[ok 14:47:40] Policy rejected as expected: privileged-pod.yaml
+[ok 14:47:40] Policy rejected as expected: readonly-rootfs-pod.yaml
+[ok 14:47:40] Policy rejected as expected: root-pod.yaml
+[ok 14:47:42] Policy rejected as expected: unsigned-image-pod.yaml
 
 == Positive Admission Tests ==
-[skip 23:16:50] Positive admission tests skipped (use --release / RATHSTED_VERIFY_RELEASE=1 to enforce)
+[skip 14:47:42] Positive admission tests skipped (use --release to enforce)
 
 == Access Control (RBAC) ==
   ClusterRoleBindings + RoleBindings: 80
@@ -747,23 +737,24 @@ kustomization.kustomize.toolkit.fluxcd.io/rathsted-sync created
     system:public-info-viewer
     system:service-account-issuer-discovery
     system:volume-scheduler
-[ok 23:16:50] RBAC snapshot recorded
+[ok 14:47:43] RBAC snapshot recorded
 
 == Network Policies ==
-  NetworkPolicies across all namespaces: 3
+  NetworkPolicies across all namespaces: 4
+    demo                 default-deny
     flux-system          allow-egress
     flux-system          allow-scraping
     flux-system          allow-webhooks
-[ok 23:16:51] NetworkPolicy snapshot recorded
+[ok 14:47:43] NetworkPolicy snapshot recorded
 
 == Summary ==
-  Passed:   35
+  Passed:   36
   Warnings: 3
   Failed:   0
 
-[ok 23:16:51] Verification passed
+[ok 14:47:43] Verification passed
 [rathsted] E2E complete
-[rathsted 23:16:51] Host-side OrbStack E2E complete
+[rathsted 14:47:43] Host-side OrbStack E2E complete
 
 # Exit code: 0
-# Completed: 2026-10-06T06:16:51Z
+# Completed: 2026-10-09T21:47:43Z

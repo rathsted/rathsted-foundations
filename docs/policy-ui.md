@@ -1,5 +1,9 @@
 # Local Policy UI Proposal
 
+> **Design proposal — not implemented in 2.0.x.** This document describes a proposed
+> future direction. The commands and interface shown here do not exist in the current
+> release.
+
 This document describes a local web UI for managing Rathsted policy packs.
 
 Purpose:
@@ -28,17 +32,11 @@ The UI must not become a second source of truth.
 
 ## Entry Point
 
-Suggested command:
+Proposed command:
 
-```bash
-rathsted policy ui
-```
+    rathsted policy ui
 
-Or as an initial Make target:
-
-```bash
-make policy-ui
-```
+Or as an initial Make target (proposed: `policy-ui`).
 
 Expected behavior:
 - start a local web server

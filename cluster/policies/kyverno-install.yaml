@@ -90848,7 +90848,8 @@ spec:
             - --loggingFormat=text
             - --v=2
             - --omitEvents=PolicyApplied,PolicySkipped
-            - --enablePolicyException=false
+            - --enablePolicyException=true
+            - --exceptionNamespace=kyverno
             - --protectManagedResources=false
             - --allowInsecureRegistry=false
             - --registryCredentialHelpers=default,google,amazon,azure,github
@@ -91025,7 +91026,8 @@ spec:
             - --loggingFormat=text
             - --v=2
             - --omitEvents=PolicyApplied,PolicySkipped
-            - --enablePolicyException=false
+            - --enablePolicyException=true
+            - --exceptionNamespace=kyverno
             - --enableReporting=validate,mutate,mutateExisting,imageVerify,generate
             
           env:
@@ -91325,7 +91327,8 @@ spec:
             - --loggingFormat=text
             - --v=2
             - --omitEvents=PolicyApplied,PolicySkipped
-            - --enablePolicyException=false
+            - --enablePolicyException=true
+            - --exceptionNamespace=kyverno
             - --allowInsecureRegistry=false
             - --registryCredentialHelpers=default,google,amazon,azure,github
             - --enableReporting=validate,mutate,mutateExisting,imageVerify,generate

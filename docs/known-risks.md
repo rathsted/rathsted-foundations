@@ -2,20 +2,29 @@
 
 This document lists accepted security risks in Rathsted Foundations, the mitigations in place, and when to re-evaluate. It is intended for internal review, auditors, and security-conscious operators.
 
-Last reviewed: 2026-07-26
+Last reviewed: 2026-10-06
 
 ## 1. k3s Installer Trust Model
 
-**Risk:** The k3s installer (`get.k3s.io`) is a remote script. The k3s installer (`get.k3s.io`) is fetched via HTTPS and piped to shell. The installer script itself is not checksum-verified before execution. The k3s binary is verified by the upstream installer against the official release checksum, but the installer script is trust-on-first-use.
+**Risk:** The k3s installer script is downloaded from the k3s release tag on GitHub
+(`raw.githubusercontent.com/k3s-io/k3s/<version>/install.sh`) over HTTPS and verified
+against a sha256 checksum pinned in `bootstrap/install.sh` before execution. The installer
+then verifies the k3s binary against the official release sha256 file.
 
 **Mitigations:**
-- The installer script itself verifies the k3s binary against the official release checksum
-- `set -euo pipefail` and `--proto '=https' --tlsv1.2` enforce secure download
-- Version is pinned via `INSTALL_K3S_VERSION` to prevent silent upgrades
+- The installer script is verified against a sha256 pinned in `install.sh` (`RATHSTED_K3S_INSTALLER_SHA256`) before it runs
+- Downloads use `--proto '=https' --tlsv1.2` to enforce HTTPS-only, TLS 1.2 minimum
+- GitHub SSH host keys are pinned; no `ssh-keyscan`
+- The installer verifies the k3s binary against the official release sha256 file
+- `INSTALL_K3S_VERSION` pins the k3s binary version to prevent silent upgrades
+- Flux, Cosign, Syft, and Grype are downloaded as release archives and verified against the checksums file published in the same GitHub release
 
-**Residual risk:** A compromised `get.k3s.io` that changes between checksum pins could deliver a malicious installer. Fully hermetic installs (vendored binaries with repo-pinned checksums) would eliminate this.
+**Residual risk:**
+- The sha256 checksums for Flux, Cosign, Syft, and Grype verify integrity against the same GitHub release — a compromised release could ship matching checksums. This proves integrity but not independent provenance.
+- Cosign, Syft, and Grype release archives are not additionally signature-verified (no cosign-on-cosign). Pins must be updated deliberately when bumping versions.
+- The pinned installer sha256 is only as trustworthy as the moment it was recorded: a change to the upstream script fails verification, but a pin recomputed from an already-compromised upstream when bumping `K3S_VERSION` would be accepted. Re-pin deliberately and compare against more than one source.
 
-**Re-evaluate:** When the project moves to a release-artifact model with vendored binaries, or if k3s provides an official checksum file for the installer script.
+**Re-evaluate:** When the project adopts release artifact signing (e.g., SLSA provenance or a sigstore bundle for the installer script), or when moving to a fully vendored offline bootstrap model.
 
 ---
 
@@ -26,7 +35,7 @@ Last reviewed: 2026-07-26
 **Mitigations:**
 - System components are installed via `bootstrap/install.sh` with pinned versions
 - Only cluster administrators can deploy to system namespaces (RBAC)
-- The signing trust boundary is documented in `docs/namespace-exclusions.md`
+- The signing trust boundary is documented in the policy YAML itself (`policies/require-signed-images.yaml`)
 - Network policies in `flux-system` restrict egress and ingress
 
 **Residual risk:** A compromised system component or a cluster admin deploying an unapproved workload to a system namespace would bypass all policies.
@@ -65,45 +74,41 @@ Last reviewed: 2026-07-26
 
 ---
 
-## 5. PolicyExceptions Enabled Cluster-Wide, Unscoped
+## 5. PolicyExceptions: Scoped to `kyverno` Namespace, Residual Risks Remain
 
-**Risk:** Kyverno runs with `--enablePolicyException=true` on all controllers
-(`cluster/policies/kyverno-install.yaml`) with **no** `--exceptionNamespace`, so a
-`PolicyException` is honored from *any* namespace. A principal able to `create`
-`policyexceptions.kyverno.io` in their own namespace could exempt their workloads
-from any ClusterPolicy (non-root, signed-images, registry, seccomp, …).
-Separately, `--protectManagedResources=false` leaves Kyverno-generated
-default-deny NetworkPolicies editable at admission, and the `default` namespace is
-excluded from the generated default-deny.
+**Current state:** Kyverno runs with `--enablePolicyException=true --exceptionNamespace=kyverno`
+on all controllers (`cluster/policies/kyverno-install.yaml`). Only `PolicyException`
+objects placed in the `kyverno` namespace take effect. A tenant cannot exempt their
+own workloads by creating exceptions in their own namespace.
 
-**Mitigations (current):**
-- Single-operator / single-tenant v0: **no delegated Role grants `create` on
-  `policyexceptions`** — a grep of the RBAC surface finds none, so exploitation
-  requires cluster-admin today (**LOW** as shipped).
+`--protectManagedResources=false` (unchanged) leaves Kyverno-generated default-deny
+NetworkPolicies editable by anyone with write access to NetworkPolicy resources. The
+`default` namespace is excluded from the generated default-deny.
+
+**Mitigations:**
+- `--exceptionNamespace=kyverno` restricts exception creation to cluster-admin
+  (no delegated Role grants `create` on `policyexceptions.kyverno.io`).
 - Generated default-deny NetworkPolicies use `synchronize: true`, so drift is
-  reconciled (leaving only a short window).
-- The only shipped exceptions (`profiles/app-runtime`, `profiles/ai-inference`)
-  are narrowly scoped by namespace + name and are operator-installed.
+  reconciled on the next Kyverno background scan (leaving only a short window).
+- The only shipped exception (`profiles/app-runtime/policy-exception.yaml`) is
+  narrowly scoped by workload name and namespace.
 
-**Residual risk:** The moment namespace-admin is delegated to a tenant, this
-becomes **HIGH** — self-service policy exemption.
+**Residual risk:**
+- Any principal who can write to the `kyverno` namespace (cluster-admin) can
+  create arbitrary PolicyExceptions. Keep tight RBAC on the `kyverno` namespace.
+- `--protectManagedResources=false` means Kyverno-generated NetworkPolicies can
+  be manually edited or deleted between reconcile cycles.
+- The `default` namespace has no generated default-deny NetworkPolicy.
 
-**Planned remediation (requires live validation before commit):**
-1. Add `--exceptionNamespace=kyverno-exceptions` to every `--enablePolicyException`
-   controller. **Validate the flag against Kyverno v1.12.3 on a live cluster
-   first** — an invalid flag crashloops the controller, and with
-   `--forceFailurePolicyIgnore=false` that fails admission *closed* cluster-wide.
-2. Create the admin-only `kyverno-exceptions` namespace and migrate the two
-   existing exceptions into it (both already target their workload namespace
-   explicitly via `spec.match…namespaces`, so relocating the resource is safe).
-3. RBAC: never grant `create/update` on `policyexceptions.kyverno.io` in any
-   delegated Role; keep it cluster-admin-only.
-4. Consider `--protectManagedResources=true` and a policy denying pods in the
-   `default` namespace (both are behavior changes to validate live).
+**Planned hardening:**
+- Set `--protectManagedResources=true` — validate against Kyverno v1.19.1 on a
+  live cluster first; an invalid flag crashloops the controller, and with
+  `--forceFailurePolicyIgnore=false` that fails admission *closed* cluster-wide.
+- Add a policy denying pods in the `default` namespace.
+- RBAC: never grant `create/update` on `policyexceptions.kyverno.io` in any
+  delegated Role; keep it cluster-admin-only.
 
-**Re-evaluate:** Before any multi-tenant / delegated-namespace-admin deployment —
-this remediation must land first. Tracked as a hardening item; not applied blind
-because the flag change can brick admission if the version behavior differs.
+**Re-evaluate:** Before any multi-tenant / delegated-namespace-admin deployment.
 
 ---
 
@@ -111,8 +116,8 @@ because the flag change can brick admission if the version behavior differs.
 
 | # | Risk | Severity | Status | Mitigation |
 |---|------|----------|--------|------------|
-| 1 | k3s installer trust model | Medium | Accepted | Version-pinned, binary verified by upstream installer, script not checksummed |
+| 1 | k3s installer trust model | Medium | Accepted | Installer script sha256-pinned before run; binary verified by installer; checksums prove integrity not provenance; no Cosign/Syft/Grype signature verification |
 | 2 | Namespace exclusions | Medium | Accepted | RBAC, pinned installs, documented boundary |
 | 3 | Cosign key in repo | Low | Accepted | Encrypted, excluded from public, rotation documented |
 | 4 | Signed-image test uses tag, not digest | Low | Accepted | Cosign signature binds to digest; tag-shift without matching signature still rejected at admission |
-| 5 | PolicyExceptions unscoped cluster-wide | Low now / High if tenancy delegated | Remediation planned (live-validation required) | No delegated exception-create RBAC today; scope to `kyverno-exceptions` before delegating |
+| 5 | PolicyExceptions scoped to `kyverno` namespace | Low (single-operator); High if namespace-admin delegated | Mitigated (exception namespace locked to `kyverno`) | `--exceptionNamespace=kyverno` prevents tenant self-exemption; `--protectManagedResources=false` and default namespace gap remain |

@@ -1,6 +1,6 @@
 # Rathsted Foundations
 
-Rathsted Foundations is a Kubernetes baseline for teams that need infrastructure they can control, explain, and defend under customer, jurisdictional, or audit pressure. `v1.0.0` is a stable, single-node release with explicit boundaries: GitOps, policy enforcement, signed artifacts, and SBOM generation in a small, opinionated stack. It helps teams set up a controlled baseline, but the sovereignty of the overall environment still depends on where and how you host it.
+Rathsted Foundations is a Kubernetes baseline for teams that need infrastructure they can control, explain, and defend under customer, jurisdictional, or audit pressure. `2.x` is a stable, single-node release with explicit boundaries: GitOps, policy enforcement, signed artifacts, and SBOM generation in a small, opinionated stack. It helps teams set up a controlled baseline, but the sovereignty of the overall environment still depends on where and how you host it.
 
 ## Who It Helps
 - Teams deploying into customer-owned or regulator-sensitive environments
@@ -55,7 +55,7 @@ Use two environments:
 - Local workstation: clone the repo, run `make doctor`, `make configure`, and `make validate-config`
 - Target Linux host: run `./bootstrap/install.sh` and `./bootstrap/verify.sh` on the machine that will host `k3s`
 
-The k3s version is pinned in `install.sh`, and the upstream installer verifies the k3s binary for supply-chain integrity. Override with `RATHSTED_K3S_INSTALLER_SHA256` if the upstream installer changes.
+The k3s installer script is downloaded from the k3s release tag on GitHub and verified against a sha256 checksum pinned in `install.sh` before it runs. The installer then verifies the k3s binary against the official release sha256 file. To use a different installer checksum, set `RATHSTED_K3S_INSTALLER_SHA256`.
 
 The local workstation can be macOS, Linux, or Windows with WSL. The target host is a supported Linux machine.
 
@@ -77,7 +77,7 @@ Optional on the workstation:
 
 - Ubuntu 22.04 or 24.04 (primary)
 - Debian 12, Rocky Linux 9, RHEL 9, AlmaLinux 9 (tested or compatible)
-- 4 CPU / 8 GB RAM / 20 GB disk minimum
+- 2 CPU minimum (4 CPU recommended), 4 GB RAM minimum (8 GB recommended), 20 GB disk
 - outbound network access for initial bootstrap downloads
 - open ports required by your deployment, including `6443` for the Kubernetes API
 
@@ -104,7 +104,6 @@ Optional on the workstation:
 | [Known Risks](docs/known-risks.md) | Accepted risks, current mitigations, and the trust boundaries that still need operator judgment |
 | [Jurisdiction Control Matrix](docs/jurisdiction-control-matrix.md) | The business and operating questions to ask about cluster location, CI, registry, keys, and evidence retention |
 | [Sovereign Toolchain Inventory](docs/sovereign-toolchain-inventory.md) | The inventory fields to capture for Git, CI, registry, keys, evidence retention, and control-plane custody |
-| [Operator Training Checklist](docs/operator-training-checklist.md) | The minimum operator knowledge expected before production rollout or audit-facing use |
 | [Stack](docs/stack.md) | What each component contributes to the baseline and how the pieces fit together in practice |
 | [Pipeline Sovereignty](docs/pipeline-sovereignty.md) | How CI runner location and custody affect the overall control story |
 | [Registry Residency](docs/registry-residency-guide.md) | How to move from default example image flows to an approved in-jurisdiction registry model |
@@ -115,11 +114,11 @@ Optional on the workstation:
 | [Threat Model](docs/threat-model.md) | Which risks the baseline is meant to reduce, and which ones remain out of scope |
 | [Decisions](docs/decisions.md) | Why the baseline uses Flux, Kyverno, and the current narrow operating model |
 | [Public Trust Statement](docs/public-trust-statement.md) | What external reviewers should be able to verify from the public repo alone |
-| [Compat Evidence](artifacts/) | Latest validation output per supported OS from `make compat-test`, refreshed every release |
+| [Compat Evidence](artifacts/) | Latest validation output per supported OS, refreshed by maintainers every release |
 
 ## Proposed Docs
 
-These documents are public because they explain the intended direction of policy-pack management, but they are not part of the shipped `v1.0.0` operator surface:
+These documents are public because they explain the intended direction of policy-pack management, but they are not part of the shipped `2.x` operator surface:
 
 | Document | Why it exists |
 |----------|---------------|
@@ -145,19 +144,19 @@ These documents are public because they explain the intended direction of policy
 
 ## Scope Boundaries
 
-What `v1.0.0` does not include:
+What `2.x` does not include:
 
 - No multi-node HA or disaster recovery
-- No secrets lifecycle or encryption at rest (recommend SOPS/age)
+- No secrets lifecycle or rotation tooling (k3s encryption at rest is enabled; for GitOps secrets, use SOPS/age)
 - No runtime sandboxing beyond baseline Kubernetes controls
-- No full east-west network segmentation beyond shipped namespace baselines
+- A default-deny NetworkPolicy is generated per newly created namespace (except kube-system, kube-public, kube-node-lease, flux-system, kyverno, and default); no cross-namespace isolation policy or multi-tenant RBAC
 - No zero-prestage offline bootstrap
 - Compliance mappings are illustrative and do not replace formal assessment
 - Release-grade verification requires registry reachability
 
 ## Config Model
 
-`make configure` writes `config/customer.env`, renders registry/signature policies for your image namespace, and points the example deployment at your chosen image. The default demo uses `nginx:1.29.7-alpine` from Docker Hub as a placeholder — Foundations does not ship its own application image. Production use requires replacing this with your own image.
+`make configure` writes `config/customer.env`, renders registry/signature policies for your image namespace, and points the example deployment at your chosen image. `install.sh` applies those rendered policies during bootstrap only: Flux then reconciles the default policies from git and may restore the default `ghcr.io/rathsted/*` allowlist, so for a persistent custom registry carry equivalent policy changes in your GitOps source (a tracked-overlay workflow is planned). The default demo uses `nginx:1.29.7-alpine` from Docker Hub as a placeholder — Foundations does not ship its own application image. Production use requires replacing this with your own image.
 
 ## Profiles
 

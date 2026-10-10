@@ -84,7 +84,7 @@ jobs:
       - name: Bootstrap GitOps sync
         run: |
           GIT_URL="https://github.com/${GITHUB_REPOSITORY}"
-          sed -e "s|REPLACE_GIT_URL|${GIT_URL}|g" -e "s|__SECRET_REF__||g" cluster/gitops/sync/gitrepository.yaml.tmpl | kubectl apply -f -
+          sed -e "s|REPLACE_GIT_URL|${GIT_URL}|g" -e "s|REPLACE_GIT_REF|branch: main|g" -e "s|__SECRET_REF__||g" cluster/gitops/sync/gitrepository.yaml.tmpl | kubectl apply -f -
           kubectl apply -f cluster/gitops/sync/kustomization.yaml
 
       - name: Wait for Kyverno controllers

@@ -4,16 +4,23 @@
 apiVersion: audit.k8s.io/v1
 kind: Policy
 rules:
+  # Log secrets at Metadata level only — never record body or data.
+  # This rule must appear first so the Request rule below never matches secrets.
+  - level: Metadata
+    resources:
+      - group: ""
+        resources: ["secrets"]
+
   # Log authentication failures at RequestResponse level
   - level: RequestResponse
     users: ["system:anonymous"]
     verbs: ["create", "update", "patch", "delete"]
 
-  # Log changes to secrets, configmaps, RBAC at Request level
+  # Log changes to configmaps and RBAC at Request level (secrets excluded above)
   - level: Request
     resources:
       - group: ""
-        resources: ["secrets", "configmaps"]
+        resources: ["configmaps"]
       - group: "rbac.authorization.k8s.io"
         resources: ["clusterroles", "clusterrolebindings", "roles", "rolebindings"]
 

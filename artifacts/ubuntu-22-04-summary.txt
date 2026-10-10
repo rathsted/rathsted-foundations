@@ -1,7 +1,7 @@
 ┌─────────────────────────────────────────────────────────────┐
 │  Rathsted Foundations — Validation Evidence                 │
 │  Version: untagged · Target: ubuntu:22.04                   │
-│  Date: 2026-10-06 · Source: github.com/rathsted             │
+│  Date: 2026-10-09 · Source: github.com/rathsted             │
 └─────────────────────────────────────────────────────────────┘
 
   Component Versions
@@ -16,7 +16,7 @@
   ╭─ 1/12 Environment ───────────────────────────────── PASS ─╮
   │  Foundations version: untagged
   │  Hostname:           rathsted-compat-ubuntu-22-04
-  │  Date:               2026-10-06T06:18:02Z
+  │  Date:               2026-10-09T21:49:41Z
   │  Verify mode:        self-hosted
   │  OS:                 Ubuntu 22.04.5 LTS
   │  Kernel:             7.0.14-orbstack-00380-ga7e0a2dc9535
@@ -34,7 +34,7 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ╭─ 3/12 Hardening ─────────────────────────────────── PASS ─╮
-  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (5.0M, 3940 entries)
+  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (4.6M, 3725 entries)
   │  ✓  API server audit logging active
   │  ✓  Audit policy file present
   │  ✓  Secrets encryption at rest enabled (encryption config present)
@@ -59,7 +59,8 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ╭─ 7/12 Demo App ──────────────────────────────────── WARN ─╮
-  │  ⚠  Demo namespace not present (non-fatal: GitOps reconciliation may still be in progress)
+  │  ✓  Demo app objects present
+  │  ⚠  Demo app not Ready (non-fatal: GitOps reconciliation may still be in progress)
   │  ✓  Signature policy installed
   ╰───────────────────────────────────────────────────────────╯
 
@@ -69,7 +70,7 @@
 
   ╭─ 9/12 Vulnerability Scan ────────────────────────── PASS ─╮
   │  Results: /srv/rathsted-foundations/supply-chain/sbom/output/foundations-demo.grype.txt
-  │  Critical: 28  High: 102
+  │  Critical: 28  High: 111
   │  ✓  Grype scan complete (informational; the High+ release gate applies under --release)
   ╰───────────────────────────────────────────────────────────╯
 
@@ -163,7 +164,8 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ╭─ 12/12 Network Policies ─────────────────────────── PASS ─╮
-  │  NetworkPolicies across all namespaces: 3
+  │  NetworkPolicies across all namespaces: 4
+  │    demo                 default-deny
   │    flux-system          allow-egress
   │    flux-system          allow-scraping
   │    flux-system          allow-webhooks
@@ -171,7 +173,7 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ═════════════════════════════════════════════════════════════
-  Result:  35 passed · 3 warning(s) · 0 failed
+  Result:  36 passed · 3 warning(s) · 0 failed
   ═════════════════════════════════════════════════════════════
 
-  Generated: 2026-10-06T06:16:15Z
+  Generated: 2026-10-09T21:47:34Z

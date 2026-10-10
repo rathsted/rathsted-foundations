@@ -18,7 +18,7 @@ spec:
             - flux-system
             - kyverno
       validate:
-        message: "Containers must run as non-root"
+        message: "Containers must run as non-root. Pod-level runAsNonRoot must be true and no container may set runAsNonRoot: false or runAsUser: 0."
         pattern:
           spec:
             securityContext:
@@ -29,15 +29,21 @@ spec:
                   capabilities:
                     drop:
                       - "ALL"
+                  =(runAsNonRoot): "!false"
+                  =(runAsUser): "!0"
             =(initContainers):
               - securityContext:
                   allowPrivilegeEscalation: "false"
                   capabilities:
                     drop:
                       - "ALL"
+                  =(runAsNonRoot): "!false"
+                  =(runAsUser): "!0"
             =(ephemeralContainers):
               - securityContext:
                   allowPrivilegeEscalation: "false"
                   capabilities:
                     drop:
                       - "ALL"
+                  =(runAsNonRoot): "!false"
+                  =(runAsUser): "!0"

@@ -35,11 +35,11 @@ For sovereign deployments, document and enforce where signing keys are stored an
 ## Release Flow (typical)
 
 1. Merge changes to `main` and ensure CI is green.
-2. Optional: `make sovereignty-check` (and `STRICT=1` with a filled customer inventory when appropriate).
+2. Optional: `make sovereignty-check` (maintainer CI only; and `STRICT=1` with a filled customer inventory when appropriate).
 3. **Tag** your Foundations release if you version the repo itself:
    ```bash
-   git tag v1.0.0
-   git push origin v1.0.0
+   git tag vX.Y.Z
+   git push origin vX.Y.Z
    ```
 4. **Sign the workload image** you configured with `make configure` (not a separate “demo build” from this repo):
    ```bash
@@ -86,23 +86,25 @@ If your organization maintains a separate workflow that provisions a cluster and
 
 ## Audit Evidence Bundle
 
-After release verification, generate a reusable evidence document:
+After release verification, generate a reusable evidence document (maintainer-only target; not in the public Makefile):
 
-```bash
-make evidence-bundle RELEASE_TAG=v1.0.0
+```
+# maintainer-only
+make evidence-bundle RELEASE_TAG=vX.Y.Z
 ```
 
 This captures git provenance, cosign verification output when `cosign` and `cosign.pub` are present, hardening config excerpts, artifact details with SHA-256 digests, any CI/registry/key-audit references you pass in, and a structured key-rotation attachment when you supply one.
 
-Example:
+Example (maintainer-only):
 
-```bash
+```
 CI_RUN_URL=https://github.com/org/repo/actions/runs/123 \
-REGISTRY_AUDIT_REF=s3://audit-bucket/releases/v1.0.0.json \
+REGISTRY_AUDIT_REF=s3://audit-bucket/releases/vX.Y.Z.json \
 KEY_AUDIT_REF=arn:aws:kms:... \
 KEY_ROTATION_EVIDENCE=examples/customer-instance/key-rotation-evidence-template.md \
 KEY_ROTATION_SUMMARY="KMS key rotated 2026-04-14 after quarterly review" \
-make evidence-bundle RELEASE_TAG=v1.0.0
+# maintainer-only target: not in the public Makefile
+make evidence-bundle RELEASE_TAG=vX.Y.Z
 ```
 
 Recommended format:

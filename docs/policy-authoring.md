@@ -110,14 +110,14 @@ Typical workflow:
 make configure
 make policy-test
 make verify
-make compat-test
 ```
 
 Interpretation:
 - `configure` renders any policy templates that depend on configured registry/image inputs
 - `policy-test` validates policy logic against known fixtures
 - `verify` confirms policies exist in-cluster and reject intentionally bad manifests
-- `compat-test` runs install + verify across supported distro variants and captures evidence
+
+For maintainer-only distro compatibility testing: `make compat-test` (runs install across supported distro VMs; not part of this repository's public tooling).
 
 ## When A Policy Change Should Affect Compat Output
 
@@ -156,7 +156,7 @@ A policy usually belongs in an optional pack when it is:
 
 Examples:
 - no `:latest` tags / immutable digest enforcement
-- required read-only root filesystem
+- block `procMount: Unmasked` in container security context
 - host port restrictions
 - NodePort / LoadBalancer restrictions
 - stricter ingress and TLS patterns
