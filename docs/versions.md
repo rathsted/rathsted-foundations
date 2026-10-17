@@ -29,7 +29,7 @@ Tested via `make compat-test` (OrbStack E2E matrix; maintainer CI only). Each ru
 
 **Requirements:** x86_64 or arm64, systemd, root/sudo access, 2 CPU minimum (4 CPU recommended), 4 GB RAM minimum (8 GB recommended), 20 GB disk.
 
-**Architectures:** the table above records the full install-and-verify matrix, run on arm64 (aarch64) VMs. On x86_64, Ubuntu 22.04 and 24.04 are validated with the same install-and-verify run on x86_64 hosts. Debian 12, Rocky Linux 9 and the CIS image have not yet been validated on x86_64. The kernel must support seccomp; every workload runs with the `RuntimeDefault` profile.
+**Architectures:** Ubuntu 22.04, Ubuntu 24.04, Ubuntu 24.04 CIS, Debian 12 and Rocky Linux 9 pass the same install-and-verify run on both arm64 (aarch64) and x86_64 (RHEL 9 and AlmaLinux 9 are compatible by family, not separately validated). The x86_64 runs cover the current pins and use each distribution's official cloud image in a Hyper-V virtual machine with Secure Boot on. The kernel must support seccomp; every workload runs with the `RuntimeDefault` profile.
 
 **Not supported:** Fedora, CentOS Stream, Alpine, Arch.
 

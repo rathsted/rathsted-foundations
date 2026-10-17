@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-10-15T00:42:42Z",
+  "source": "https://github.com/rathsted/rathsted-foundations.git",
+  "arch": "amd64",
+  "commit": "23e6c88af68c1018c556f08c79c1f139ff0ab253",
+  "commit_dirty": false,
+  "parallel": true,
+  "passed": 5,
+  "failed": 0,
+  "pin_change_dates": {
+    "current": {"k3s": "2026-10-02", "kyverno": "2026-10-02", "flux": "2026-10-02", "pin_set": "2026-10-02"},
+    "previous": {"k3s": "2026-10-02", "kyverno": "2026-10-02", "flux": "2026-10-02", "pin_set": "2026-10-02"}
+  },
+  "pin_change_age_days": {
+    "current": {"k3s": 13, "kyverno": 13, "flux": 13, "pin_set": 13},
+    "previous": {"k3s": 13, "kyverno": 13, "flux": 13, "pin_set": 13}
+  },
+  "pin_change_count_180d": {
+    "current": {"k3s": 1, "kyverno": 1, "flux": 1},
+    "previous": {"k3s": 1, "kyverno": 1, "flux": 1}
+  },
+  "results": [
+    {"image": "debian:12", "status": "passed"},
+    {"image": "rocky:9", "status": "passed"},
+    {"image": "ubuntu:22.04", "status": "passed"},
+    {"image": "ubuntu:24.04", "status": "passed"},
+    {"image": "ubuntu:24.04-cis", "status": "passed"}
+  ]
+}

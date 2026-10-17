@@ -1,0 +1,179 @@
+┌─────────────────────────────────────────────────────────────┐
+│  Rathsted Foundations — Validation Evidence                 │
+│  Version: untagged · Target: ubuntu:22.04                   │
+│  Date: 2026-10-15 · Source: github.com/rathsted             │
+└─────────────────────────────────────────────────────────────┘
+
+  Component Versions
+  ─────────────────────────────────────────────────────────────
+  k3s            v1.35.9+k3s1
+  Kyverno        v1.19.1
+  Flux           2.9.6
+  Cosign         v3.1.3
+  Syft           v1.54.0
+  Grype          v0.120.0
+
+  ╭─ 1/12 Environment ───────────────────────────────── PASS ─╮
+  │  Foundations version: untagged
+  │  Hostname:           rathsted-compat-ubuntu-22-04-amd64
+  │  Date:               2026-10-15T00:28:15Z
+  │  Verify mode:        self-hosted
+  │  OS:                 Ubuntu 22.04.5 LTS
+  │  Kernel:             5.15.0-198-generic
+  │  ✓  Environment recorded
+  ╰───────────────────────────────────────────────────────────╯
+
+  ╭─ 2/12 Cluster ───────────────────────────────────── PASS ─╮
+  │  ✓  cluster-info ok
+  │  ✓  cluster nodes accessible
+  │  Contract series:    2.x
+  │  Contract install:   self-hosted
+  │  Decks v0 support:   true
+  │  Topology:           single-node (supported nodes 1-1)
+  │  ✓  Foundations contract marker present
+  ╰───────────────────────────────────────────────────────────╯
+
+  ╭─ 3/12 Hardening ─────────────────────────────────── PASS ─╮
+  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (7.5M, 5763 entries)
+  │  ✓  API server audit logging active
+  │  ✓  Audit policy file present
+  │  ✓  Secrets encryption at rest enabled (encryption config present)
+  ╰───────────────────────────────────────────────────────────╯
+
+  ╭─ 4/12 Flux ──────────────────────────────────────── PASS ─╮
+  │  ✓  Flux check passed
+  │  ✓  Flux installed
+  │  ✓  Flux pods present
+  ╰───────────────────────────────────────────────────────────╯
+
+  ╭─ 5/12 Kyverno ───────────────────────────────────── PASS ─╮
+  │  ✓  Kyverno installed
+  │  ✓  Kyverno pods present
+  │  ✓  Kyverno policies present
+  ╰───────────────────────────────────────────────────────────╯
+
+  ╭─ 6/12 GitOps ────────────────────────────────────── PASS ─╮
+  │  ✓  GitOps sync present
+  │  ✓  Flux kustomizations listed
+  │  ✓  Flux Git sources listed
+  ╰───────────────────────────────────────────────────────────╯
+
+  ╭─ 7/12 Demo App ──────────────────────────────────── WARN ─╮
+  │  ✓  Demo app objects present
+  │  ⚠  Demo app not Ready (non-fatal: GitOps reconciliation may still be in progress)
+  │  ✓  Signature policy installed
+  ╰───────────────────────────────────────────────────────────╯
+
+  ╭─ 8/12 Supply Chain ──────────────────────────────── PASS ─╮
+  │  ✓  SBOM generated (local containerd)
+  ╰───────────────────────────────────────────────────────────╯
+
+  ╭─ 9/12 Vulnerability Scan ────────────────────────── PASS ─╮
+  │  Results: /srv/rathsted-foundations/supply-chain/sbom/output/foundations-demo.grype.txt
+  │  Critical: 28  High: 110
+  │  ✓  Grype scan complete (informational; the High+ release gate applies under --release)
+  ╰───────────────────────────────────────────────────────────╯
+
+  ╭─ 10/12 Negative Tests ───────────────────────────── PASS ─╮
+  │  ✓  Kyverno webhooks detected, waiting 15s for policies to settle...
+  │  ✓  Policy rejected as expected: default-namespace-pod.yaml
+  │  ✓  Policy rejected as expected: disallowed-registry.yaml
+  │  ✓  Policy rejected as expected: host-namespaces-pod.yaml
+  │  ✓  Policy rejected as expected: hostpath-pod.yaml
+  │  ✓  Policy rejected as expected: no-drop-capabilities-pod.yaml
+  │  ✓  Policy rejected as expected: no-namespace-labels.yaml
+  │  ✓  Policy rejected as expected: no-probes-pod.yaml
+  │  ✓  Policy rejected as expected: no-resources-pod.yaml
+  │  ✓  Policy rejected as expected: no-seccomp-pod.yaml
+  │  ✓  Policy rejected as expected: privileged-pod.yaml
+  │  ✓  Policy rejected as expected: readonly-rootfs-pod.yaml
+  │  ✓  Policy rejected as expected: root-pod.yaml
+  │  ✓  Policy rejected as expected: unsigned-image-pod.yaml
+  ╰───────────────────────────────────────────────────────────╯
+
+  ╭─ 11/12 Access Control (RBAC) ────────────────────── PASS ─╮
+  │  ClusterRoleBindings + RoleBindings: 80
+  │    cluster-admin
+  │    cluster-reconciler-flux-system
+  │    clustercidrs-node
+  │    crd-controller-flux-system
+  │    k3s-cloud-controller-manager
+  │    k3s-cloud-controller-manager-auth-delegator
+  │    kube-apiserver-kubelet-admin
+  │    kyverno:admission-controller
+  │    kyverno:admission-controller:view
+  │    kyverno:background-controller
+  │    kyverno:background-controller:view
+  │    kyverno:cleanup-controller
+  │    kyverno:reports-controller
+  │    kyverno:reports-controller:view
+  │    local-path-provisioner-bind
+  │    metrics-server:system:auth-delegator
+  │    system:basic-user
+  │    system:controller:attachdetach-controller
+  │    system:controller:certificate-controller
+  │    system:controller:clusterrole-aggregation-controller
+  │    system:controller:cronjob-controller
+  │    system:controller:daemon-set-controller
+  │    system:controller:deployment-controller
+  │    system:controller:disruption-controller
+  │    system:controller:endpoint-controller
+  │    system:controller:endpointslice-controller
+  │    system:controller:endpointslicemirroring-controller
+  │    system:controller:ephemeral-volume-controller
+  │    system:controller:expand-controller
+  │    system:controller:generic-garbage-collector
+  │    system:controller:horizontal-pod-autoscaler
+  │    system:controller:job-controller
+  │    system:controller:legacy-service-account-token-cleaner
+  │    system:controller:namespace-controller
+  │    system:controller:node-controller
+  │    system:controller:persistent-volume-binder
+  │    system:controller:pod-garbage-collector
+  │    system:controller:pv-protection-controller
+  │    system:controller:pvc-protection-controller
+  │    system:controller:replicaset-controller
+  │    system:controller:replication-controller
+  │    system:controller:resource-claim-controller
+  │    system:controller:resourcequota-controller
+  │    system:controller:root-ca-cert-publisher
+  │    system:controller:route-controller
+  │    system:controller:selinux-warning-controller
+  │    system:controller:service-account-controller
+  │    system:controller:service-cidrs-controller
+  │    system:controller:service-controller
+  │    system:controller:statefulset-controller
+  │    system:controller:ttl-after-finished-controller
+  │    system:controller:ttl-controller
+  │    system:controller:validatingadmissionpolicy-status-controller
+  │    system:controller:volumeattributesclass-protection-controller
+  │    system:coredns
+  │    system:discovery
+  │    system:k3s-controller
+  │    system:kube-controller-manager
+  │    system:kube-dns
+  │    system:kube-scheduler
+  │    system:metrics-server
+  │    system:monitoring
+  │    system:node
+  │    system:node-proxier
+  │    system:public-info-viewer
+  │    system:service-account-issuer-discovery
+  │    system:volume-scheduler
+  │  ✓  RBAC snapshot recorded
+  ╰───────────────────────────────────────────────────────────╯
+
+  ╭─ 12/12 Network Policies ─────────────────────────── PASS ─╮
+  │  NetworkPolicies across all namespaces: 4
+  │    demo                 default-deny
+  │    flux-system          allow-egress
+  │    flux-system          allow-scraping
+  │    flux-system          allow-webhooks
+  │  ✓  NetworkPolicy snapshot recorded
+  ╰───────────────────────────────────────────────────────────╯
+
+  ═════════════════════════════════════════════════════════════
+  Result:  36 passed · 3 warning(s) · 0 failed
+  ═════════════════════════════════════════════════════════════
+
+  Generated: 2026-10-15T00:23:16Z

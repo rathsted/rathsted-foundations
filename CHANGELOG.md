@@ -6,6 +6,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [2.0.2] — 2026-10-16
+
+Documentation and evidence only; nothing that runs on a host changed.
+
+### Added
+- x86_64 evidence for every validated host: Debian 12, Rocky Linux 9, Ubuntu
+  22.04, Ubuntu 24.04 and Ubuntu 24.04 CIS each pass the full install-and-verify
+  run (36 passed, 0 failed) on x86_64, in a Hyper-V virtual machine with Secure
+  Boot on, built from the distribution's official cloud image. See
+  `artifacts/*-amd64.txt` and `artifacts/compat-latest-amd64.json`.
+
+### Changed
+- `docs/versions.md` records those five hosts as validated on both arm64 and
+  x86_64. Previously only Ubuntu 22.04 and 24.04 were validated on x86_64.
+
 ## [2.0.1] — 2026-10-10
 
 ### Security
