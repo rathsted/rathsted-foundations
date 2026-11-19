@@ -32,6 +32,8 @@ resources:
   - resources/bad-namespace-jurisdiction-value.yaml
   - resources/bad-namespace-jurisdiction-missing.yaml
   - resources/author-control-namespace.yaml
+  - resources/system-namespaces.yaml
+  - resources/unlabelled-default-namespace.yaml
   - resources/bad-no-readonly-rootfs.yaml
   - resources/bad-no-seccomp.yaml
   - resources/bad-no-drop-all.yaml
@@ -408,6 +410,31 @@ results:
     kind: Namespace
     patchedResources: resources/patched/author-control-namespace.yaml
     result: pass
+  # system namespaces: excluded from both rules, so background reports skip
+  # them as admission (resourceFilters) does
+  - policy: require-namespace-labels
+    rule: validate-namespace-labels
+    resources:
+      - kube-system
+      - kube-public
+      - kube-node-lease
+    kind: Namespace
+    result: skip
+  - policy: require-namespace-labels
+    rule: stamp-operator-control
+    resources:
+      - kube-system
+      - kube-public
+      - kube-node-lease
+    kind: Namespace
+    result: skip
+  # default is not excluded: unlabelled, it fails
+  - policy: require-namespace-labels
+    rule: validate-namespace-labels
+    resources:
+      - default
+    kind: Namespace
+    result: fail
 
   # --- drop-all-capabilities tests ---
   # good-pod drops ALL caps and adds none → both rules pass

@@ -68,7 +68,7 @@ check_installed_versions() {
 
   if [[ "${mismatch}" -ne 0 ]]; then
     printf 'Version mismatch detected (see above).\n' >&2
-    printf 'In-place upgrades are not supported in 2.0.x; reinstall on a clean host (see docs/upgrade-guide.md)\n' >&2
+    printf 'In-place upgrades across a k3s or Kyverno pin change are not supported; reinstall on a clean host (see docs/upgrade-guide.md)\n' >&2
     return 1
   fi
   return 0

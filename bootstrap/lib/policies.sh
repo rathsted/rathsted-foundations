@@ -7,7 +7,7 @@
 #
 # expected_policy_names      — print one ClusterPolicy name per line (pure file read)
 # policies_present           — return 0 iff every expected name is in the cluster
-# apply_policies_with_retry  — apply with retry on any failure, then verify
+# apply_policies_with_retry [dir] — apply with retry on any failure, then verify
 # wait_for_policies_present  — retries policies_present to tolerate a transient listing lag
 
 # Print the metadata.name of every ClusterPolicy listed under resources: in
@@ -62,10 +62,16 @@ policies_present() {
 # reported "created" was absent from the listing taken straight afterwards),
 # the function retries rather than treating the lag as a permanent failure.
 #
+# $1 (optional): the kustomization directory to apply; default
+# ${ROOT_DIR}/policies. The installers pass a render from
+# render_operator_control_policies (lib/jurisdiction.sh) when
+# RATHSTED_OPERATOR_CONTROL is set; it holds the same ClusterPolicies.
+#
 # Configurable via env:
 #   RATHSTED_POLICY_APPLY_ATTEMPTS   (default 10)
 #   RATHSTED_POLICY_APPLY_DELAY      (seconds between retries, default 10)
 apply_policies_with_retry() {
+  local dir="${1:-${ROOT_DIR}/policies}"
   local max_attempts="${RATHSTED_POLICY_APPLY_ATTEMPTS:-10}"
   local delay="${RATHSTED_POLICY_APPLY_DELAY:-10}"
   local attempt=1
@@ -73,7 +79,7 @@ apply_policies_with_retry() {
 
   while (( attempt <= max_attempts )); do
     info "Policy apply attempt $attempt/$max_attempts (timeout 60s)..."
-    if timeout 60 kubectl apply -k "${ROOT_DIR}/policies"; then
+    if timeout 60 kubectl apply -k "${dir}"; then
       # Apply exited 0 — confirm the policies actually landed in the cluster.
       if policies_present; then
         return 0

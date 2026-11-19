@@ -20,6 +20,10 @@ source "${ROOT_DIR}/bootstrap/lib/download.sh"
 # shellcheck source=bootstrap/lib/cluster.sh
 source "${ROOT_DIR}/bootstrap/lib/cluster.sh"
 
+# R3 namespace labels (RATHSTED_JURISDICTION, platform namespaces)
+# shellcheck source=bootstrap/lib/jurisdiction.sh
+source "${ROOT_DIR}/bootstrap/lib/jurisdiction.sh"
+
 # Version pins (overridable via env vars for version matrix testing)
 K3S_VERSION="${RATHSTED_K3S_VERSION:-v1.35.9+k3s1}"
 KYVERNO_VERSION="${RATHSTED_KYVERNO_VERSION:-v1.19.1}"
@@ -41,6 +45,8 @@ apply_foundations_contract_marker() {
   local foundations_version contract_version
   foundations_version="$(git -C "${ROOT_DIR}" describe --tags --always 2>/dev/null || echo "untagged")"
   contract_version="v1"
+  # Client-side apply keeps r3_jurisdiction (patched in by lib/jurisdiction.sh);
+  # kubectl replace or a forced server-side apply would drop it.
   cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ConfigMap
@@ -61,9 +67,47 @@ data:
 EOF
 }
 
+# RATHSTED_JURISDICTION (ca|us|fr, optional) is used after the policies are in
+# place; refuse a bad value before sudo or any host change.
+validate_rathsted_jurisdiction || exit 1
+# RATHSTED_OPERATOR_CONTROL (customer|domestic-provider|foreign-provider|rathsted,
+# optional) is rendered into the policies; same rule.
+validate_rathsted_operator_control || exit 1
+# The GitOps URL (RATHSTED_GIT_URL, else origin) goes into the GitRepository
+# spec; refuse one that embeds credentials.
+validate_rathsted_git_url "$(r3_gitops_url)" || exit 1
+# install.sh always bootstraps GitOps, and Flux reconciles policies/ from Git:
+# a declared value must already be the literal at the commit Git will apply (no
+# render can last). The user pass checks it with the invoking user's Git
+# access; the URL, ref and commit it checked are then pinned for the GitOps
+# setup through the sudo re-exec, and the root pass re-reads that commit
+# locally (gitops_operator_control_gate, lib/jurisdiction.sh).
+OPCTL_PIN=()
+if [[ -n "${RATHSTED_OPERATOR_CONTROL:-}" ]]; then
+  gitops_operator_control_gate "${EUID:-$(id -u)}" || exit 1
+  # Read by r3_gitops_url and r3_gitops_ref_spec (lib/jurisdiction.sh) when
+  # this pass is already root and no sudo re-exec carries OPCTL_PIN.
+  # shellcheck disable=SC2034
+  RATHSTED_GIT_URL="${R3_GITOPS_URL}"
+  # shellcheck disable=SC2034
+  RATHSTED_GIT_REF="${R3_GITOPS_REF}"
+  OPCTL_PIN=("RATHSTED_GIT_URL=${R3_GITOPS_URL}" "RATHSTED_GIT_REF=${R3_GITOPS_REF}"
+    "_RATHSTED_OPCTL_SHA=${R3_OPCTL_SHA}"
+    "_RATHSTED_OPCTL_CHECKED=${R3_GITOPS_URL}|${R3_GITOPS_REF}|${RATHSTED_OPERATOR_CONTROL}|${R3_OPCTL_SHA}")
+else
+  # Unset: refuses only when this checkout enables an operator-control
+  # component (the seed and labels would then disagree with Flux).
+  check_gitops_operator_control || exit 1
+fi
+
 if [[ "${EUID:-$(id -u)}" -ne 0 ]]; then
   if require_cmd sudo; then
-    exec sudo -E bash "$0" "$@"
+    # RATHSTED_JURISDICTION and RATHSTED_OPERATOR_CONTROL are passed as
+    # arguments: sudo -E alone can drop them (env_reset, env_delete), and the
+    # root pass would then label and declare nothing. With a declared
+    # operator-control, so are the checked GitOps URL and ref.
+    exec sudo -E env "RATHSTED_JURISDICTION=${RATHSTED_JURISDICTION:-}" \
+      "RATHSTED_OPERATOR_CONTROL=${RATHSTED_OPERATOR_CONTROL:-}" ${OPCTL_PIN[@]+"${OPCTL_PIN[@]}"} bash "$0" "$@"
   else
     echo "sudo is required to install." >&2
     exit 1
@@ -316,7 +360,16 @@ step "5/6  Policies"
 info "Applying baseline policies..."
 # shellcheck source=bootstrap/lib/policies.sh
 source "${ROOT_DIR}/bootstrap/lib/policies.sh"
-apply_policies_with_retry || { fail "Baseline policies are not in place; refusing to continue"; exit 1; }
+# R3: with RATHSTED_OPERATOR_CONTROL set, apply a render of policies/ whose
+# require-namespace-labels stamps that value (a kustomize patch over a copy;
+# the tracked files are unchanged). Unset, policies/ itself, as before.
+POLICY_DIR="${ROOT_DIR}/policies"
+if [[ -n "${RATHSTED_OPERATOR_CONTROL:-}" ]]; then
+  POLICY_DIR="$(mktemp -d)"
+  CLEANUP_DIRS+=("${POLICY_DIR}")
+  render_operator_control_policies "${POLICY_DIR}" || { fail "Could not render the policies for RATHSTED_OPERATOR_CONTROL; refusing to continue"; exit 1; }
+fi
+apply_policies_with_retry "${POLICY_DIR}" || { fail "Baseline policies are not in place; refusing to continue"; exit 1; }
 
 # Overlay rendered policies from config/rendered/ if `make configure` has been run.
 # These rendered files replace the two ClusterPolicies (restrict-registries,
@@ -329,13 +382,20 @@ if [[ -f "${RENDERED_POLICIES}/restrict-registries.yaml" && \
   kubectl apply -f "${RENDERED_POLICIES}/restrict-registries.yaml"
   kubectl apply -f "${RENDERED_POLICIES}/require-signed-images.yaml"
   info "Rendered registry/signing policies applied."
+  warn_rendered_policies_gitops "${RENDERED_POLICIES}"
 else
   info "Using default policies (run 'make configure' to customize registry/image signing)."
 fi
 
+# R3: record the declared operator-control (or warn with the stamped value),
+# then label the namespaces Foundations owns (flux-system, kyverno, default)
+# when RATHSTED_JURISDICTION is set; otherwise warn and leave them unlabelled.
+declare_operator_control || { fail "Could not declare RATHSTED_OPERATOR_CONTROL; refusing to continue"; exit 1; }
+apply_platform_namespace_labels || { fail "Could not apply the jurisdiction labels to the platform namespaces; refusing to continue"; exit 1; }
+
 step "6/6  GitOps Bootstrap"
 info "Bootstrapping GitOps sync..."
-GIT_URL="${RATHSTED_GIT_URL:-$(git -C "$ROOT_DIR" remote get-url origin 2>/dev/null || true)}"
+GIT_URL="$(r3_gitops_url)"
 if [[ -z "$GIT_URL" ]]; then
   echo "No git remote found. Set RATHSTED_GIT_URL to your repo URL." >&2
   exit 1
@@ -396,14 +456,8 @@ fi
 # Pin the Flux GitRepository to the release tag when HEAD is exactly on one,
 # so reconciliation follows the pinned artifact instead of a moving branch.
 # Override with RATHSTED_GIT_REF (e.g. "tag: v1.0.3" or "branch: main").
-GIT_REF="${RATHSTED_GIT_REF:-}"
-if [[ -z "${GIT_REF}" ]]; then
-  if _tag="$(git -C "${ROOT_DIR}" describe --tags --exact-match 2>/dev/null)"; then
-    GIT_REF="tag: ${_tag}"
-  else
-    GIT_REF="branch: main"
-  fi
-fi
+# Same resolver as check_gitops_operator_control (lib/jurisdiction.sh).
+GIT_REF="$(r3_gitops_ref_spec)"
 
 TMPL="${ROOT_DIR}/cluster/gitops/sync/gitrepository.yaml.tmpl" \
 OUT="$tmpdir/gitrepository.yaml" \

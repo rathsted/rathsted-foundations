@@ -1,0 +1,17 @@
+# System namespaces, unlabelled as Kubernetes creates them. The policy
+# excludes them explicitly, so background reports skip them as admission does
+# (found on public v2.0.2, 2026-11-08: reports marked all three as fail).
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kube-system
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kube-public
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kube-node-lease

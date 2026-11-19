@@ -1,0 +1,15 @@
+# Workloads: Flux Kustomization rathsted-apps reconciles this tree after
+# rathsted-sync (the policies, cluster/gitops/apps) is Ready. Add your own
+# apps here; a workload the policies deny keeps rathsted-apps not Ready but
+# cannot stop the policies being applied. Do not put ClusterPolicy or
+# PolicyException objects here: they belong to rathsted-sync, and two
+# Kustomizations applying the same object take it from each other (and an
+# exception here is not live when this batch is checked).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../examples/hello-gitops-app
+images:
+  - name: nginx
+    newName: nginx
+    newTag: 1.29.7-alpine

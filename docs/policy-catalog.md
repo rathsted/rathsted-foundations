@@ -42,6 +42,7 @@ Policy:
 
 What it enforces:
 - privileged containers are blocked
+- matches Pod; Kyverno autogen checks Deployment, StatefulSet, DaemonSet, Job and ReplicationController (`autogen-<rule>`) and CronJob (`autogen-cronjob-<rule>`) at admission; excludes kube-system, flux-system, and kyverno namespaces
 
 Good when:
 - you want to prevent workloads from taking near-host-level privileges
@@ -58,6 +59,7 @@ Policy:
 
 What it enforces:
 - `hostNetwork`, `hostPID`, and `hostIPC` are blocked
+- matches Pod; Kyverno autogen checks Deployment, StatefulSet, DaemonSet, Job and ReplicationController (`autogen-<rule>`) and CronJob (`autogen-cronjob-<rule>`) at admission; excludes kube-system, flux-system, and kyverno namespaces
 
 Good when:
 - you want workload isolation from the host
@@ -74,6 +76,7 @@ Policy:
 
 What it enforces:
 - `hostPath` volumes are blocked
+- matches Pod; Kyverno autogen checks Deployment, StatefulSet, DaemonSet, Job and ReplicationController (`autogen-<rule>`) and CronJob (`autogen-cronjob-<rule>`) at admission; excludes kube-system, flux-system, and kyverno namespaces
 
 Good when:
 - you want to stop workloads from mounting arbitrary parts of the host filesystem
@@ -156,8 +159,15 @@ Not always right when:
 Policy:
 - `require-namespace-labels`
 
+R3: the namespace jurisdiction and operator-control label contract this policy
+enforces. Code comments and the contract ConfigMap keys (`r3_jurisdiction`,
+`r3_operator_control`) use the short form; installer and verify output say
+"jurisdiction labels".
+
 What it enforces:
 - namespaces must include `owner`, `environment`, and `rathsted.io/jurisdiction` (`ca`, `us`, or `fr`) labels; `rathsted.io/operator-control` is stamped by the platform
+- `kube-system`, `kube-public` and `kube-node-lease` are excluded; every other namespace, including `default`, `flux-system` and `kyverno`, is in scope
+- `make jurisdiction-audit` lists every namespace with these labels and exits non-zero if any non-system namespace lacks them or carries an operator-control other than the value the policy stamps
 
 Good when:
 - you want clearer ownership and operational context
@@ -191,7 +201,7 @@ Policy:
 
 What it enforces:
 - all containers, initContainers, and ephemeralContainers must set `securityContext.readOnlyRootFilesystem: true`
-- applies to Pod, Deployment, StatefulSet, DaemonSet, Job, and CronJob; excludes kube-system, flux-system, and kyverno namespaces
+- matches Pod; Kyverno autogen checks Deployment, StatefulSet, DaemonSet, Job and ReplicationController (`autogen-<rule>`) and CronJob (`autogen-cronjob-<rule>`) at admission; excludes kube-system, flux-system, and kyverno namespaces
 
 Good when:
 - you want to prevent workloads from writing to the container filesystem at runtime
@@ -208,7 +218,7 @@ Policy:
 
 What it enforces:
 - every container, initContainer, and ephemeralContainer must have a seccomp profile set to `RuntimeDefault` or `Localhost`, either at the pod level or container level
-- applies to Pod, Deployment, StatefulSet, DaemonSet, Job, and CronJob; excludes kube-system, flux-system, and kyverno namespaces
+- matches Pod; Kyverno autogen checks Deployment, StatefulSet, DaemonSet, Job and ReplicationController (`autogen-<rule>`) and CronJob (`autogen-cronjob-<rule>`) at admission; excludes kube-system, flux-system, and kyverno namespaces
 
 Good when:
 - you want to restrict the syscall surface available to every workload
@@ -226,7 +236,7 @@ Policy:
 What it enforces:
 - every container, initContainer, and ephemeralContainer must include `ALL` in `securityContext.capabilities.drop`
 - only `NET_BIND_SERVICE` may be added; any other added capability is rejected
-- applies to Pod, Deployment, StatefulSet, DaemonSet, Job, and CronJob; excludes kube-system, flux-system, and kyverno namespaces
+- matches Pod; Kyverno autogen checks Deployment, StatefulSet, DaemonSet, Job and ReplicationController (`autogen-<rule>`) and CronJob (`autogen-cronjob-<rule>`) at admission; excludes kube-system, flux-system, and kyverno namespaces
 
 Good when:
 - you want workloads to run with the minimum Linux capability set by default

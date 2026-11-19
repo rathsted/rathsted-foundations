@@ -1,6 +1,6 @@
 SHELL := /usr/bin/env bash
 
-.PHONY: help help-core doctor configure validate-config install uninstall app-runtime verify verify-release verify-all policy-test sign sbom jurisdiction-scan flux-reconcile
+.PHONY: help help-core doctor configure validate-config install uninstall app-runtime verify verify-release verify-all policy-test bootstrap-test sign sbom jurisdiction-audit jurisdiction-scan flux-reconcile
 
 REGISTRY ?= ghcr.io/rathsted
 IMAGE ?= $(REGISTRY)/foundations-demo:1.0.0
@@ -62,6 +62,11 @@ verify-all: ## Acceptance checks (verify + policy-test + jurisdiction-scan)
 policy-test: ## Run Kyverno policy tests (requires kyverno CLI)
 	@command -v kyverno >/dev/null 2>&1 || { echo "kyverno CLI not found"; exit 1; }
 	kyverno test tests/kyverno -f kyverno-test.yaml
+	./scripts/test-policy-controllers.sh
+
+bootstrap-test: ## Test the install/verify policy guards and the topology contract marker (fake kubectl, no cluster)
+	./scripts/test-bootstrap-guards.sh
+	./scripts/test-topology-contract.sh
 
 ##@ Supply Chain
 
@@ -77,6 +82,9 @@ sbom: ## Generate SBOM for your image (IMAGE=registry/name:tag)
 
 ##@ Operations
 
+jurisdiction-audit: ## Read-only audit: every non-system namespace has the jurisdiction labels
+	./bootstrap/jurisdiction-audit.sh
+
 jurisdiction-scan: ## Run jurisdiction scan on this repo
 	PYTHONPATH=tools/jurisdiction-scan/src python3 -m jurisdiction_scan.cli .
 
@@ -84,3 +92,4 @@ flux-reconcile: ## Force Flux to reconcile the repo
 	@command -v flux >/dev/null 2>&1 || { echo "flux not found"; exit 1; }
 	flux reconcile source git rathsted-foundations -n flux-system
 	flux reconcile kustomization rathsted-sync -n flux-system
+	flux reconcile kustomization rathsted-apps -n flux-system

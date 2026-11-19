@@ -21,7 +21,10 @@ Use the path that matches how you are evaluating the repo:
 2. Run `make doctor`.
 3. Run `make configure`.
 4. Optionally run `make validate-config`.
-5. On the target Linux host, run `./bootstrap/install.sh`.
+5. On the target Linux host, run `./bootstrap/install.sh`, with
+   `RATHSTED_JURISDICTION` set to `ca`, `us` or `fr` so the platform namespaces
+   get the jurisdiction labels (see Notes). The operator-control value comes from your
+   Git source's `policies/require-namespace-labels.yaml` (see Notes).
    The k3s installer script is downloaded from the k3s release tag and verified
    against a sha256 checksum pinned in the script before it runs. Override the
    checksum with `RATHSTED_K3S_INSTALLER_SHA256` when deliberately changing the
@@ -89,11 +92,23 @@ Optional validation before install:
 make validate-config
 ```
 
-> **Current limitation:** `install.sh` applies the rendered registry/signature
-> policies during bootstrap only. Flux then reconciles the default policies from
-> git and may restore the default `ghcr.io/rathsted/*` allowlist at its next
-> reconcile. For a persistent custom registry, carry equivalent policy changes
-> in your GitOps source. A tracked-overlay workflow is planned.
+> **A custom registry or signing key needs a fork, set up before install.**
+> `install.sh` applies the rendered registry and signature policies once, at
+> bootstrap. Flux then applies `policies/` from your Git source at every
+> reconcile, and at its first one replaces the rendered `restrict-registries`
+> and `require-signed-images` with the ones in Git; pods from your registry are
+> then denied. To keep your values, in this order:
+>
+> 1. Fork the repository and clone your fork (its `origin` is what Flux tracks;
+>    `RATHSTED_GIT_URL` overrides it).
+> 2. Run `make configure`.
+> 3. Copy `config/rendered/restrict-registries.yaml` and
+>    `config/rendered/require-signed-images.yaml` over the files of the same
+>    name in `policies/`, then commit and push.
+> 4. Run `./bootstrap/install.sh` from that commit.
+>
+> Without a fork, Flux tracks the public repository and restores the default
+> `ghcr.io/rathsted/*` allowlist. A tracked-overlay workflow is planned.
 
 ## 4) Install On The Target Linux Host
 ```bash
@@ -164,7 +179,7 @@ If you want a local evaluation path on one machine, create a Linux VM and run th
 
 ## Supply Chain (Optional But Recommended)
 
-If you ran `make configure` with your own image, the deployment manifest is already pointed at it, and the rendered policies are applied at bootstrap (see the limitation note above about Flux restoring the defaults).
+If you ran `make configure` with your own image, the deployment manifest is already pointed at it, and the rendered policies are applied at bootstrap (see the fork note in step 3: without it Flux restores the defaults).
 
 Generate a cosign keypair and apply it to the signing policy:
 
@@ -183,6 +198,9 @@ make sbom IMAGE="$IMAGE"
 ```
 
 Then run `make verify-release` to confirm all supply-chain checks pass.
+`verify-release` also requires every namespace to carry the jurisdiction labels. On an
+existing 2.x install, run `make jurisdiction-audit` first and backfill anything
+it reports as described in the [upgrade guide](upgrade-guide.md#labelling-the-platform-namespaces-on-an-existing-2x-install).
 
 ## Offline Or Local Registry (Optional)
 To run a fully local demo registry:
@@ -216,8 +234,17 @@ The baseline generates a default-deny NetworkPolicy in every newly created names
 
 ## Notes
 - `RATHSTED_GIT_SSH_KEY` must contain the private key contents (not a file path).
-- By default, GitOps sync uses your `origin` remote. Override with `RATHSTED_GIT_URL`.
-- `bootstrap/verify.sh` checks cluster health, signature policy, and policy enforcement. It fails on core cluster errors, missing signature policies, and policy-negative tests.
+- By default, GitOps sync uses your `origin` remote. Override with `RATHSTED_GIT_URL`. A URL with embedded credentials (`https://user:token@host/...`) is refused, since it would be written into the GitRepository spec; pass the token in `RATHSTED_GIT_TOKEN`.
+- `bootstrap/verify.sh` checks cluster health, signature policy, and policy enforcement. It fails on core cluster errors, missing signature policies, and policy-negative tests. With GitOps configured it also checks the two Flux Kustomizations:
+  - `rathsted-sync` (the policies) must be Ready with a `lastAppliedRevision`, which is compared with its GitRepository's current artifact revision. Not Ready, no applied revision, or suspended fails in every mode, with the Ready condition's message, since Flux then neither applies nor self-heals the policies. A revision behind the source, or a source revision that cannot be read, warns and fails under `--release`.
+  - `rathsted-apps` (the workloads) not Ready or suspended warns, and fails under `--release`: a failing workload should not hide, but it is not the platform's guarantee.
+  - A self-hosted install with no `rathsted-sync` warns (fails under `--release`). With no Flux CRD, or `install-managed.sh` without `RATHSTED_GIT_URL`, nothing changes.
+  - Verify re-reads each one up to `RATHSTED_GITOPS_READY_ATTEMPTS` times (1 to 120, default 24), `RATHSTED_GITOPS_READY_DELAY` seconds apart (0 to 60, default 5), so a just-installed cluster has about two minutes to reconcile.
+- `bootstrap/verify.sh` prints `Cluster nodes:` (the live node count) and, from the contract marker, `Topology:` and `Topology support:` (`baseline` for the `single-node` default, `bounded` for `managed-3-node-v1`). A node count outside a multi-node contract's range fails verify; outside the single-node baseline it only warns. See [Multi-Node Design](multi-node-design.md).
+- `RATHSTED_JURISDICTION` (`ca`, `us` or `fr`) tells `install.sh` and `install-managed.sh` which jurisdiction the platform namespaces they own (`flux-system`, `kyverno`, `default`) are in. After the policies are in place, the installer labels them `rathsted.io/jurisdiction=<value>` and `rathsted.io/operator-control` with the value `require-namespace-labels` stamps, sets `owner=platform` and `environment=platform` where those are absent, and records the jurisdiction as `r3_jurisdiction` in the `flux-system/rathsted-foundations-contract` ConfigMap. If any of the three already declares a different jurisdiction, the installer stops and writes nothing. Any value other than `ca`, `us` or `fr` stops the install before it changes anything. Unset, nothing is labelled: the installer prints a warning naming the namespaces and the command to label them. Either way, workload namespaces carry their own labels in Git.
+- `rathsted.io/operator-control`: `require-namespace-labels` stamps it on every namespace it admits except `kube-system`, `kube-public` and `kube-node-lease`; namespaces that existed before keep their value until their next update. The tracked policy stamps `foreign-provider`, the value for Rathsted's reference deployment on a foreign-owned provider; it is not detected from your cluster. **With GitOps the value is whatever your Git source's `policies/require-namespace-labels.yaml` says**: `install.sh` always bootstraps GitOps, and `install-managed.sh` does when `RATHSTED_GIT_URL` is set, and Flux re-applies `policies/` from Git at every reconcile. To change it there, commit the new literal to your Git source and install from that commit.
+- `RATHSTED_OPERATOR_CONTROL` (`customer`, `domestic-provider`, `foreign-provider` or `rathsted`) declares that value and records it as `r3_operator_control` in `flux-system/rathsted-foundations-contract`, so `verify.sh` checks the stamp against it. On the GitOps paths the installer first finds the commit GitOps will apply: it resolves the ref the GitRepository will pin (`RATHSTED_GIT_REF`, else the tag HEAD is exactly on, else `branch: main`) on `RATHSTED_GIT_URL` (else your clone's `origin`) with `git ls-remote`, which needs your read access to that URL without a prompt (at most 60 s; an HTTPS remote that only `RATHSTED_GIT_TOKEN` can read is refused, since that token goes to Flux, not to git), and reads that commit from your clone: if `cluster/gitops/apps/kustomization.yaml` enables one of the [`components/operator-control/<value>`](operator-control-components.md) components, that component's value is the literal; otherwise the literal in `policies/require-namespace-labels.yaml`. It stops, with nothing applied, labelled or recorded, when the literal there differs, and also whenever it cannot check: no URL, a ref other than `tag:`, `branch:` or `commit:` (for example `semver:`), a ref the remote does not have, a commit your clone has not fetched (or no clone at all), a literal it cannot read (quoted, or set by a kustomize patch elsewhere in your source), or a component entry it cannot use (more than one, an unknown value, a missing component file or one that patches another value, or an entry not written as `- ../../../components/operator-control/<value>` under `components:`), or an apps kustomization it cannot read as text (a duplicate top-level key, a second YAML document, or keys other than `apiVersion`, `kind`, `resources`, `components` and `images`; see the components doc). Then fetch the ref, set `RATHSTED_GIT_REF` to a readable `tag:`, `branch:` or `commit:`, or leave `RATHSTED_OPERATOR_CONTROL` unset. To carry a value other than `foreign-provider` in your fork, add that one entry, commit, push, and install with the same `RATHSTED_OPERATOR_CONTROL`; Flux then keeps it. With the variable unset and a component enabled in your checkout, the install stops and says which value to set. A push to that branch after the install is not covered; `verify.sh` reports it. Only `install-managed.sh` without `RATHSTED_GIT_URL` applies a different value itself (a kustomize patch over a copy of `policies/`; the tracked files are unchanged). Any value outside the four stops the install before it changes anything. Unset, the install behaves as before and prints a warning naming the stamped value. `verify.sh` warns when no operator declared the stamp (under `--release` too), warns in its operator-control check while `rathsted-sync` has not applied a revision (the GitOps check above fails on that separately), and fails when the stamp differs from `RATHSTED_OPERATOR_CONTROL` in its environment or the recorded value. After a change, re-stamp existing namespaces as in `docs/upgrade-guide.md`.
+- `make jurisdiction-audit` (or `./bootstrap/jurisdiction-audit.sh`) lists every namespace with `owner`, `environment`, `rathsted.io/jurisdiction` and `rathsted.io/operator-control`, and exits 1 if any namespace other than `kube-system`, `kube-public` and `kube-node-lease` lacks them or carries an operator-control other than the stamped value (2 if it cannot read the namespaces or the policy). It changes nothing. `verify.sh` runs the same audit. It fails on a gap when the install recorded a jurisdiction, when a platform namespace declares one, when `RATHSTED_JURISDICTION` is set in verify's environment, or under `--release`, and then also checks that the platform namespaces declare that jurisdiction; otherwise it warns. It fails whenever the audit cannot run.
 - Release-grade checks require registry reachability. Set `RATHSTED_DEMO_IMAGE` to an image you can pull and have signed.
 - Pinned component versions are listed in `docs/versions.md`.
 

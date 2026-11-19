@@ -31,7 +31,8 @@ spec:
     - policyName: <policy-being-exempted>
       ruleNames:
         - <specific-rule-name>
-        - autogen-<specific-rule-name>  # include autogen rules when applicable
+        - autogen-<specific-rule-name>          # Deployment, StatefulSet, DaemonSet, Job, ReplicationController
+        - autogen-cronjob-<specific-rule-name>  # only if you match CronJob
   match:
     any:
       - resources:
@@ -51,7 +52,7 @@ PolicyException has no `spec.reason` field; record the reason in the
 
 1. **Place exceptions in the `kyverno` namespace** — only exceptions in `kyverno` are honored. Exceptions in workload namespaces are silently ignored.
 2. **Scope to specific workload names** — use `names` with a prefix pattern, not just a namespace selector
-3. **Scope to specific rules** — exempt only the rule that blocks, not the entire policy; include `autogen-*` variants when policies cover higher-level resources (Deployment, StatefulSet, etc.)
+3. **Scope to specific rules**: exempt only the rule that blocks, not the entire policy. Every Pod policy is checked on controllers through Kyverno autogen rules, so an exception that matches a controller must name them: `autogen-<rule>` for Deployment, StatefulSet, DaemonSet, Job and ReplicationController, and `autogen-cronjob-<rule>` for CronJob. An exception that matches CronJob must also match Job and Pod, because the Jobs it creates are checked under `autogen-<rule>` and their Pods under `<rule>`, so it names all three rule names. Names and selectors are matched against each object's own `metadata` (its name and labels), not its pod template: generated objects carry suffixes (`<cronjob>-<schedule-time>` Jobs, `<deployment>-<hash>-<id>` Pods), so `names` needs a wildcard (`myjob*`) to cover them. Naming only `<rule>` exempts the Pods and leaves the controller denied at admission.
 4. **One exception per concern** — don't combine unrelated exemptions
 5. **Include a reason** — the `reason` annotation must explain why compliance isn't possible
 
@@ -63,6 +64,10 @@ See `profiles/app-runtime/policy-exception.yaml` — this exception lives in the
 - **`require-probes`** — some components do not expose a standard HTTP health endpoint
 - **`require-readonly-rootfs`** — Postgres requires a writable filesystem for data files
 - **`require-seccomp`** — these upstream images do not ship a seccomp profile annotation
+
+## Example: the demo app
+
+`cluster/gitops/apps/hello-gitops-registry-exception.yaml` (`hello-gitops-registry-exception`) exempts the demo app in the `demo` namespace from `restrict-registries` only, because the demo's placeholder image is `nginx` from Docker Hub. It matches the names `hello-gitops` and `hello-gitops-*` (the Deployment, its ReplicaSets and Pods), and a `conditions` block limits it to objects whose every container, init container and ephemeral container image is exactly `nginx:1.29.7-alpine`: another name, or the demo name with another image, is still denied. It is reconciled with the policies by `rathsted-sync`, not with the demo by `rathsted-apps`: Flux dry-runs a Kustomization as one batch, so an exception in the same batch as the Deployment would not be live when the Deployment is checked. Delete it, and its entry in `cluster/gitops/apps/kustomization.yaml`, when you replace or remove the demo app; update the image in it when you only bump the demo's nginx tag.
 
 ## Review Checklist
 

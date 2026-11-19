@@ -46,7 +46,7 @@ then verifies the k3s binary against the official release sha256 file.
 
 ## 3. Cosign Private Key in Repository
 
-**Risk:** The encrypted cosign private key (`supply-chain/cosign/cosign.key`) is stored in the private repository. While encrypted with scrypt KDF, it is not in a hardware security module or cloud KMS.
+**Risk:** The encrypted cosign private key (`supply-chain/cosign/cosign.key`) is stored in an access-controlled repository. While encrypted with scrypt KDF, it is not in a hardware security module or cloud KMS.
 
 **Mitigations:**
 - The key is encrypted and requires a passphrase to use
@@ -54,7 +54,7 @@ then verifies the k3s binary against the official release sha256 file.
 - The public key (`cosign.pub`) is the only key that ships publicly
 - Key rotation procedure is documented in `supply-chain/cosign/README.md`
 
-**Residual risk:** An attacker with access to the private repo and the passphrase could sign arbitrary images.
+**Residual risk:** An attacker with access to that repository or KMS and the passphrase could sign arbitrary images.
 
 **Re-evaluate:** Before production deployment to customer environments. Production deployments should use KMS-backed keys (AWS KMS, GCP KMS, Azure Key Vault, or HashiCorp Vault).
 

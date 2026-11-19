@@ -3,13 +3,18 @@ kind: ClusterPolicy
 metadata:
   name: require-namespace-labels
   annotations:
-    # R3 sovereignty contract. See R3-jurisdiction-plan.md.
+    # Namespace jurisdiction and operator-control label contract (R3). See
+    # docs/policy-catalog.md.
     # rathsted.io/operator-control is a cluster fact: it is STAMPED here from a
     # value rendered by the deploy overlay from the single canonical sovereignty
     # stanza — Kyverno does NOT read a runtime ConfigMap for this. Changing the
     # cluster's operator-control requires a GitOps/render commit, not a kubectl edit.
     # System namespaces (kube-system, kube-public, kube-node-lease) are excluded
-    # cluster-wide by Kyverno's resourceFilters, so no explicit exclude is needed.
+    # from both rules below. Kyverno's resourceFilters only keep them out of
+    # admission; without the explicit exclude, background reports list them as
+    # failing. The mutate rule excludes them too: they are not governed by the
+    # R3 contract, so the platform does not stamp an operator-control claim on
+    # them. bootstrap/lib/jurisdiction.sh R3_SYSTEM_NAMESPACES matches this list.
     rathsted.io/operator-control-source: overlay-rendered-literal
 spec:
   validationFailureAction: Enforce
@@ -18,12 +23,25 @@ spec:
     # 1) MUTATE — overwrite operator-control from the rendered cluster literal.
     #    Overwrite semantics (not fill-if-absent): an author cannot assert their
     #    own control boundary; the cluster fact always wins.
+    # This rule must stay rule 0 (first in spec.rules): RATHSTED_OPERATOR_CONTROL's
+    # render (bootstrap/lib/jurisdiction.sh) and components/operator-control/*
+    # patch /spec/rules/0 and test its name first, so a reorder fails the
+    # build instead of patching another rule.
     - name: stamp-operator-control
       match:
         any:
           - resources:
               kinds:
                 - Namespace
+      exclude:
+        any:
+          - resources:
+              kinds:
+                - Namespace
+              names:
+                - kube-system
+                - kube-public
+                - kube-node-lease
       mutate:
         patchStrategicMerge:
           metadata:
@@ -40,6 +58,15 @@ spec:
           - resources:
               kinds:
                 - Namespace
+      exclude:
+        any:
+          - resources:
+              kinds:
+                - Namespace
+              names:
+                - kube-system
+                - kube-public
+                - kube-node-lease
       validate:
         message: >-
           Namespaces must set owner, environment, rathsted.io/jurisdiction

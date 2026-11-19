@@ -1,3 +1,5 @@
+# Policies: path, name and prune are the ones 2.0.x shipped, so the object on
+# an existing cluster builds the policies-only tree at a newer commit.
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -12,3 +14,21 @@ spec:
   prune: true
   wait: true
   timeout: 2m0s
+---
+# Workloads, applied only once the policies are Ready.
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: rathsted-apps
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: rathsted-sync
+  interval: 1m0s
+  sourceRef:
+    kind: GitRepository
+    name: rathsted-foundations
+  path: "./cluster/gitops/workloads"
+  prune: true
+  wait: true
+  timeout: 5m0s

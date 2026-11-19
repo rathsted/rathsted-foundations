@@ -56,30 +56,13 @@ wait_for_endpoints() {
   done
 }
 
-apply_foundations_contract_marker() {
-  local install_mode="$1"
-  local foundations_version contract_version
-  foundations_version="$(git -C "${ROOT_DIR}" describe --tags --always 2>/dev/null || echo "untagged")"
-  contract_version="v1"
-  cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: rathsted-foundations-contract
-  namespace: flux-system
-data:
-  contract_version: "${contract_version}"
-  foundations_version: "${foundations_version}"
-  foundations_series: "2.x"
-  install_mode: "${install_mode}"
-  decks_v0_supported: "true"
-  policy_exception_support: "true"
-  topology_mode: "single-node"
-  topology_support_level: "baseline"
-  supported_node_min: "1"
-  supported_node_max: "1"
-EOF
-}
+# Contract marker (render + apply) lives in a lib so it can be tested without a cluster.
+# shellcheck source=bootstrap/lib/contract.sh
+source "${ROOT_DIR}/bootstrap/lib/contract.sh"
+
+# R3 namespace labels (RATHSTED_JURISDICTION, platform namespaces).
+# shellcheck source=bootstrap/lib/jurisdiction.sh
+source "${ROOT_DIR}/bootstrap/lib/jurisdiction.sh"
 
 install_user_binary() {
   local src="$1"
@@ -95,6 +78,22 @@ install_user_binary() {
 
 step "1/5  Preflight"
 
+# RATHSTED_JURISDICTION (ca|us|fr, optional) is used after the policies are in
+# place; refuse a bad value before touching the cluster.
+validate_rathsted_jurisdiction || exit 1
+# RATHSTED_OPERATOR_CONTROL (customer|domestic-provider|foreign-provider|rathsted,
+# optional) is rendered into the policies; same rule.
+validate_rathsted_operator_control || exit 1
+# RATHSTED_GIT_URL goes into the GitRepository spec; refuse one that embeds
+# credentials.
+validate_rathsted_git_url || exit 1
+# With RATHSTED_GIT_URL, GitOps is bootstrapped and Flux reconciles policies/
+# from Git: a declared value must already be the literal Git carries. Without
+# it, the rendered policies are what stays applied.
+if [[ -n "${RATHSTED_GIT_URL:-}" ]]; then
+  check_gitops_operator_control || exit 1
+fi
+
 if ! kubectl cluster-info >/dev/null 2>&1; then
   echo "kubectl cannot reach a cluster. Configure your kubeconfig first." >&2
   exit 1
@@ -103,6 +102,11 @@ info "Cluster reachable: $(kubectl cluster-info 2>&1 | head -1)"
 
 KUBE_VERSION="$(kubectl version --short 2>/dev/null | grep 'Server' || kubectl version -o json 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin)["serverVersion"]["gitVersion"])' 2>/dev/null || echo 'unknown')"
 info "Kubernetes version: ${KUBE_VERSION}"
+
+# Validate the requested topology contract (FOUNDATIONS_CONTRACT_TOPOLOGY_MODE)
+# against the live cluster before installing anything.
+check_contract_node_count "managed" || exit 1
+info "Topology contract: ${CONTRACT_TOPOLOGY_MODE} (${CONTRACT_TOPOLOGY_LEVEL}, nodes ${CONTRACT_NODE_MIN}-${CONTRACT_NODE_MAX})"
 
 # ── Flux + Supply Chain Tools ──
 
@@ -221,7 +225,16 @@ step "4/5  Policies"
 # shellcheck source=bootstrap/lib/policies.sh
 source "${ROOT_DIR}/bootstrap/lib/policies.sh"
 info "Applying baseline policies..."
-apply_policies_with_retry || { echo "[rathsted] Baseline policies failed; refusing to continue" >&2; exit 1; }
+# R3: with RATHSTED_OPERATOR_CONTROL set, apply a render of policies/ whose
+# require-namespace-labels stamps that value (a kustomize patch over a copy;
+# the tracked files are unchanged). Unset, policies/ itself, as before.
+POLICY_DIR="${ROOT_DIR}/policies"
+if [[ -n "${RATHSTED_OPERATOR_CONTROL:-}" ]]; then
+  POLICY_DIR="$(mktemp -d)"
+  CLEANUP_DIRS+=("${POLICY_DIR}")
+  render_operator_control_policies "${POLICY_DIR}" || { echo "[rathsted] Could not render the policies for RATHSTED_OPERATOR_CONTROL; refusing to continue" >&2; exit 1; }
+fi
+apply_policies_with_retry "${POLICY_DIR}" || { echo "[rathsted] Baseline policies failed; refusing to continue" >&2; exit 1; }
 
 # Overlay rendered policies from config/rendered/ if `make configure` has been run.
 # These rendered files replace the two ClusterPolicies (restrict-registries,
@@ -234,9 +247,16 @@ if [[ -f "${RENDERED_POLICIES}/restrict-registries.yaml" && \
   kubectl apply -f "${RENDERED_POLICIES}/restrict-registries.yaml"
   kubectl apply -f "${RENDERED_POLICIES}/require-signed-images.yaml"
   info "Rendered registry/signing policies applied."
+  if [[ -n "${RATHSTED_GIT_URL:-}" ]]; then warn_rendered_policies_gitops "${RENDERED_POLICIES}"; fi
 else
   info "Using default policies (run 'make configure' to customize registry/image signing)."
 fi
+
+# R3: record the declared operator-control (or warn with the stamped value),
+# then label the namespaces Foundations owns (flux-system, kyverno, default)
+# when RATHSTED_JURISDICTION is set; otherwise warn and leave them unlabelled.
+declare_operator_control || { echo "[rathsted] Could not declare RATHSTED_OPERATOR_CONTROL; refusing to continue" >&2; exit 1; }
+apply_platform_namespace_labels || { echo "[rathsted] Could not apply the jurisdiction labels to the platform namespaces; refusing to continue" >&2; exit 1; }
 
 # ── GitOps Bootstrap ──
 
@@ -294,19 +314,14 @@ github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAA
   fi
 
   # Pin to the release tag when HEAD is exactly on one; override with
-  # RATHSTED_GIT_REF (e.g. "tag: v1.0.3" or "branch: main").
-  GIT_REF="${RATHSTED_GIT_REF:-}"
-  if [[ -z "${GIT_REF}" ]]; then
-    if _tag="$(git -C "${ROOT_DIR}" describe --tags --exact-match 2>/dev/null)"; then
-      GIT_REF="tag: ${_tag}"
-    else
-      GIT_REF="branch: main"
-    fi
-  fi
+  # RATHSTED_GIT_REF (e.g. "tag: v1.0.3" or "branch: main"). Same resolver as
+  # check_gitops_operator_control (lib/jurisdiction.sh).
+  GIT_URL="$(r3_gitops_url)"
+  GIT_REF="$(r3_gitops_ref_spec)"
 
   TMPL="${ROOT_DIR}/cluster/gitops/sync/gitrepository.yaml.tmpl" \
   OUT="${tmpdir}/gitrepository.yaml" \
-  GIT_URL="${RATHSTED_GIT_URL}" \
+  GIT_URL="${GIT_URL}" \
   GIT_REF="${GIT_REF}" \
   SECRET_REF="${SECRET_REF}" \
   python3 - <<'PY'

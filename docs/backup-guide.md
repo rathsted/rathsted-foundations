@@ -71,4 +71,4 @@ The server directory includes:
 
 ## Before Reinstalling or Upgrading
 
-In-place upgrades are not supported in 2.0.x; moving to a new version means reinstalling (`docs/upgrade-guide.md`). Take a backup first. A backup restores the cluster at the k3s version it was taken from; it does not migrate state into a new version.
+A release that changes the k3s or Kyverno pin means reinstalling; a 2.x release with the same pins is applied in place by moving the GitRepository ref (`docs/upgrade-guide.md`). Take a backup first. A backup restores the cluster at the k3s version it was taken from; it does not migrate state into a new version.

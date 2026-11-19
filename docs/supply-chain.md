@@ -42,7 +42,7 @@ images:
     newTag: 1.0.0
 ```
 
-Also update `cluster/gitops/apps/kustomization.yaml` and the `restrict-registries` Kyverno policy allowlist. Then run `make verify-release` to confirm the supply-chain checks pass.
+Also update `cluster/gitops/workloads/kustomization.yaml` and the `restrict-registries` Kyverno policy allowlist. Then run `make verify-release` to confirm the supply-chain checks pass.
 
 ## Registry Options (Jurisdiction And Residency)
 
@@ -57,7 +57,7 @@ Also update `cluster/gitops/apps/kustomization.yaml` and the `restrict-registrie
 
 Minimum actions when **not** using the default placeholder image / registry:
 - Set `IMAGE` to the approved registry.
-- Update `cluster/gitops/apps/kustomization.yaml` image rewrite.
+- Update `cluster/gitops/workloads/kustomization.yaml` image rewrite.
 - Update `restrict-registries` Kyverno policy allowlist to the approved registry endpoints.
 - Verify release with `make verify-release` against the chosen registry.
 
@@ -67,12 +67,14 @@ In **dev mode** (`make verify`), supply chain checks are best-effort:
 - SBOM is generated from the local k3s containerd image if available
 - Cosign verification is skipped if the image isn't signed or in a registry
 - Both produce `[ok]` with an explanatory note
+- Flux Kustomization `rathsted-sync` (the policies) not Ready fails, as in release mode; `rathsted-apps` (the workloads) not Ready or suspended warns
 
 In **release mode** (`make verify-release`), supply chain checks are enforced:
 - Registry must be reachable
 - SBOM must generate successfully
 - Cosign signature must verify against `supply-chain/cosign/cosign.pub`
 - Signature policy must be in `Enforce` mode (not `Audit`)
+- Flux Kustomizations `rathsted-sync` and `rathsted-apps` must both be Ready, not suspended, at their source's current revision
 
 ## CI Notes
 CI may reference a configured example image for SBOM or Grype steps where enabled. Treat those outputs as review artifacts unless you promote them to release gates in your own pipeline.

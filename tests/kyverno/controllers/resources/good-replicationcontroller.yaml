@@ -1,0 +1,46 @@
+# Pod controller fixture: the pod spec lives under the controller's template,
+# not request.object.spec. See CHANGELOG (foreach autogen fix).
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: good-replicationcontroller
+  namespace: default
+  labels:
+    app.kubernetes.io/name: good-replicationcontroller
+spec:
+  selector:
+    app.kubernetes.io/name: good-replicationcontroller
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: good-replicationcontroller
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: ghcr.io/rathsted/nginx:1.29.7-alpine
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80

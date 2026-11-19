@@ -6,7 +6,7 @@ How credentials are generated, stored, rotated, and revoked in Rathsted Foundati
 
 | Credential | Purpose | Storage | Rotation |
 |---|---|---|---|
-| Cosign private key | Image signing | Private repo (encrypted) or KMS | On incident or per policy |
+| Cosign private key | Image signing | Access-controlled repository (encrypted) or KMS | On incident or per policy |
 | Cosign passphrase | Protects cosign private key | Operator-managed / CI | With key rotation |
 | RATHSTED_GIT_SSH_KEY | Flux GitRepository SSH auth | Env var / K8s object | On incident or per policy |
 | RATHSTED_GIT_TOKEN | Flux GitRepository HTTPS auth | Env var / K8s object | On incident or per policy |

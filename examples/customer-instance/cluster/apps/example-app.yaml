@@ -3,6 +3,7 @@
 # All workloads must comply with Foundations policies:
 #   - Run as non-root (runAsNonRoot: true, runAsUser: 10001+)
 #   - Drop all capabilities
+#   - Seccomp profile RuntimeDefault (or Localhost)
 #   - No privilege escalation
 #   - Resource requests and limits set
 #   - Liveness and readiness probes
@@ -25,6 +26,8 @@ spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 10001
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: app
           image: ghcr.io/acme/example-app:1.0.0  # Pin to a specific version; avoid :latest in production

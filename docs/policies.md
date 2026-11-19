@@ -11,7 +11,7 @@ This baseline ships Kyverno policies that enforce common secure-by-default rules
 - Require liveness/readiness probes
 - Restrict image registries to `ghcr.io/rathsted/*` and `localhost/*` by default; `make configure` renders policy for your own registry and `install.sh` applies it when present
 - Require image signatures for `ghcr.io/rathsted/*` by default; `make configure` renders policy for your own registry and `install.sh` applies it when present
-  - Rendered registry/signature policies are applied at bootstrap only; Flux reconciles the defaults from git and may restore them. For a persistent custom registry, carry the policy change in your GitOps source (tracked-overlay workflow planned).
+  - Rendered registry/signature policies are applied at bootstrap only; Flux reconciles the defaults from git and restores them at its first reconcile. For a persistent custom registry, carry the policy change in your GitOps source (tracked-overlay workflow planned).
 - Enforce namespace labels (`owner`, `environment`, and `rathsted.io/jurisdiction` — `ca`, `us`, or `fr`; `rathsted.io/operator-control` is stamped by the platform)
 - Default-deny NetworkPolicy in every newly created namespace except kube-system, kube-public, kube-node-lease, flux-system, kyverno, and default
 - Default-deny NetworkPolicy for the optional `app-runtime` profile (applied explicitly by the profile, not generated)

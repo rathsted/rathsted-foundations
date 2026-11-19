@@ -1,0 +1,858 @@
+apiVersion: cli.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: rathsted-pod-controller-policies
+# Pod controllers (Deployment, StatefulSet, DaemonSet, Job, CronJob,
+# ReplicationController) carry the pod spec under spec.template.spec (CronJob: spec.jobTemplate.spec.template.spec).
+# Each container-level policy matches Pod only and relies on Kyverno autogen to
+# rewrite request.object.spec for controllers, so a non-compliant controller is
+# denied at admission instead of being admitted and failing later at Pod
+# creation. Autogen rule names: autogen-<rule> for Deployment, StatefulSet,
+# DaemonSet, Job and ReplicationController; autogen-cronjob-<rule> for CronJob.
+#
+# Pods keep the base rule names.
+#
+# kyverno test (CLI v1.19.1) reports a result whose rule produced no response
+# as Pass/Excluded, so on its own this file cannot catch a rule that silently
+# never runs on a controller. scripts/test-policy-controllers.sh is the
+# non-vacuous guard: it counts real pass/fail responses per policy.
+#
+# Each bad-* fixture violates every rule below (bad controllers also carry a
+# violating initContainer). Each badinit-* fixture has a compliant main
+# container and a violating initContainer: it fails the container-level rules
+# only if the policies check initContainers.; each good-* fixture passes all.
+policies:
+  - ../../../policies/disallow-privileged.yaml
+  - ../../../policies/drop-all-capabilities.yaml
+  - ../../../policies/require-seccomp.yaml
+  - ../../../policies/require-readonly-rootfs.yaml
+  - ../../../policies/disallow-host-namespaces.yaml
+  - ../../../policies/restrict-hostpath.yaml
+resources:
+  - resources/bad-pod.yaml
+  - resources/bad-deployment.yaml
+  - resources/bad-statefulset.yaml
+  - resources/bad-daemonset.yaml
+  - resources/bad-job.yaml
+  - resources/bad-cronjob.yaml
+  - resources/bad-replicationcontroller.yaml
+  - resources/badinit-pod.yaml
+  - resources/badinit-deployment.yaml
+  - resources/badinit-statefulset.yaml
+  - resources/badinit-daemonset.yaml
+  - resources/badinit-job.yaml
+  - resources/badinit-cronjob.yaml
+  - resources/badinit-replicationcontroller.yaml
+  - resources/good-pod.yaml
+  - resources/good-deployment.yaml
+  - resources/good-statefulset.yaml
+  - resources/good-daemonset.yaml
+  - resources/good-job.yaml
+  - resources/good-cronjob.yaml
+  - resources/good-replicationcontroller.yaml
+results:
+  # --- disallow-privileged / privileged ---
+  - policy: disallow-privileged
+    rule: privileged
+    resources:
+      - bad-pod
+    kind: Pod
+    result: fail
+  - policy: disallow-privileged
+    rule: privileged
+    resources:
+      - good-pod
+    kind: Pod
+    result: pass
+  - policy: disallow-privileged
+    rule: privileged
+    resources:
+      - badinit-pod
+    kind: Pod
+    result: fail
+  - policy: disallow-privileged
+    rule: autogen-privileged
+    resources:
+      - bad-deployment
+    kind: Deployment
+    result: fail
+  - policy: disallow-privileged
+    rule: autogen-privileged
+    resources:
+      - good-deployment
+    kind: Deployment
+    result: pass
+  - policy: disallow-privileged
+    rule: autogen-privileged
+    resources:
+      - badinit-deployment
+    kind: Deployment
+    result: fail
+  - policy: disallow-privileged
+    rule: autogen-privileged
+    resources:
+      - bad-statefulset
+    kind: StatefulSet
+    result: fail
+  - policy: disallow-privileged
+    rule: autogen-privileged
+    resources:
+      - good-statefulset
+    kind: StatefulSet
+    result: pass
+  - policy: disallow-privileged
+    rule: autogen-privileged
+    resources:
+      - badinit-statefulset
+    kind: StatefulSet
+    result: fail
+  - policy: disallow-privileged
+    rule: autogen-privileged
+    resources:
+      - bad-daemonset
+    kind: DaemonSet
+    result: fail
+  - policy: disallow-privileged
+    rule: autogen-privileged
+    resources:
+      - good-daemonset
+    kind: DaemonSet
+    result: pass
+  - policy: disallow-privileged
+    rule: autogen-privileged
+    resources:
+      - badinit-daemonset
+    kind: DaemonSet
+    result: fail
+  - policy: disallow-privileged
+    rule: autogen-privileged
+    resources:
+      - bad-job
+    kind: Job
+    result: fail
+  - policy: disallow-privileged
+    rule: autogen-privileged
+    resources:
+      - good-job
+    kind: Job
+    result: pass
+  - policy: disallow-privileged
+    rule: autogen-privileged
+    resources:
+      - badinit-job
+    kind: Job
+    result: fail
+  - policy: disallow-privileged
+    rule: autogen-cronjob-privileged
+    resources:
+      - bad-cronjob
+    kind: CronJob
+    result: fail
+  - policy: disallow-privileged
+    rule: autogen-cronjob-privileged
+    resources:
+      - good-cronjob
+    kind: CronJob
+    result: pass
+  - policy: disallow-privileged
+    rule: autogen-cronjob-privileged
+    resources:
+      - badinit-cronjob
+    kind: CronJob
+    result: fail
+  - policy: disallow-privileged
+    rule: autogen-privileged
+    resources:
+      - bad-replicationcontroller
+    kind: ReplicationController
+    result: fail
+  - policy: disallow-privileged
+    rule: autogen-privileged
+    resources:
+      - good-replicationcontroller
+    kind: ReplicationController
+    result: pass
+  - policy: disallow-privileged
+    rule: autogen-privileged
+    resources:
+      - badinit-replicationcontroller
+    kind: ReplicationController
+    result: fail
+  # --- drop-all-capabilities / require-drop-all ---
+  - policy: drop-all-capabilities
+    rule: require-drop-all
+    resources:
+      - bad-pod
+    kind: Pod
+    result: fail
+  - policy: drop-all-capabilities
+    rule: require-drop-all
+    resources:
+      - good-pod
+    kind: Pod
+    result: pass
+  - policy: drop-all-capabilities
+    rule: require-drop-all
+    resources:
+      - badinit-pod
+    kind: Pod
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-require-drop-all
+    resources:
+      - bad-deployment
+    kind: Deployment
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-require-drop-all
+    resources:
+      - good-deployment
+    kind: Deployment
+    result: pass
+  - policy: drop-all-capabilities
+    rule: autogen-require-drop-all
+    resources:
+      - badinit-deployment
+    kind: Deployment
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-require-drop-all
+    resources:
+      - bad-statefulset
+    kind: StatefulSet
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-require-drop-all
+    resources:
+      - good-statefulset
+    kind: StatefulSet
+    result: pass
+  - policy: drop-all-capabilities
+    rule: autogen-require-drop-all
+    resources:
+      - badinit-statefulset
+    kind: StatefulSet
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-require-drop-all
+    resources:
+      - bad-daemonset
+    kind: DaemonSet
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-require-drop-all
+    resources:
+      - good-daemonset
+    kind: DaemonSet
+    result: pass
+  - policy: drop-all-capabilities
+    rule: autogen-require-drop-all
+    resources:
+      - badinit-daemonset
+    kind: DaemonSet
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-require-drop-all
+    resources:
+      - bad-job
+    kind: Job
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-require-drop-all
+    resources:
+      - good-job
+    kind: Job
+    result: pass
+  - policy: drop-all-capabilities
+    rule: autogen-require-drop-all
+    resources:
+      - badinit-job
+    kind: Job
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-cronjob-require-drop-all
+    resources:
+      - bad-cronjob
+    kind: CronJob
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-cronjob-require-drop-all
+    resources:
+      - good-cronjob
+    kind: CronJob
+    result: pass
+  - policy: drop-all-capabilities
+    rule: autogen-cronjob-require-drop-all
+    resources:
+      - badinit-cronjob
+    kind: CronJob
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-require-drop-all
+    resources:
+      - bad-replicationcontroller
+    kind: ReplicationController
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-require-drop-all
+    resources:
+      - good-replicationcontroller
+    kind: ReplicationController
+    result: pass
+  - policy: drop-all-capabilities
+    rule: autogen-require-drop-all
+    resources:
+      - badinit-replicationcontroller
+    kind: ReplicationController
+    result: fail
+  # --- drop-all-capabilities / restrict-added-capabilities ---
+  - policy: drop-all-capabilities
+    rule: restrict-added-capabilities
+    resources:
+      - bad-pod
+    kind: Pod
+    result: fail
+  - policy: drop-all-capabilities
+    rule: restrict-added-capabilities
+    resources:
+      - good-pod
+    kind: Pod
+    result: pass
+  - policy: drop-all-capabilities
+    rule: restrict-added-capabilities
+    resources:
+      - badinit-pod
+    kind: Pod
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-restrict-added-capabilities
+    resources:
+      - bad-deployment
+    kind: Deployment
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-restrict-added-capabilities
+    resources:
+      - good-deployment
+    kind: Deployment
+    result: pass
+  - policy: drop-all-capabilities
+    rule: autogen-restrict-added-capabilities
+    resources:
+      - badinit-deployment
+    kind: Deployment
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-restrict-added-capabilities
+    resources:
+      - bad-statefulset
+    kind: StatefulSet
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-restrict-added-capabilities
+    resources:
+      - good-statefulset
+    kind: StatefulSet
+    result: pass
+  - policy: drop-all-capabilities
+    rule: autogen-restrict-added-capabilities
+    resources:
+      - badinit-statefulset
+    kind: StatefulSet
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-restrict-added-capabilities
+    resources:
+      - bad-daemonset
+    kind: DaemonSet
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-restrict-added-capabilities
+    resources:
+      - good-daemonset
+    kind: DaemonSet
+    result: pass
+  - policy: drop-all-capabilities
+    rule: autogen-restrict-added-capabilities
+    resources:
+      - badinit-daemonset
+    kind: DaemonSet
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-restrict-added-capabilities
+    resources:
+      - bad-job
+    kind: Job
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-restrict-added-capabilities
+    resources:
+      - good-job
+    kind: Job
+    result: pass
+  - policy: drop-all-capabilities
+    rule: autogen-restrict-added-capabilities
+    resources:
+      - badinit-job
+    kind: Job
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-cronjob-restrict-added-capabilities
+    resources:
+      - bad-cronjob
+    kind: CronJob
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-cronjob-restrict-added-capabilities
+    resources:
+      - good-cronjob
+    kind: CronJob
+    result: pass
+  - policy: drop-all-capabilities
+    rule: autogen-cronjob-restrict-added-capabilities
+    resources:
+      - badinit-cronjob
+    kind: CronJob
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-restrict-added-capabilities
+    resources:
+      - bad-replicationcontroller
+    kind: ReplicationController
+    result: fail
+  - policy: drop-all-capabilities
+    rule: autogen-restrict-added-capabilities
+    resources:
+      - good-replicationcontroller
+    kind: ReplicationController
+    result: pass
+  - policy: drop-all-capabilities
+    rule: autogen-restrict-added-capabilities
+    resources:
+      - badinit-replicationcontroller
+    kind: ReplicationController
+    result: fail
+  # --- require-seccomp / seccomp-profile ---
+  - policy: require-seccomp
+    rule: seccomp-profile
+    resources:
+      - bad-pod
+    kind: Pod
+    result: fail
+  - policy: require-seccomp
+    rule: seccomp-profile
+    resources:
+      - good-pod
+    kind: Pod
+    result: pass
+  - policy: require-seccomp
+    rule: seccomp-profile
+    resources:
+      - badinit-pod
+    kind: Pod
+    result: fail
+  - policy: require-seccomp
+    rule: autogen-seccomp-profile
+    resources:
+      - bad-deployment
+    kind: Deployment
+    result: fail
+  - policy: require-seccomp
+    rule: autogen-seccomp-profile
+    resources:
+      - good-deployment
+    kind: Deployment
+    result: pass
+  - policy: require-seccomp
+    rule: autogen-seccomp-profile
+    resources:
+      - badinit-deployment
+    kind: Deployment
+    result: fail
+  - policy: require-seccomp
+    rule: autogen-seccomp-profile
+    resources:
+      - bad-statefulset
+    kind: StatefulSet
+    result: fail
+  - policy: require-seccomp
+    rule: autogen-seccomp-profile
+    resources:
+      - good-statefulset
+    kind: StatefulSet
+    result: pass
+  - policy: require-seccomp
+    rule: autogen-seccomp-profile
+    resources:
+      - badinit-statefulset
+    kind: StatefulSet
+    result: fail
+  - policy: require-seccomp
+    rule: autogen-seccomp-profile
+    resources:
+      - bad-daemonset
+    kind: DaemonSet
+    result: fail
+  - policy: require-seccomp
+    rule: autogen-seccomp-profile
+    resources:
+      - good-daemonset
+    kind: DaemonSet
+    result: pass
+  - policy: require-seccomp
+    rule: autogen-seccomp-profile
+    resources:
+      - badinit-daemonset
+    kind: DaemonSet
+    result: fail
+  - policy: require-seccomp
+    rule: autogen-seccomp-profile
+    resources:
+      - bad-job
+    kind: Job
+    result: fail
+  - policy: require-seccomp
+    rule: autogen-seccomp-profile
+    resources:
+      - good-job
+    kind: Job
+    result: pass
+  - policy: require-seccomp
+    rule: autogen-seccomp-profile
+    resources:
+      - badinit-job
+    kind: Job
+    result: fail
+  - policy: require-seccomp
+    rule: autogen-cronjob-seccomp-profile
+    resources:
+      - bad-cronjob
+    kind: CronJob
+    result: fail
+  - policy: require-seccomp
+    rule: autogen-cronjob-seccomp-profile
+    resources:
+      - good-cronjob
+    kind: CronJob
+    result: pass
+  - policy: require-seccomp
+    rule: autogen-cronjob-seccomp-profile
+    resources:
+      - badinit-cronjob
+    kind: CronJob
+    result: fail
+  - policy: require-seccomp
+    rule: autogen-seccomp-profile
+    resources:
+      - bad-replicationcontroller
+    kind: ReplicationController
+    result: fail
+  - policy: require-seccomp
+    rule: autogen-seccomp-profile
+    resources:
+      - good-replicationcontroller
+    kind: ReplicationController
+    result: pass
+  - policy: require-seccomp
+    rule: autogen-seccomp-profile
+    resources:
+      - badinit-replicationcontroller
+    kind: ReplicationController
+    result: fail
+  # --- require-readonly-rootfs / readonly-root-filesystem ---
+  - policy: require-readonly-rootfs
+    rule: readonly-root-filesystem
+    resources:
+      - bad-pod
+    kind: Pod
+    result: fail
+  - policy: require-readonly-rootfs
+    rule: readonly-root-filesystem
+    resources:
+      - good-pod
+    kind: Pod
+    result: pass
+  - policy: require-readonly-rootfs
+    rule: readonly-root-filesystem
+    resources:
+      - badinit-pod
+    kind: Pod
+    result: fail
+  - policy: require-readonly-rootfs
+    rule: autogen-readonly-root-filesystem
+    resources:
+      - bad-deployment
+    kind: Deployment
+    result: fail
+  - policy: require-readonly-rootfs
+    rule: autogen-readonly-root-filesystem
+    resources:
+      - good-deployment
+    kind: Deployment
+    result: pass
+  - policy: require-readonly-rootfs
+    rule: autogen-readonly-root-filesystem
+    resources:
+      - badinit-deployment
+    kind: Deployment
+    result: fail
+  - policy: require-readonly-rootfs
+    rule: autogen-readonly-root-filesystem
+    resources:
+      - bad-statefulset
+    kind: StatefulSet
+    result: fail
+  - policy: require-readonly-rootfs
+    rule: autogen-readonly-root-filesystem
+    resources:
+      - good-statefulset
+    kind: StatefulSet
+    result: pass
+  - policy: require-readonly-rootfs
+    rule: autogen-readonly-root-filesystem
+    resources:
+      - badinit-statefulset
+    kind: StatefulSet
+    result: fail
+  - policy: require-readonly-rootfs
+    rule: autogen-readonly-root-filesystem
+    resources:
+      - bad-daemonset
+    kind: DaemonSet
+    result: fail
+  - policy: require-readonly-rootfs
+    rule: autogen-readonly-root-filesystem
+    resources:
+      - good-daemonset
+    kind: DaemonSet
+    result: pass
+  - policy: require-readonly-rootfs
+    rule: autogen-readonly-root-filesystem
+    resources:
+      - badinit-daemonset
+    kind: DaemonSet
+    result: fail
+  - policy: require-readonly-rootfs
+    rule: autogen-readonly-root-filesystem
+    resources:
+      - bad-job
+    kind: Job
+    result: fail
+  - policy: require-readonly-rootfs
+    rule: autogen-readonly-root-filesystem
+    resources:
+      - good-job
+    kind: Job
+    result: pass
+  - policy: require-readonly-rootfs
+    rule: autogen-readonly-root-filesystem
+    resources:
+      - badinit-job
+    kind: Job
+    result: fail
+  - policy: require-readonly-rootfs
+    rule: autogen-cronjob-readonly-root-filesystem
+    resources:
+      - bad-cronjob
+    kind: CronJob
+    result: fail
+  - policy: require-readonly-rootfs
+    rule: autogen-cronjob-readonly-root-filesystem
+    resources:
+      - good-cronjob
+    kind: CronJob
+    result: pass
+  - policy: require-readonly-rootfs
+    rule: autogen-cronjob-readonly-root-filesystem
+    resources:
+      - badinit-cronjob
+    kind: CronJob
+    result: fail
+  - policy: require-readonly-rootfs
+    rule: autogen-readonly-root-filesystem
+    resources:
+      - bad-replicationcontroller
+    kind: ReplicationController
+    result: fail
+  - policy: require-readonly-rootfs
+    rule: autogen-readonly-root-filesystem
+    resources:
+      - good-replicationcontroller
+    kind: ReplicationController
+    result: pass
+  - policy: require-readonly-rootfs
+    rule: autogen-readonly-root-filesystem
+    resources:
+      - badinit-replicationcontroller
+    kind: ReplicationController
+    result: fail
+  # --- disallow-host-namespaces / host-namespaces ---
+  - policy: disallow-host-namespaces
+    rule: host-namespaces
+    resources:
+      - bad-pod
+    kind: Pod
+    result: fail
+  - policy: disallow-host-namespaces
+    rule: host-namespaces
+    resources:
+      - good-pod
+    kind: Pod
+    result: pass
+  - policy: disallow-host-namespaces
+    rule: autogen-host-namespaces
+    resources:
+      - bad-deployment
+    kind: Deployment
+    result: fail
+  - policy: disallow-host-namespaces
+    rule: autogen-host-namespaces
+    resources:
+      - good-deployment
+    kind: Deployment
+    result: pass
+  - policy: disallow-host-namespaces
+    rule: autogen-host-namespaces
+    resources:
+      - bad-statefulset
+    kind: StatefulSet
+    result: fail
+  - policy: disallow-host-namespaces
+    rule: autogen-host-namespaces
+    resources:
+      - good-statefulset
+    kind: StatefulSet
+    result: pass
+  - policy: disallow-host-namespaces
+    rule: autogen-host-namespaces
+    resources:
+      - bad-daemonset
+    kind: DaemonSet
+    result: fail
+  - policy: disallow-host-namespaces
+    rule: autogen-host-namespaces
+    resources:
+      - good-daemonset
+    kind: DaemonSet
+    result: pass
+  - policy: disallow-host-namespaces
+    rule: autogen-host-namespaces
+    resources:
+      - bad-job
+    kind: Job
+    result: fail
+  - policy: disallow-host-namespaces
+    rule: autogen-host-namespaces
+    resources:
+      - good-job
+    kind: Job
+    result: pass
+  - policy: disallow-host-namespaces
+    rule: autogen-cronjob-host-namespaces
+    resources:
+      - bad-cronjob
+    kind: CronJob
+    result: fail
+  - policy: disallow-host-namespaces
+    rule: autogen-cronjob-host-namespaces
+    resources:
+      - good-cronjob
+    kind: CronJob
+    result: pass
+  - policy: disallow-host-namespaces
+    rule: autogen-host-namespaces
+    resources:
+      - bad-replicationcontroller
+    kind: ReplicationController
+    result: fail
+  - policy: disallow-host-namespaces
+    rule: autogen-host-namespaces
+    resources:
+      - good-replicationcontroller
+    kind: ReplicationController
+    result: pass
+  # --- restrict-hostpath / hostpath ---
+  - policy: restrict-hostpath
+    rule: hostpath
+    resources:
+      - bad-pod
+    kind: Pod
+    result: fail
+  - policy: restrict-hostpath
+    rule: hostpath
+    resources:
+      - good-pod
+    kind: Pod
+    result: pass
+  - policy: restrict-hostpath
+    rule: autogen-hostpath
+    resources:
+      - bad-deployment
+    kind: Deployment
+    result: fail
+  - policy: restrict-hostpath
+    rule: autogen-hostpath
+    resources:
+      - good-deployment
+    kind: Deployment
+    result: pass
+  - policy: restrict-hostpath
+    rule: autogen-hostpath
+    resources:
+      - bad-statefulset
+    kind: StatefulSet
+    result: fail
+  - policy: restrict-hostpath
+    rule: autogen-hostpath
+    resources:
+      - good-statefulset
+    kind: StatefulSet
+    result: pass
+  - policy: restrict-hostpath
+    rule: autogen-hostpath
+    resources:
+      - bad-daemonset
+    kind: DaemonSet
+    result: fail
+  - policy: restrict-hostpath
+    rule: autogen-hostpath
+    resources:
+      - good-daemonset
+    kind: DaemonSet
+    result: pass
+  - policy: restrict-hostpath
+    rule: autogen-hostpath
+    resources:
+      - bad-job
+    kind: Job
+    result: fail
+  - policy: restrict-hostpath
+    rule: autogen-hostpath
+    resources:
+      - good-job
+    kind: Job
+    result: pass
+  - policy: restrict-hostpath
+    rule: autogen-cronjob-hostpath
+    resources:
+      - bad-cronjob
+    kind: CronJob
+    result: fail
+  - policy: restrict-hostpath
+    rule: autogen-cronjob-hostpath
+    resources:
+      - good-cronjob
+    kind: CronJob
+    result: pass
+  - policy: restrict-hostpath
+    rule: autogen-hostpath
+    resources:
+      - bad-replicationcontroller
+    kind: ReplicationController
+    result: fail
+  - policy: restrict-hostpath
+    rule: autogen-hostpath
+    resources:
+      - good-replicationcontroller
+    kind: ReplicationController
+    result: pass

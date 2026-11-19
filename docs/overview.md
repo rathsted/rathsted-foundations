@@ -3,8 +3,9 @@
 Rathsted Foundations is a Kubernetes baseline for teams that need infrastructure they can control, explain, and defend. It is intentionally narrow: a stable, single-node starting point with GitOps, policy enforcement, signed artifacts, and SBOM generation in a stack small enough to understand.
 
 That “single-node” qualifier is a real boundary, not an omission hidden in the
-footnotes. If Foundations grows into a supported multi-node substrate, that
-should be an explicit next-stage product step owned here first.
+footnotes. The one multi-node shape Foundations supports today is the bounded
+managed `managed-3-node-v1` topology: exactly 3 nodes, managed install path,
+no HA or failover claim. See [Multi-Node Design](multi-node-design.md).
 
 In this context, sovereignty does not mean marketing language or automatic compliance. It means knowing where the important control points live, who controls them, and which surrounding choices still need explicit business approval. Foundations helps you stand up that baseline faster, but it does not make a cloud or hosting model sovereign on its own.
 
@@ -27,7 +28,7 @@ In this context, sovereignty does not mean marketing language or automatic compl
 
 The next likely substrate expansion is:
 
-- a small supported multi-node cluster shape
+- a supported multi-node shape beyond the bounded 3-node contract
 
 But that should preserve the same narrow product posture:
 

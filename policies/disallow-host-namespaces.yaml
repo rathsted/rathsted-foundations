@@ -2,6 +2,16 @@ apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: disallow-host-namespaces
+  annotations:
+    # Rules match Pod only so Kyverno autogen (v1.19.1) generates the
+    # controller rules: autogen-<rule> for DaemonSet, Deployment, Job,
+    # StatefulSet and ReplicationController, autogen-cronjob-<rule> for CronJob,
+    # with request.object.spec rewritten to the pod template. ReplicaSet is in
+    # Kyverno's resourceFilters. Listing the controllers in the rule itself
+    # disables autogen and the rule then reads the controller's own spec, which
+    # holds no pod fields. PolicyExceptions for controllers must name the
+    # autogen rules.
+    pod-policies.kyverno.io/autogen-controllers: DaemonSet,Deployment,Job,StatefulSet,ReplicationController,CronJob
 spec:
   validationFailureAction: Enforce
   rules:
@@ -11,11 +21,6 @@ spec:
           - resources:
               kinds:
                 - Pod
-                - Deployment
-                - StatefulSet
-                - DaemonSet
-                - Job
-                - CronJob
       exclude:
         resources:
           namespaces:

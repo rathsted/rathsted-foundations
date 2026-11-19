@@ -66,10 +66,10 @@ These run from the private release source and are not in this repository. They a
 
 These gaps are surfaced by `make policy-audit` (maintainer CI only). Verified current as of v2.0.1.
 
-1. **Workload kinds** — Policies only match `Pod`. Kyverno autogenerates matching rules for higher-level resources (Deployment, StatefulSet, DaemonSet, Job, CronJob), but explicit top-level resource coverage provides additional defense in depth.
+1. **Workload kinds**: Pod policies match `Pod` only and Kyverno autogen checks the pod template of Deployment, StatefulSet, DaemonSet, Job, ReplicationController and CronJob at admission (`scripts/test-policy-controllers.sh` proves it for the container-level policies). `require-probes` is the exception: it autogens Deployment, DaemonSet and StatefulSet only, because Job and CronJob Pods run to completion. Do not list the controllers in a rule's `match` next to `Pod`: Kyverno then turns autogen off and the rule reads the controller's own `spec`, where there are no containers, so the controller is admitted. That was the case for six policies before the fix of 2026-11-18. ReplicaSet is not an autogen target of those six policies (it is in Kyverno's `resourceFilters`); its Pods are still checked.
 2. **Test coverage** — Several policies have no Kyverno CLI test coverage. Test fixtures use Docker Hub images instead of ghcr.io, which may mask registry restriction failures.
 3. **hostPort and procMount** — Not restricted by any policy. An app with `hostPort` exposes a port on the host network stack; `procMount` access is not checked.
-4. **Controller-level policy reports** — Kyverno's policy report for a Deployment may show as passing while the individual pods it owns are blocked. Admission enforcement is pod-level; the controller's status depends on when it created the pods.
+4. **Controller-level policy reports**: a controller is checked at admission through the autogen rules, so its report reflects its pod template. A Pod the controller creates later is checked again; a mutation or exception that differs between the two can still make the controller pass while its Pods are blocked.
 5. **grpc probes** — `require-probes.yaml` accepts `httpGet`, `tcpSocket`, and `exec` probes. `grpc` probes may be rejected; validate before using gRPC health checks.
 
 ## CI Integration

@@ -36,9 +36,11 @@ if [[ "$DRY_RUN" == "true" ]]; then
   ok "dry-run mode (skipping live cluster checks)"
   # Static checks
   if command -v kubectl >/dev/null 2>&1; then
-    kubectl kustomize "${ROOT_DIR}/cluster/gitops/apps" >/dev/null && ok "kustomize build ok"
+    kubectl kustomize "${ROOT_DIR}/cluster/gitops/apps" >/dev/null \
+      && kubectl kustomize "${ROOT_DIR}/cluster/gitops/workloads" >/dev/null && ok "kustomize build ok"
   elif command -v kustomize >/dev/null 2>&1; then
-    kustomize build "${ROOT_DIR}/cluster/gitops/apps" >/dev/null && ok "kustomize build ok"
+    kustomize build "${ROOT_DIR}/cluster/gitops/apps" >/dev/null \
+      && kustomize build "${ROOT_DIR}/cluster/gitops/workloads" >/dev/null && ok "kustomize build ok"
   else
     warn "kustomize not found; skipping kustomize build"
   fi
@@ -76,7 +78,10 @@ else
   warn "cluster-info failed"
   FAIL=1
 fi
+node_count="unknown"
 if kubectl get nodes -o wide >/dev/null 2>&1; then
+  node_count="$(kubectl get nodes --no-headers 2>/dev/null | wc -l | tr -d ' ')"
+  echo "  Cluster nodes:      ${node_count}"
   ok "cluster nodes accessible"
 else
   warn "cluster nodes not accessible"
@@ -87,13 +92,34 @@ if kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" >/dev/null 2>&1;
   contract_mode="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.install_mode}' 2>/dev/null || true)"
   contract_decks="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.decks_v0_supported}' 2>/dev/null || true)"
   contract_topology="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.topology_mode}' 2>/dev/null || true)"
+  contract_topology_level="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.topology_support_level}' 2>/dev/null || true)"
   contract_node_min="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.supported_node_min}' 2>/dev/null || true)"
   contract_node_max="$(kubectl get configmap "${CONTRACT_NAME}" -n "${CONTRACT_NS}" -o jsonpath='{.data.supported_node_max}' 2>/dev/null || true)"
   echo "  Contract series:    ${contract_series:-unknown}"
   echo "  Contract install:   ${contract_mode:-unknown}"
   echo "  Decks v0 support:   ${contract_decks:-unknown}"
   echo "  Topology:           ${contract_topology:-unknown} (supported nodes ${contract_node_min:-?}-${contract_node_max:-?})"
+  echo "  Topology support:   ${contract_topology_level:-unknown}"
   ok "Foundations contract marker present"
+  if [[ "${node_count}" =~ ^[0-9]+$ && "${contract_node_min}" =~ ^[0-9]+$ && "${contract_node_max}" =~ ^[0-9]+$ ]]; then
+    if (( node_count < contract_node_min || node_count > contract_node_max )); then
+      # A multi-node contract is an explicit support claim: a cluster outside
+      # its range fails. The single-node baseline only warns, as before.
+      if [[ "${contract_topology}" == "single-node" ]]; then
+        warn "Cluster node count ${node_count} is outside the topology contract (${contract_node_min}-${contract_node_max})"
+      else
+        warn "Cluster node count ${node_count} is outside the ${contract_topology} contract (${contract_node_min}-${contract_node_max})"
+        FAIL=1
+      fi
+    else
+      ok "Cluster node count ${node_count} matches the ${contract_topology:-unknown} contract"
+      if [[ "${contract_topology_level}" == "bounded" ]]; then
+        ok "Topology support is bounded: HA, failover and stateful node-loss survivability are out of scope"
+      fi
+    fi
+  else
+    warn "Cannot compare cluster node count (${node_count}) with the topology contract (${contract_node_min:-?}-${contract_node_max:-?})"
+  fi
 else
   warn "Foundations contract marker missing (${CONTRACT_NS}/${CONTRACT_NAME})"
 fi
@@ -177,6 +203,51 @@ while IFS= read -r img; do
   fi
 done <<<"$kyverno_imgs"
 
+# Flux Kustomization readiness. rathsted-sync (the policies) is judged here,
+# before the R3 section: the operator-control check trusts the stamp only
+# once rathsted-sync has applied, and this waits for that on a just-installed
+# cluster (RATHSTED_GITOPS_READY_ATTEMPTS, RATHSTED_GITOPS_READY_DELAY). The
+# verdict is printed in the GitOps section. Self-hosted installs always
+# configure GitOps, so a missing rathsted-sync counts there.
+# shellcheck source=bootstrap/lib/gitops.sh
+source "${ROOT_DIR}/bootstrap/lib/gitops.sh"
+GITOPS_EXPECTED="true"
+[[ "${MANAGED_MODE}" == "true" ]] && GITOPS_EXPECTED="false"
+section "GitOps Readiness"
+echo "[info $(date +%H:%M:%S)] reading flux-system/rathsted-sync before the namespace label checks; the verdict is in the GitOps section"
+gitops_sync_rc=0
+gitops_kustomization_verify_check rathsted-sync "${RELEASE_MODE}" true "${GITOPS_EXPECTED}" || gitops_sync_rc=$?
+GITOPS_SYNC_MSG="${GITOPS_VERIFY_MSG}"
+
+section "Namespace Jurisdiction Labels"
+# shellcheck source=bootstrap/lib/jurisdiction.sh
+source "${ROOT_DIR}/bootstrap/lib/jurisdiction.sh"
+# Every namespace in one convention. A gap fails verify when
+# RATHSTED_JURISDICTION is set, when the install recorded r3_jurisdiction in
+# the contract marker (the installer then promised the labels), or under
+# --release. Otherwise it warns, so installs made without a jurisdiction
+# (every install before this check existed, and clusters with namespaces
+# Foundations does not own, such as kind's local-path-storage) keep verifying
+# as before. An audit that cannot run always fails.
+r3_rc=0
+jurisdiction_verify_check "${RELEASE_MODE}" || r3_rc=$?
+case "${r3_rc}" in
+  0) ok "${R3_VERIFY_MSG}" ;;
+  1) warn "${R3_VERIFY_MSG}" ;;
+  *) warn "${R3_VERIFY_MSG}"; FAIL=1 ;;
+esac
+# Declared operator-control: the stamped rathsted.io/operator-control must
+# equal RATHSTED_OPERATOR_CONTROL in verify's environment, else the value the
+# install recorded as r3_operator_control. Neither: a warning naming the
+# stamped value (also under --release). A mismatch or a read error fails.
+r3_rc=0
+operator_control_verify_check "${RELEASE_MODE}" || r3_rc=$?
+case "${r3_rc}" in
+  0) ok "${R3_VERIFY_MSG}" ;;
+  1) warn "${R3_VERIFY_MSG}" ;;
+  *) warn "${R3_VERIFY_MSG}"; FAIL=1 ;;
+esac
+
 section "GitOps"
 if [[ "${MANAGED_MODE}" == "true" ]]; then
   if kubectl get kustomizations.kustomize.toolkit.fluxcd.io -n flux-system >/dev/null 2>&1; then
@@ -207,6 +278,15 @@ else
   fi
 fi
 
+# rathsted-sync not Ready fails in every mode: the policies' self-heal
+# depends on it (v2.0.0 to v2.0.2 shipped with it permanently not Ready).
+case "${gitops_sync_rc}" in
+  0) ok "${GITOPS_SYNC_MSG}" ;;
+  1) warn "${GITOPS_SYNC_MSG}" ;;
+  3) echo "[info $(date +%H:%M:%S)] ${GITOPS_SYNC_MSG}" ;;
+  *) warn "${GITOPS_SYNC_MSG}"; FAIL=1 ;;
+esac
+
 section "Demo App"
 if [[ "${MANAGED_MODE}" == "true" ]] && ! kubectl get ns demo >/dev/null 2>&1; then
   skip "Managed-mode demo app not installed"
@@ -224,6 +304,22 @@ elif kubectl get ns demo >/dev/null 2>&1; then
 else
   warn "Demo namespace not present (non-fatal: GitOps reconciliation may still be in progress)"
 fi
+# rathsted-apps (the workloads): after the demo rollout wait, so the two share
+# it. Not Ready warns, fails under --release: user workloads failing must not
+# hide, but they are not the platform's guarantee. It dependsOn rathsted-sync,
+# so it is not waited for when rathsted-sync is not ok.
+gitops_apps_rc=0
+if [[ "${gitops_sync_rc}" -eq 0 ]]; then
+  gitops_kustomization_verify_check rathsted-apps "${RELEASE_MODE}" false "${GITOPS_EXPECTED}" || gitops_apps_rc=$?
+else
+  RATHSTED_GITOPS_READY_ATTEMPTS=1 gitops_kustomization_verify_check rathsted-apps "${RELEASE_MODE}" false "${GITOPS_EXPECTED}" || gitops_apps_rc=$?
+fi
+case "${gitops_apps_rc}" in
+  0) ok "${GITOPS_VERIFY_MSG}" ;;
+  1) warn "${GITOPS_VERIFY_MSG}" ;;
+  3) echo "[info $(date +%H:%M:%S)] ${GITOPS_VERIFY_MSG}" ;;
+  *) warn "${GITOPS_VERIFY_MSG}"; FAIL=1 ;;
+esac
 
 # Verify signature policy is installed
 if kubectl get clusterpolicy require-signed-images >/dev/null 2>&1; then
@@ -323,7 +419,7 @@ if command -v grype >/dev/null 2>&1 && [[ "$SBOM_OK" == "true" ]]; then
     if grype "sbom:${SBOM_OUT}" --fail-on high -q -o table >/dev/null 2>&1; then
       ok "Grype release gate passed (no High+ findings after .grype.yaml ignores)"
     else
-      fail "Grype release gate: High/Critical vulnerabilities present (see ${GRYPE_OUT}); fix them, or add a time-boxed exception in .grype.yaml"
+      warn "Grype release gate: High/Critical vulnerabilities present (see ${GRYPE_OUT}); fix them, or add a time-boxed exception in .grype.yaml"
       FAIL=1
     fi
   else
@@ -333,7 +429,7 @@ else
   # Under --release the gate is required: a missing grype or SBOM means we cannot
   # prove the shipped image is clean, so refuse to pass rather than skip silently.
   if [[ "${RELEASE_MODE}" == "true" ]]; then
-    fail "Vulnerability gate cannot run (grype or SBOM unavailable) — required for --release"
+    warn "Vulnerability gate cannot run (grype or SBOM unavailable); required for --release"
     FAIL=1
   else
     skip "Grype scan skipped (grype or SBOM unavailable)"

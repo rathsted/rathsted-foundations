@@ -1,0 +1,6 @@
+# default is not a system namespace for R3: the installers label it, and the
+# system-namespace exclude must not cover it.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: default

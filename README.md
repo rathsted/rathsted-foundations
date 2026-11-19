@@ -48,6 +48,8 @@ make configure
 ./bootstrap/verify.sh
 ```
 
+Set `RATHSTED_JURISDICTION=ca`, `us` or `fr` for `install.sh` (or `install-managed.sh`) to give the namespaces Foundations owns (`flux-system`, `kyverno`, `default`) the namespace jurisdiction labels, so every namespace follows one convention. `make jurisdiction-audit` checks that. `require-namespace-labels` stamps `rathsted.io/operator-control=foreign-provider` (the reference deployment's value) on every non-system namespace it admits. With GitOps (`install.sh`, or `install-managed.sh` with `RATHSTED_GIT_URL`), Flux applies the policy from your Git source, so the value must be committed there: enable one of the [`components/operator-control/<value>`](docs/operator-control-components.md) kustomize components in `cluster/gitops/apps/kustomization.yaml`, or commit the literal; `RATHSTED_OPERATOR_CONTROL` (`customer`, `domestic-provider`, `foreign-provider` or `rathsted`) is then only accepted when the installer can read the commit GitOps will apply and it carries that value; otherwise the install stops before changing anything. Only `install-managed.sh` without GitOps applies a different value itself. See the [Quickstart](docs/quickstart.md#notes) notes.
+
 ## Environment Split
 
 Use two environments:
@@ -131,7 +133,7 @@ These documents are public because they explain the intended direction of policy
 | Directory | Purpose |
 |-----------|---------|
 | `bootstrap/` | Install, verify, and uninstall scripts for the full stack |
-| `cluster/` | k3s config, GitOps sync templates, vendored Kyverno manifest |
+| `cluster/` | k3s config, vendored Kyverno manifest, GitOps: `gitops/apps` (policies, Flux `rathsted-sync`), `gitops/workloads` (demo and your apps, Flux `rathsted-apps`) |
 | `config/` | Environment config written by `make configure` |
 | `docs/` | All documentation — architecture, policies, compliance, upgrade guide, etc. |
 | `examples/` | GitOps pattern example (`hello-gitops-app`), customer instance template |
@@ -156,7 +158,7 @@ What `2.x` does not include:
 
 ## Config Model
 
-`make configure` writes `config/customer.env`, renders registry/signature policies for your image namespace, and points the example deployment at your chosen image. `install.sh` applies those rendered policies during bootstrap only: Flux then reconciles the default policies from git and may restore the default `ghcr.io/rathsted/*` allowlist, so for a persistent custom registry carry equivalent policy changes in your GitOps source (a tracked-overlay workflow is planned). The default demo uses `nginx:1.29.7-alpine` from Docker Hub as a placeholder — Foundations does not ship its own application image. Production use requires replacing this with your own image.
+`make configure` writes `config/customer.env`, renders registry/signature policies for your image namespace, and points the example deployment at your chosen image. `install.sh` applies those rendered policies during bootstrap only: Flux then reconciles the default policies from git and restores the default `ghcr.io/rathsted/*` allowlist at its first reconcile, so for a persistent custom registry fork the repository, commit the rendered files into `policies/` and install from the fork (order in [Quickstart step 3](docs/quickstart.md#3-configure-your-registry-and-image); a tracked-overlay workflow is planned). The default demo uses `nginx:1.29.7-alpine` from Docker Hub as a placeholder — Foundations does not ship its own application image. Production use requires replacing this with your own image.
 
 ## Profiles
 

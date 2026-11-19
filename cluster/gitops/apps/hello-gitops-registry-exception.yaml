@@ -1,0 +1,41 @@
+# Lets the demo app (cluster/gitops/workloads) run its Docker Hub nginx image
+# under restrict-registries. It is here, with the policies, because Flux
+# dry-runs a Kustomization as one batch: an exception applied together with
+# the Deployment is not yet live when the Deployment is checked. Scoped to
+# the demo namespace, the names hello-gitops and hello-gitops-* (the
+# Deployment, its ReplicaSets and Pods), the registry rule only, and only
+# when every container, init container and ephemeral container image is
+# exactly nginx:1.29.7-alpine. Remove it when you replace or remove the demo
+# app; change the image below if you only bump the demo's nginx tag.
+apiVersion: kyverno.io/v2beta1
+kind: PolicyException
+metadata:
+  name: hello-gitops-registry-exception
+  namespace: kyverno
+  annotations:
+    rathsted.io/reason: "Demo app only: nginx from docker.io is a placeholder; Foundations ships no application image for it"
+spec:
+  exceptions:
+    - policyName: restrict-registries
+      ruleNames:
+        - allowed-registries
+        - autogen-allowed-registries
+  match:
+    any:
+      - resources:
+          kinds:
+            - Deployment
+            - ReplicaSet
+            - Pod
+          namespaces:
+            - demo
+          names:
+            - hello-gitops
+            - hello-gitops-*
+  conditions:
+    all:
+      # Every image of the Deployment/ReplicaSet template or of the Pod.
+      - key: "{{ [request.object.spec.template.spec.[containers, initContainers, ephemeralContainers][][].image, request.object.spec.[containers, initContainers, ephemeralContainers][][].image][][] }}"
+        operator: AllIn
+        value:
+          - nginx:1.29.7-alpine
