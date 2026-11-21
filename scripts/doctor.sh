@@ -126,16 +126,13 @@ fi
 # --- OS detection (if running on Linux) ---
 if [[ -f /etc/os-release ]]; then
   section "Host OS"
-  # shellcheck disable=SC1091
-  . /etc/os-release
-  case "${ID}" in
-    ubuntu|debian|rocky|almalinux|rhel|centos)
-      ok "Supported OS: ${ID} ${VERSION_ID}"
-      ;;
-    *)
-      warn "Unsupported host OS: ${ID} ${VERSION_ID} (supported: Ubuntu 22.04/24.04, Debian 12, Rocky/Alma/RHEL 9)"
-      ;;
-  esac
+  # shellcheck source=bootstrap/lib/os.sh
+  source "$ROOT_DIR/bootstrap/lib/os.sh"
+  if detect_supported_os 2>/dev/null; then
+    ok "Supported OS: ${OS_ID} ${OS_VERSION_ID}"
+  else
+    warn "Unsupported host OS: ${OS_ID:-unknown} ${OS_VERSION_ID:-} (supported: ${SUPPORTED_OS_TEXT})"
+  fi
 fi
 
 # --- Summary ---

@@ -47,7 +47,7 @@ These run from the private release source and are not in this repository. They a
 
 **Nightly or weekly**:
 
-- **`make compat-test`** (maintainer CI only) — Full E2E install + verify on Ubuntu 22.04, Ubuntu 24.04, Rocky 9, Debian 12. Produces evidence artifacts in `artifacts/`.
+- **`make compat-test`** (maintainer CI only): full E2E install + verify on Ubuntu 22.04, 24.04 and 26.04, Debian 12 and 13, Rocky 9 and 10. Produces evidence artifacts in `artifacts/`.
 - **`make dependency-watch`** (maintainer CI only) — Checks pinned dependency versions against upstream releases.
 
 **Before every release**:

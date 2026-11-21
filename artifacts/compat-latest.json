@@ -1,34 +1,322 @@
 {
-  "timestamp": "2026-10-09T21:58:17Z",
+  "timestamp": "2026-11-20T02:00:39Z",
   "source": "https://github.com/rathsted/rathsted-foundations.git",
   "arch": "arm64",
-  "commit": "c0b54e5562ee76f79b5fed1daca2fc92a7a7a09b",
+  "backend": "orbstack",
+  "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
   "commit_dirty": false,
   "parallel": true,
-  "passed": 10,
+  "passed": 17,
   "failed": 0,
+  "pins": {
+    "current": {
+      "k3s": "v1.35.9+k3s1",
+      "kyverno": "v1.19.1",
+      "flux": "2.9.6",
+      "pin_set": "2026-10-02"
+    },
+    "previous": {
+      "k3s": "v1.35.1+k3s1",
+      "kyverno": "v1.17.1",
+      "flux": "2.8.1",
+      "pin_set": "2026-10-02"
+    }
+  },
   "pin_change_dates": {
-    "current": {"k3s": "2026-10-02", "kyverno": "2026-10-02", "flux": "2026-10-02", "pin_set": "2026-10-02"},
-    "previous": {"k3s": "2026-10-02", "kyverno": "2026-10-02", "flux": "2026-10-02", "pin_set": "2026-10-02"}
+    "current": {
+      "k3s": "2026-10-02",
+      "kyverno": "2026-10-02",
+      "flux": "2026-10-02",
+      "pin_set": "2026-10-02"
+    },
+    "previous": {
+      "k3s": "2026-10-02",
+      "kyverno": "2026-10-02",
+      "flux": "2026-10-02",
+      "pin_set": "2026-10-02"
+    }
   },
   "pin_change_age_days": {
-    "current": {"k3s": 7, "kyverno": 7, "flux": 7, "pin_set": 7},
-    "previous": {"k3s": 7, "kyverno": 7, "flux": 7, "pin_set": 7}
+    "current": {
+      "k3s": 49,
+      "kyverno": 49,
+      "flux": 49,
+      "pin_set": 49
+    },
+    "previous": {
+      "k3s": 49,
+      "kyverno": 49,
+      "flux": 49,
+      "pin_set": 49
+    }
   },
   "pin_change_count_180d": {
-    "current": {"k3s": 1, "kyverno": 1, "flux": 1},
-    "previous": {"k3s": 1, "kyverno": 1, "flux": 1}
+    "current": {
+      "k3s": 1,
+      "kyverno": 1,
+      "flux": 1
+    },
+    "previous": {
+      "k3s": 1,
+      "kyverno": 1,
+      "flux": 1
+    }
   },
   "results": [
-    {"image": "debian:12", "status": "passed"},
-    {"image": "debian:12-prev", "status": "passed"},
-    {"image": "rocky:9", "status": "passed"},
-    {"image": "rocky:9-prev", "status": "passed"},
-    {"image": "ubuntu:22.04", "status": "passed"},
-    {"image": "ubuntu:22.04-prev", "status": "passed"},
-    {"image": "ubuntu:24.04", "status": "passed"},
-    {"image": "ubuntu:24.04-prev", "status": "passed"},
-    {"image": "ubuntu:24.04-cis", "status": "passed"},
-    {"image": "ubuntu:24.04-cis-prev", "status": "passed"}
+    {
+      "image": "debian:12",
+      "status": "passed",
+      "timestamp": "2026-11-19T22:10:50Z",
+      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
+      "commit_dirty": true,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "pin_set": "2026-10-02",
+        "k3s": "v1.35.9+k3s1",
+        "kyverno": "v1.19.1",
+        "flux": "2.9.6"
+      }
+    },
+    {
+      "image": "debian:12-prev",
+      "status": "passed",
+      "timestamp": "2026-11-19T22:10:50Z",
+      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
+      "commit_dirty": true,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "pin_set": "2026-10-02",
+        "k3s": "v1.35.1+k3s1",
+        "kyverno": "v1.17.1",
+        "flux": "2.8.1"
+      }
+    },
+    {
+      "image": "debian:13",
+      "status": "passed",
+      "timestamp": "2026-11-20T02:00:39Z",
+      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
+      "commit_dirty": false,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "k3s": "v1.35.9+k3s1",
+        "kyverno": "v1.19.1",
+        "flux": "2.9.6",
+        "pin_set": "2026-10-02"
+      }
+    },
+    {
+      "image": "debian:13-prev",
+      "status": "passed",
+      "timestamp": "2026-11-20T02:00:39Z",
+      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
+      "commit_dirty": false,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "k3s": "v1.35.1+k3s1",
+        "kyverno": "v1.17.1",
+        "flux": "2.8.1",
+        "pin_set": "2026-10-02"
+      }
+    },
+    {
+      "image": "rocky:9",
+      "status": "passed",
+      "timestamp": "2026-11-19T22:10:50Z",
+      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
+      "commit_dirty": true,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "pin_set": "2026-10-02",
+        "k3s": "v1.35.9+k3s1",
+        "kyverno": "v1.19.1",
+        "flux": "2.9.6"
+      }
+    },
+    {
+      "image": "rocky:9-prev",
+      "status": "passed",
+      "timestamp": "2026-11-19T22:10:50Z",
+      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
+      "commit_dirty": true,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "pin_set": "2026-10-02",
+        "k3s": "v1.35.1+k3s1",
+        "kyverno": "v1.17.1",
+        "flux": "2.8.1"
+      }
+    },
+    {
+      "image": "rocky:10",
+      "status": "passed",
+      "timestamp": "2026-11-20T02:00:39Z",
+      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
+      "commit_dirty": false,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "k3s": "v1.35.9+k3s1",
+        "kyverno": "v1.19.1",
+        "flux": "2.9.6",
+        "pin_set": "2026-10-02"
+      }
+    },
+    {
+      "image": "rocky:10-prev",
+      "status": "passed",
+      "timestamp": "2026-11-20T02:00:39Z",
+      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
+      "commit_dirty": false,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "k3s": "v1.35.1+k3s1",
+        "kyverno": "v1.17.1",
+        "flux": "2.8.1",
+        "pin_set": "2026-10-02"
+      }
+    },
+    {
+      "image": "ubuntu:22.04",
+      "status": "passed",
+      "timestamp": "2026-11-19T22:10:50Z",
+      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
+      "commit_dirty": true,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "pin_set": "2026-10-02",
+        "k3s": "v1.35.9+k3s1",
+        "kyverno": "v1.19.1",
+        "flux": "2.9.6"
+      }
+    },
+    {
+      "image": "ubuntu:22.04-prev",
+      "status": "passed",
+      "timestamp": "2026-11-19T22:10:50Z",
+      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
+      "commit_dirty": true,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "pin_set": "2026-10-02",
+        "k3s": "v1.35.1+k3s1",
+        "kyverno": "v1.17.1",
+        "flux": "2.8.1"
+      }
+    },
+    {
+      "image": "ubuntu:24.04",
+      "status": "passed",
+      "timestamp": "2026-11-19T22:10:50Z",
+      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
+      "commit_dirty": true,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "pin_set": "2026-10-02",
+        "k3s": "v1.35.9+k3s1",
+        "kyverno": "v1.19.1",
+        "flux": "2.9.6"
+      }
+    },
+    {
+      "image": "ubuntu:24.04-prev",
+      "status": "passed",
+      "timestamp": "2026-11-19T22:10:50Z",
+      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
+      "commit_dirty": true,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "pin_set": "2026-10-02",
+        "k3s": "v1.35.1+k3s1",
+        "kyverno": "v1.17.1",
+        "flux": "2.8.1"
+      }
+    },
+    {
+      "image": "ubuntu:26.04",
+      "status": "passed",
+      "timestamp": "2026-11-20T02:00:39Z",
+      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
+      "commit_dirty": false,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "k3s": "v1.35.9+k3s1",
+        "kyverno": "v1.19.1",
+        "flux": "2.9.6",
+        "pin_set": "2026-10-02"
+      }
+    },
+    {
+      "image": "ubuntu:26.04-prev",
+      "status": "passed",
+      "timestamp": "2026-11-20T02:00:39Z",
+      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
+      "commit_dirty": false,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "k3s": "v1.35.1+k3s1",
+        "kyverno": "v1.17.1",
+        "flux": "2.8.1",
+        "pin_set": "2026-10-02"
+      }
+    },
+    {
+      "image": "ubuntu:26.04-cis",
+      "status": "passed",
+      "timestamp": "2026-11-20T02:00:39Z",
+      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
+      "commit_dirty": false,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "k3s": "v1.35.9+k3s1",
+        "kyverno": "v1.19.1",
+        "flux": "2.9.6",
+        "pin_set": "2026-10-02"
+      }
+    },
+    {
+      "image": "ubuntu:26.04-cis-prev",
+      "status": "passed",
+      "timestamp": "2026-11-20T02:00:39Z",
+      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
+      "commit_dirty": false,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "k3s": "v1.35.1+k3s1",
+        "kyverno": "v1.17.1",
+        "flux": "2.8.1",
+        "pin_set": "2026-10-02"
+      }
+    },
+    {
+      "image": "ubuntu:24.04-cis",
+      "status": "passed",
+      "timestamp": "2026-11-19T22:10:50Z",
+      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
+      "commit_dirty": true,
+      "arch": "arm64",
+      "backend": "orbstack",
+      "pins": {
+        "pin_set": "2026-10-02",
+        "k3s": "v1.35.9+k3s1",
+        "kyverno": "v1.19.1",
+        "flux": "2.9.6"
+      }
+    }
   ]
 }

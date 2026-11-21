@@ -69,6 +69,10 @@ if [[ -f /etc/os-release ]]; then
   echo "  OS:                 ${PRETTY_NAME:-${ID} ${VERSION_ID}}"
 fi
 echo "  Kernel:             $(uname -r)"
+# shellcheck source=bootstrap/lib/os.sh
+source "${ROOT_DIR}/bootstrap/lib/os.sh"
+echo "  SELinux:            $(host_selinux_mode)"
+echo "  Secure Boot:        $(host_secure_boot)"
 ok "Environment recorded"
 
 section "Cluster"

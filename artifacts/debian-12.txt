@@ -1,5 +1,5 @@
 # Rathsted Foundations — debian:12 Compatibility Evidence
-# Date: 2026-10-09T21:40:58Z
+# Date: 2026-11-19T21:49:38Z
 # Source: https://github.com/rathsted/rathsted-foundations.git
 #
 
@@ -7,11 +7,11 @@
 #   k3s=v1.35.9+k3s1  kyverno=v1.19.1  flux=2.9.6
 #   changed=2026-10-02/2026-10-02/2026-10-02
 
-[rathsted 14:40:58] Using VM: rathsted-compat-debian-12
-[rathsted 14:40:58] Using image: debian:12
-[rathsted 14:40:58] Repo: bundled tarball from invoking workspace
-[rathsted 14:40:58] Creating VM (debian:12)...
-[rathsted 14:41:10] Installing prerequisites inside VM...
+[rathsted 14:49:38] Using VM: rathsted-compat-debian-12
+[rathsted 14:49:38] Using image: debian:12
+[rathsted 14:49:38] Repo: bundled tarball from invoking workspace
+[rathsted 14:49:38] Creating VM (debian:12)...
+[rathsted 14:50:09] Installing prerequisites inside VM...
 Hit:1 http://deb.debian.org/debian bookworm InRelease
 Hit:2 http://deb.debian.org/debian bookworm-updates InRelease
 Hit:3 http://deb.debian.org/debian-security bookworm-security InRelease
@@ -66,9 +66,9 @@ Get:22 http://deb.debian.org/debian bookworm/main arm64 git arm64 1:2.39.5-0+deb
 Get:23 http://deb.debian.org/debian bookworm/main arm64 make arm64 4.3-4.1 [391 kB]
 Get:24 http://deb.debian.org/debian bookworm/main arm64 patch arm64 2.7.6-7 [121 kB]
 debconf: delaying package configuration, since apt-utils is not installed
-Fetched 23.5 MB in 0s (61.7 MB/s)
+Fetched 23.5 MB in 0s (63.0 MB/s)
 Selecting previously unselected package perl-modules-5.36.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 12668 files and directories currently installed.)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 12665 files and directories currently installed.)
 Preparing to unpack .../0-perl-modules-5.36_5.36.0-7+deb12u4_all.deb ...
 Unpacking perl-modules-5.36 (5.36.0-7+deb12u4) ...
 Selecting previously unselected package libgdbm6:arm64.
@@ -92,7 +92,7 @@ Unpacking python3.11-minimal (3.11.2-6+deb12u9) ...
 Setting up libpython3.11-minimal:arm64 (3.11.2-6+deb12u9) ...
 Setting up python3.11-minimal (3.11.2-6+deb12u9) ...
 Selecting previously unselected package python3-minimal.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 14985 files and directories currently installed.)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 14982 files and directories currently installed.)
 Preparing to unpack .../0-python3-minimal_3.11.2-1+b1_arm64.deb ...
 Unpacking python3-minimal (3.11.2-1+b1) ...
 Selecting previously unselected package media-types.
@@ -121,7 +121,7 @@ Preparing to unpack .../8-libpython3-stdlib_3.11.2-1+b1_arm64.deb ...
 Unpacking libpython3-stdlib:arm64 (3.11.2-1+b1) ...
 Setting up python3-minimal (3.11.2-1+b1) ...
 Selecting previously unselected package python3.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 15432 files and directories currently installed.)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 15429 files and directories currently installed.)
 Preparing to unpack .../0-python3_3.11.2-1+b1_arm64.deb ...
 Unpacking python3 (3.11.2-1+b1) ...
 Selecting previously unselected package less.
@@ -170,17 +170,17 @@ Setting up liberror-perl (0.17029-2) ...
 Setting up git (1:2.39.5-0+deb12u3) ...
 Processing triggers for systemd (252.39-1~deb12u2) ...
 Processing triggers for libc-bin (2.36-9+deb12u14) ...
-[rathsted 14:41:24] Copying local repo into VM rathsted-compat-debian-12 (/srv/rathsted-foundations)...
-[rathsted 14:41:26] Running E2E inside VM rathsted-compat-debian-12...
-[rathsted 14:41:26] Decrypting SSH key (removing passphrase for Flux compatibility)...
-[rathsted 14:41:26] SSH key decrypted successfully
+[rathsted 14:51:19] Copying local repo into VM rathsted-compat-debian-12 (/srv/rathsted-foundations)...
+[rathsted 14:51:27] Running E2E inside VM rathsted-compat-debian-12...
+[rathsted 14:51:27] Decrypting SSH key (removing passphrase for Flux compatibility)...
+[rathsted 14:51:28] SSH key decrypted successfully
 vm.overcommit_memory = 0
 vm.panic_on_oom = 0
 kernel.panic = 0
 kernel.panic_on_oops = 0
 ./scripts/orbstack-e2e.sh
-[rathsted] OrbStack E2E starting
-[rathsted] Host: Linux rathsted-compat-debian-12 7.0.14-orbstack-00380-ga7e0a2dc9535 #1 SMP PREEMPT Fri Aug  7 03:48:40 UTC 2026 aarch64 GNU/Linux
+[rathsted] E2E starting
+[rathsted] Host: Linux rathsted-compat-debian-12 7.2.12-orbstack-00394-gbecdd6130068 #1 SMP PREEMPT Thu Oct 22 22:17:17 UTC 2026 aarch64 GNU/Linux
 [rathsted] Detected OS: debian 12
 
 ━━━ 1/6  OS Detection ━━━
@@ -344,13 +344,13 @@ deployment.apps/kyverno-reports-controller serverside-applied
 [rathsted] Policy apply attempt 1/10 (timeout 60s)...
 Warning: kyverno.io/v1 ClusterPolicy is deprecated and will be removed in a future release; migrate to ValidatingPolicy, MutatingPolicy, GeneratingPolicy or ImageValidatingPolicy (policies.kyverno.io), see https://kyverno.io/docs/guides/migration-to-cel/
 clusterpolicy.kyverno.io/baseline-networkpolicy created
+Warning: Policies that match Pods apply to all Pods including those created and managed by controllers excluded from autogen. Use preconditions to exclude the Pods managed by controllers which are excluded from autogen. Refer to https://kyverno.io/docs/policy-types/cluster-policy/autogen/ for details.
 clusterpolicy.kyverno.io/disallow-host-namespaces created
 clusterpolicy.kyverno.io/disallow-privileged created
 clusterpolicy.kyverno.io/drop-all-capabilities created
 clusterpolicy.kyverno.io/require-namespace-labels created
 clusterpolicy.kyverno.io/require-non-root created
 clusterpolicy.kyverno.io/require-probes created
-Warning: Policies that match Pods apply to all Pods including those created and managed by controllers excluded from autogen. Use preconditions to exclude the Pods managed by controllers which are excluded from autogen. Refer to https://kyverno.io/docs/policy-types/cluster-policy/autogen/ for details.
 clusterpolicy.kyverno.io/require-readonly-rootfs created
 clusterpolicy.kyverno.io/require-resources created
 clusterpolicy.kyverno.io/require-seccomp created
@@ -358,6 +358,14 @@ clusterpolicy.kyverno.io/require-signed-images created
 clusterpolicy.kyverno.io/restrict-hostpath created
 clusterpolicy.kyverno.io/restrict-registries created
 [rathsted] Using default policies (run 'make configure' to customize registry/image signing).
+[rathsted] WARNING: RATHSTED_OPERATOR_CONTROL is not set, so require-namespace-labels stamps rathsted.io/operator-control=foreign-provider on every namespace.
+[rathsted] WARNING: the tracked policy's value is foreign-provider, written for Rathsted's reference deployment; it is not a fact about this cluster.
+[rathsted] Declare who controls this cluster's operator: re-run with RATHSTED_OPERATOR_CONTROL=customer|domestic-provider|foreign-provider|rathsted
+[rathsted] WARNING: RATHSTED_JURISDICTION is not set, so these namespaces were left without jurisdiction labels: flux-system kyverno default
+[rathsted] WARNING: they do not meet the namespace label convention until labelled. Re-run with RATHSTED_JURISDICTION=ca|us|fr, or run:
+[rathsted]   CTL="$(kubectl get cpol require-namespace-labels -o jsonpath='{.spec.rules[?(@.name=="stamp-operator-control")].mutate.patchStrategicMerge.metadata.labels.rathsted\.io/operator-control}')"
+[rathsted]   kubectl label namespace flux-system kyverno default owner=platform environment=platform rathsted.io/jurisdiction=<ca|us|fr> rathsted.io/operator-control="$CTL" --overwrite
+[rathsted] Check with: ./bootstrap/jurisdiction-audit.sh
 
 ━━━ 6/6  GitOps Bootstrap ━━━
 
@@ -366,83 +374,108 @@ clusterpolicy.kyverno.io/restrict-registries created
 secret/rathsted-git-auth created
 gitrepository.source.toolkit.fluxcd.io/rathsted-foundations created
 kustomization.kustomize.toolkit.fluxcd.io/rathsted-sync created
+kustomization.kustomize.toolkit.fluxcd.io/rathsted-apps created
 [rathsted] Done. Use ./bootstrap/verify.sh to validate.
+[rathsted] Waiting up to 180s for Flux to create the demo namespace...
+[rathsted] Demo namespace created by Flux
 
 == Environment ==
   Foundations version: untagged
   Hostname:           rathsted-compat-debian-12
-  Date:               2026-10-09T21:42:48Z
+  Date:               2026-11-19T21:53:58Z
   Verify mode:        self-hosted
   OS:                 Debian GNU/Linux 12 (bookworm)
-  Kernel:             7.0.14-orbstack-00380-ga7e0a2dc9535
-[ok 14:42:48] Environment recorded
+  Kernel:             7.2.12-orbstack-00394-gbecdd6130068
+[ok 14:53:58] Environment recorded
 
 == Cluster ==
-[ok 14:42:48] cluster-info ok
-[ok 14:42:48] cluster nodes accessible
+[ok 14:53:59] cluster-info ok
+  Cluster nodes:      1
+[ok 14:53:59] cluster nodes accessible
   Contract series:    2.x
   Contract install:   self-hosted
   Decks v0 support:   true
   Topology:           single-node (supported nodes 1-1)
-[ok 14:42:49] Foundations contract marker present
+  Topology support:   baseline
+[ok 14:54:03] Foundations contract marker present
+[ok 14:54:03] Cluster node count 1 matches the single-node contract
 
 == Hardening ==
-  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (4.4M, 3578 entries)
-[ok 14:42:49] API server audit logging active
-[ok 14:42:49] Audit policy file present
-[ok 14:42:49] Secrets encryption at rest enabled (encryption config present)
+  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (7.6M, 5758 entries)
+[ok 14:54:03] API server audit logging active
+[ok 14:54:03] Audit policy file present
+[ok 14:54:03] Secrets encryption at rest enabled (encryption config present)
 
 == Flux ==
-[ok 14:42:50] Flux check passed
-[ok 14:42:50] Flux installed
-[ok 14:42:50] Flux pods present
+[ok 14:54:06] Flux check passed
+[ok 14:54:06] Flux installed
+[ok 14:54:06] Flux pods present
 
 == Kyverno ==
-[ok 14:42:50] Kyverno installed
-[ok 14:42:51] Kyverno pods present
-[ok 14:42:51] Kyverno policies present
-[info 14:42:51] kyverno image: ghcr.io/kyverno/kyverno:v1.19.1
-[info 14:42:51] kyverno image: ghcr.io/kyverno/background-controller:v1.19.1
-[info 14:42:51] kyverno image: ghcr.io/kyverno/cleanup-controller:v1.19.1
-[info 14:42:51] kyverno image: ghcr.io/kyverno/reports-controller:v1.19.1
+[ok 14:54:06] Kyverno installed
+[ok 14:54:06] Kyverno pods present
+[ok 14:54:07] Kyverno policies present
+[info 14:54:07] kyverno image: ghcr.io/kyverno/kyverno:v1.19.1
+[info 14:54:07] kyverno image: ghcr.io/kyverno/background-controller:v1.19.1
+[info 14:54:07] kyverno image: ghcr.io/kyverno/cleanup-controller:v1.19.1
+[info 14:54:07] kyverno image: ghcr.io/kyverno/reports-controller:v1.19.1
+
+== GitOps Readiness ==
+[info 14:54:07] reading flux-system/rathsted-sync before the namespace label checks; the verdict is in the GitOps section
+
+== Namespace Jurisdiction Labels ==
+NAMESPACE                    OWNER          ENVIRONMENT    JURISDICTION OPERATOR-CONTROL   VERDICT
+default                      -              -              -            -                  NON-CONFORMING
+demo                         platform       demo           ca           foreign-provider   conforming
+flux-system                  -              -              -            -                  NON-CONFORMING
+kube-node-lease              -              -              -            -                  system (excluded)
+kube-public                  -              -              -            -                  system (excluded)
+kube-system                  -              -              -            -                  system (excluded)
+kyverno                      -              -              -            -                  NON-CONFORMING
+[rathsted] jurisdiction audit: non-conforming: default flux-system kyverno
+[warn 14:54:08] Namespaces without the jurisdiction labels; warning only: no r3_jurisdiction is recorded in flux-system/rathsted-foundations-contract and no platform namespace declares a jurisdiction (strict with RATHSTED_JURISDICTION or --release; see docs/upgrade-guide.md)
+[warn 14:54:08] rathsted.io/operator-control is stamped foreign-provider, but no operator declared it (no r3_operator_control in flux-system/rathsted-foundations-contract); declare it with RATHSTED_OPERATOR_CONTROL at install
 
 == GitOps ==
-[ok 14:42:51] GitOps sync present
-[ok 14:42:51] Flux kustomizations listed
-[ok 14:42:51] Flux Git sources listed
+[ok 14:54:09] GitOps sync present
+[ok 14:54:09] Flux kustomizations listed
+[ok 14:54:09] Flux Git sources listed
+[ok 14:54:09] flux-system/rathsted-sync Ready, applied main@sha1:2adeece857a02e619179b9b6397f907725ac504c (the current GitRepository/rathsted-foundations revision)
 
 == Demo App ==
-[ok 14:42:51] Demo app objects present
-[warn 14:42:51] Demo app not Ready (non-fatal: GitOps reconciliation may still be in progress)
-[ok 14:42:51] Signature policy installed
+[ok 14:54:09] Demo app objects present
+[ok 14:54:14] Demo app Ready
+[rathsted] waiting for flux-system/rathsted-apps to be Ready (up to 24 checks, 5s apart)
+[ok 14:54:21] flux-system/rathsted-apps Ready, applied main@sha1:2adeece857a02e619179b9b6397f907725ac504c (the current GitRepository/rathsted-foundations revision)
+[ok 14:54:21] Signature policy installed
 
 == Supply Chain ==
-[ok 14:42:58] SBOM generated (local containerd)
-[skip 14:42:58] Cosign skipped (cosign.pub not configured; use --release to enforce)
+[ok 14:54:27] SBOM generated (local containerd)
+[skip 14:54:27] Cosign skipped (cosign.pub not configured; use --release to enforce)
 
 == Vulnerability Scan ==
   Results: /srv/rathsted-foundations/supply-chain/sbom/output/foundations-demo.grype.txt
-  Critical: 28  High: 111
-[ok 14:47:13] Grype scan complete (informational; the High+ release gate applies under --release)
+  Critical: 50  High: 167
+[ok 14:57:44] Grype scan complete (informational; the High+ release gate applies under --release)
 
 == Negative Tests ==
-[ok 14:47:14] Kyverno webhooks detected, waiting 15s for policies to settle...
-[ok 14:47:29] Policy rejected as expected: default-namespace-pod.yaml
-[ok 14:47:30] Policy rejected as expected: disallowed-registry.yaml
-[ok 14:47:30] Policy rejected as expected: host-namespaces-pod.yaml
-[ok 14:47:30] Policy rejected as expected: hostpath-pod.yaml
-[ok 14:47:30] Policy rejected as expected: no-drop-capabilities-pod.yaml
-[ok 14:47:30] Policy rejected as expected: no-namespace-labels.yaml
-[ok 14:47:30] Policy rejected as expected: no-probes-pod.yaml
-[ok 14:47:31] Policy rejected as expected: no-resources-pod.yaml
-[ok 14:47:31] Policy rejected as expected: no-seccomp-pod.yaml
-[ok 14:47:31] Policy rejected as expected: privileged-pod.yaml
-[ok 14:47:31] Policy rejected as expected: readonly-rootfs-pod.yaml
-[ok 14:47:31] Policy rejected as expected: root-pod.yaml
-[ok 14:47:33] Policy rejected as expected: unsigned-image-pod.yaml
+[ok 14:57:44] Kyverno webhooks detected, waiting 15s for policies to settle...
+[ok 14:58:00] Policy rejected as expected: default-namespace-pod.yaml
+[ok 14:58:01] Policy rejected as expected: disallowed-registry.yaml
+[ok 14:58:01] Policy rejected as expected: host-namespaces-pod.yaml
+[ok 14:58:01] Policy rejected as expected: hostpath-pod.yaml
+[ok 14:58:01] Policy rejected as expected: no-drop-capabilities-pod.yaml
+[ok 14:58:02] Policy rejected as expected: no-namespace-labels.yaml
+[ok 14:58:02] Policy rejected as expected: no-probes-pod.yaml
+[ok 14:58:02] Policy rejected as expected: no-resources-pod.yaml
+[ok 14:58:02] Policy rejected as expected: no-seccomp-pod.yaml
+[ok 14:58:02] Policy rejected as expected: privileged-pod.yaml
+[ok 14:58:03] Policy rejected as expected: readonly-rootfs-pod.yaml
+[ok 14:58:03] Policy rejected as expected: root-pod.yaml
+[ok 14:58:05] Policy rejected as expected: unsigned-image-pod.yaml
 
 == Positive Admission Tests ==
-[skip 14:47:33] Positive admission tests skipped (use --release to enforce)
+[skip 14:58:05] Positive admission tests skipped (use --release to enforce)
 
 == Access Control (RBAC) ==
   ClusterRoleBindings + RoleBindings: 80
@@ -513,7 +546,7 @@ kustomization.kustomize.toolkit.fluxcd.io/rathsted-sync created
     system:public-info-viewer
     system:service-account-issuer-discovery
     system:volume-scheduler
-[ok 14:47:33] RBAC snapshot recorded
+[ok 14:58:05] RBAC snapshot recorded
 
 == Network Policies ==
   NetworkPolicies across all namespaces: 4
@@ -521,16 +554,16 @@ kustomization.kustomize.toolkit.fluxcd.io/rathsted-sync created
     flux-system          allow-egress
     flux-system          allow-scraping
     flux-system          allow-webhooks
-[ok 14:47:33] NetworkPolicy snapshot recorded
+[ok 14:58:06] NetworkPolicy snapshot recorded
 
 == Summary ==
-  Passed:   36
-  Warnings: 3
+  Passed:   40
+  Warnings: 4
   Failed:   0
 
-[ok 14:47:33] Verification passed
+[ok 14:58:06] Verification passed
 [rathsted] E2E complete
-[rathsted 14:47:33] Host-side OrbStack E2E complete
+[rathsted 14:58:06] Host-side OrbStack E2E complete
 
 # Exit code: 0
-# Completed: 2026-10-09T21:47:33Z
+# Completed: 2026-11-19T21:58:06Z

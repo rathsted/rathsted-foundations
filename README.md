@@ -23,7 +23,8 @@ Rathsted Foundations is a Kubernetes baseline for teams that need infrastructure
 - Stable, tag-based single-node baseline
 - Primary supported path on Ubuntu 22.04 and 24.04
 - Validated compatibility paths for Debian 12, Rocky Linux 9, and Ubuntu 24.04 CIS
-- Compatible family guidance for RHEL 9 and AlmaLinux 9 where noted
+- Validated paths for Ubuntu 26.04 (also CIS-hardened), Debian 13 and Rocky Linux 10 on arm64 and x86_64; details per release in [docs/versions.md](docs/versions.md)
+- Compatible family guidance for RHEL 9/10 and AlmaLinux 9/10 where noted
 - Deterministic GitOps bootstrap and verification flow
 - Policy and supply-chain controls that can be reviewed, tested, and evidenced (see [release signing](docs/release-signing.md) for the Rathsted reference image)
 
@@ -77,8 +78,9 @@ Optional on the workstation:
 
 ## Target Host Requirements
 
-- Ubuntu 22.04 or 24.04 (primary)
-- Debian 12, Rocky Linux 9, RHEL 9, AlmaLinux 9 (tested or compatible)
+- Ubuntu 22.04 or 24.04 (primary); Ubuntu 26.04 validated on arm64 and x86_64
+- Debian 12 or 13, Rocky Linux 9 or 10, RHEL 9 or 10, AlmaLinux 9 or 10 (tested or compatible; see [docs/versions.md](docs/versions.md))
+- Rocky and RHEL 10 on x86_64 need an x86-64-v3 CPU (AVX2); AlmaLinux 10 defaults to x86-64-v3 and also ships an x86_64_v2 build
 - 2 CPU minimum (4 CPU recommended), 4 GB RAM minimum (8 GB recommended), 20 GB disk
 - outbound network access for initial bootstrap downloads
 - open ports required by your deployment, including `6443` for the Kubernetes API

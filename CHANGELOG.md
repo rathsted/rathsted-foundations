@@ -6,6 +6,42 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [2.2.0] — 2026-11-20
+
+### Breaking / action required
+- `install.sh` checks the release as well as the distribution, and refuses
+  anything outside the supported list (for example Ubuntu 20.04 or 25.10,
+  Debian 11, Rocky 8, or an os-release without `VERSION_ID`), and no longer
+  accepts CentOS Stream. It used to accept any version of a supported
+  distribution and any CentOS, so re-running it on such a host now stops at
+  OS detection. Move the host to a supported release first.
+
+### Added
+- Host support for Ubuntu 26.04 LTS, Debian 13 (trixie) and Rocky Linux,
+  AlmaLinux and RHEL 10, alongside Ubuntu 22.04/24.04, Debian 12 and EL9.
+  Ubuntu 26.04 (also CIS-hardened), Debian 13 and Rocky Linux 10 passed the
+  arm64 and x86_64 runs on 2026-11-19 (details per release in
+  `docs/versions.md`). The supported list lives in `bootstrap/lib/os.sh`, which `install.sh` and
+  `make doctor` share.
+- On EL10, when the running distribution kernel cannot resolve `nft_compat`
+  and `xt_conntrack`, `install.sh` installs the modules-extra build of that
+  kernel's package (`kernel-modules-extra`, `kernel-64k-modules-extra`, ...)
+  before k3s. RHEL 10 moved those modules there. The 2026-11-19 x86_64
+  Rocky 10 run installed it; the SELinux policy k3s installs there is
+  upstream's el9 k3s-selinux build, as k3s has no stable el10 one.
+- `verify.sh` records the host's SELinux mode (`getenforce`, or "not
+  present") and Secure Boot state in its Environment section, so compat
+  evidence carries both.
+
+### Fixed
+- `install.sh` names the `RATHSTED_*` settings, and any proxy (`http_proxy`,
+  `https_proxy`, `no_proxy` in either case) or CA bundle (`SSL_CERT_FILE`,
+  `SSL_CERT_DIR`, `CURL_CA_BUNDLE`) settings, that are set in
+  `--preserve-env=` when it re-runs itself with sudo. `sudo-rs`, the default
+  sudo on Ubuntu 26.04, ignores a bare `-E`, so pins, the GitOps URL and the
+  Git credentials would not reach the root pass there. Only names go on the
+  command line, never values.
+
 ## [2.1.0] — 2026-11-19
 
 **Pin before this release reaches your cluster.** An install from a checkout

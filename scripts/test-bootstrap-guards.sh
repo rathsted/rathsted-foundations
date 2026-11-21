@@ -25,6 +25,18 @@
 #      as a warning, sets FAIL=1 and carries on to the Summary (it called
 #      `fail`, which only install.sh defines: under set -e verify died there
 #      with "command not found" and never printed its Summary)
+#  12. the supported-OS gate (bootstrap/lib/os.sh) accepts Ubuntu
+#      22.04/24.04/26.04, Debian 12/13 and Rocky/Alma/RHEL 9/10, and refuses
+#      other releases, CentOS Stream, and an os-release with no VERSION_ID
+#  13. on an EL10 host whose kernel cannot resolve nft_compat and an xt_
+#      module, the matching *-modules-extra build of the kernel's own package
+#      (kernel, kernel-64k, kernel-debug, ...) is installed (RHEL 10 moved those
+#      modules there), and a failed install is a clear stop; modules that
+#      already resolve, a kernel no package owns, EL9 and Debian-family hosts
+#      are left alone
+#  14. verify records the host's SELinux mode (getenforce, or "not present")
+#      and Secure Boot state (mokutil, else the EFI variable, else "not EFI")
+#      in its Environment section, so compat evidence carries both
 #
 # Usage:
 #   ./scripts/test-bootstrap-guards.sh
@@ -244,6 +256,203 @@ vuln() {
 }
 vuln "grype finds High+ findings" "${WORK}/vbin" true
 vuln "grype or SBOM unavailable" "${WORK}/nogrype" false
+
+section "12. supported-OS gate"
+OSDIR="${WORK}/os-release"
+mkdir -p "$OSDIR"
+# os_case <expect: ok|refuse> <family-or-empty> <ID> [VERSION_ID]
+os_case() {
+  local expect="$1" family="$2" id="$3" ver="${4-}" f out rc
+  f="${OSDIR}/${id}-${ver:-none}"
+  { echo "ID=${id}"; [[ -n "$ver" ]] && echo "VERSION_ID=\"${ver}\""; echo "PRETTY_NAME=\"${id} ${ver}\""; } > "$f"
+  set +e
+  out="$(env -i HOME="$WORK" PATH=/usr/bin:/bin ROOT_DIR="$ROOT_DIR" bash -c '
+    set -euo pipefail
+    source "${ROOT_DIR}/bootstrap/lib/os.sh"
+    detect_supported_os "$1"
+    echo "FAMILY=${OS_FAMILY}"' _ "$f" 2>&1 </dev/null)"
+  rc=$?
+  set -e
+  if [[ "$expect" == ok ]]; then
+    if [[ "$rc" -eq 0 ]] && grep -qx "FAMILY=${family}" <<<"$out"; then pass "accepts ${id} ${ver} (${family} family)"
+    else fail "${id} ${ver}: expected ${family}, rc=$rc: $(tr '\n' ' ' <<<"$out")"; fi
+  else
+    if [[ "$rc" -ne 0 ]] && grep -q 'Unsupported OS' <<<"$out" && grep -q 'Ubuntu 22.04/24.04/26.04' <<<"$out" \
+       && ! grep -qE 'unbound variable|command not found' <<<"$out"; then pass "refuses ${id} ${ver:-without VERSION_ID} and names the supported releases"
+    else fail "${id} ${ver:-without VERSION_ID}: expected a refusal, rc=$rc: $(tr '\n' ' ' <<<"$out")"; fi
+  fi
+}
+os_case ok debian ubuntu 22.04
+os_case ok debian ubuntu 24.04
+os_case ok debian ubuntu 26.04
+os_case ok debian debian 12
+os_case ok debian debian 13
+os_case ok rhel rocky 9.6
+os_case ok rhel rocky 10.0
+os_case ok rhel rocky 10.1
+os_case ok rhel almalinux 9.7
+os_case ok rhel almalinux 10.0
+os_case ok rhel rhel 9.6
+os_case ok rhel rhel 10.1
+os_case refuse "" ubuntu 20.04
+os_case refuse "" ubuntu 25.10
+os_case refuse "" debian 11
+os_case refuse "" debian ""
+os_case refuse "" rocky 8.10
+os_case refuse "" almalinux 8.10
+os_case refuse "" rhel 8.10
+os_case refuse "" rocky 11.0
+os_case refuse "" fedora 43
+os_case refuse "" arch ""
+os_case refuse "" centos 9
+os_case refuse "" centos 10
+f="${OSDIR}/centos-10"
+out="$(env -i HOME="$WORK" PATH=/usr/bin:/bin ROOT_DIR="$ROOT_DIR" bash -c 'source "${ROOT_DIR}/bootstrap/lib/os.sh"; detect_supported_os "$1"' _ "$f" 2>&1 </dev/null || true)"
+if grep -q 'CentOS Stream' <<<"$out"; then pass "the refusal names CentOS Stream as not supported"
+else fail "the refusal does not name CentOS Stream: $out"; fi
+
+section "13. EL10 kernel-modules-extra for k3s"
+KBIN="${WORK}/kbin"
+mkdir -p "$KBIN"
+# Fakes, driven by env; every call is logged to $FAKE_STATE/kme_calls.
+#   FAKE_UNAME   uname -r output
+#   FAKE_MODS    present | missing  (modprobe -n -q resolves the modules)
+#   FAKE_KOWNER  "NAME VERSION-RELEASE.ARCH" printed by rpm -qf --qf, or
+#                "none" when no package owns the kernel
+#   FAKE_KME     installed | missing  (rpm -q of the extra package)
+#   FAKE_DNF     ok | fail
+cat > "${KBIN}/uname" <<'FAKE'
+#!/bin/sh
+echo "$FAKE_UNAME"
+FAKE
+cat > "${KBIN}/modprobe" <<'FAKE'
+#!/bin/sh
+echo "modprobe $*" >> "${FAKE_STATE}/kme_calls"
+[ "$FAKE_MODS" = present ]
+FAKE
+cat > "${KBIN}/rpm" <<'FAKE'
+#!/bin/sh
+echo "rpm $*" >> "${FAKE_STATE}/kme_calls"
+if [ "$1" = -qf ]; then
+  [ "$FAKE_KOWNER" = none ] && exit 1
+  printf '%b\n' "$FAKE_KOWNER"; exit 0
+fi
+[ "$FAKE_KME" = installed ]
+FAKE
+cat > "${KBIN}/dnf" <<'FAKE'
+#!/bin/sh
+echo "dnf $*" >> "${FAKE_STATE}/kme_calls"
+[ "$FAKE_DNF" != fail ]
+FAKE
+chmod +x "${KBIN}/uname" "${KBIN}/modprobe" "${KBIN}/rpm" "${KBIN}/dnf"
+X86_UNAME="6.12.0-55.el10.x86_64"
+X86_OWNER="kernel-core 6.12.0-55.el10.x86_64"
+# kme <family> <VERSION_ID> <FAKE_MODS> <FAKE_KME> <FAKE_DNF> [FAKE_UNAME] [FAKE_KOWNER]
+kme() {
+  : > "${FAKE_STATE}/kme_calls"
+  set +e
+  OUT="$(env -i HOME="$WORK" PATH="${KBIN}:/usr/bin:/bin" ROOT_DIR="$ROOT_DIR" FAKE_STATE="$FAKE_STATE" \
+    FAKE_MODS="$3" FAKE_KME="$4" FAKE_DNF="$5" FAKE_UNAME="${6:-$X86_UNAME}" FAKE_KOWNER="${7:-$X86_OWNER}" \
+    OS_FAMILY="$1" OS_VERSION_ID="$2" bash -c '
+    set -euo pipefail
+    source "${ROOT_DIR}/bootstrap/lib/os.sh"
+    ensure_k3s_kernel_modules' 2>&1 </dev/null)"
+  RC=$?
+  set -e
+  KCALLS="$(cat "${FAKE_STATE}/kme_calls")"
+}
+kme rhel 10.0 missing missing ok
+if [[ "$RC" -eq 0 ]] && grep -qx 'dnf install -y kernel-modules-extra-6.12.0-55.el10.x86_64' <<<"$KCALLS"; then
+  pass "EL10, modules missing: installs kernel-modules-extra for the running kernel"
+else fail "EL10 missing modules: rc=$RC calls: $(tr '\n' '|' <<<"$KCALLS") out: $OUT"; fi
+kme rhel 10.0 missing missing ok "6.12.0-55.el10.aarch64+64k" "kernel-64k-core 6.12.0-55.el10.aarch64"
+if [[ "$RC" -eq 0 ]] && grep -qx 'dnf install -y kernel-64k-modules-extra-6.12.0-55.el10.aarch64' <<<"$KCALLS"; then
+  pass "EL10 64k variant kernel: installs the matching kernel-64k-modules-extra build"
+else fail "EL10 64k kernel: rc=$RC calls: $(tr '\n' '|' <<<"$KCALLS") out: $OUT"; fi
+kme rhel 10.1 missing missing ok "6.12.0-55.el10.x86_64+debug" "kernel-debug-core 6.12.0-55.el10.x86_64"
+if [[ "$RC" -eq 0 ]] && grep -qx 'dnf install -y kernel-debug-modules-extra-6.12.0-55.el10.x86_64' <<<"$KCALLS"; then
+  pass "EL10 debug variant kernel: installs kernel-debug-modules-extra"
+else fail "EL10 debug kernel: rc=$RC calls: $(tr '\n' '|' <<<"$KCALLS") out: $OUT"; fi
+kme rhel 10.0 missing missing ok "$X86_UNAME" "kernel-core 6.12.0-55.el10.x86_64\\nkernel-core 6.12.0-55.el10.x86_64"
+if [[ "$RC" -eq 0 && "$(tail -1 <<<"$KCALLS")" == 'dnf install -y kernel-modules-extra-6.12.0-55.el10.x86_64' ]] \
+   && ! grep -qx 'kernel-core.*' <<<"$KCALLS"; then
+  pass "EL10 when rpm -qf prints more than one owner line: uses the first"
+else fail "EL10 two owner lines: rc=$RC calls: $(tr '\n' '|' <<<"$KCALLS") out: $OUT"; fi
+kme rhel 10.0 present missing ok
+if [[ "$RC" -eq 0 ]] && ! grep -qE '^(rpm|dnf) ' <<<"$KCALLS"; then pass "EL10, modules already resolve: no rpm or dnf call"
+else fail "EL10 modules present: rc=$RC calls: $(tr '\n' '|' <<<"$KCALLS")"; fi
+if grep -q '^modprobe -n -q nft_compat' <<<"$KCALLS" && grep -qE '^modprobe -n -q xt_' <<<"$KCALLS"; then
+  pass "EL10, modules present: checked nft_compat and an xt_ module with modprobe -n -q"
+else fail "EL10: no modprobe dry run for nft_compat and an xt_ module: $(tr '\n' '|' <<<"$KCALLS")"; fi
+kme rhel 10.1 missing installed ok
+if [[ "$RC" -eq 0 ]] && ! grep -q '^dnf ' <<<"$KCALLS"; then pass "EL10 with the package already installed: no dnf call"
+else fail "EL10 installed: rc=$RC calls: $(tr '\n' '|' <<<"$KCALLS")"; fi
+kme rhel 10.0 missing missing fail
+if [[ "$RC" -ne 0 ]] && grep -q 'kernel-modules-extra-6.12.0-55.el10.x86_64' <<<"$OUT" && ! grep -q 'command not found' <<<"$OUT"; then
+  pass "EL10 when dnf cannot install it: fails and names the package"
+else fail "EL10 dnf failure: rc=$RC out: $OUT"; fi
+kme rhel 10.0 missing missing fail "6.12.0-55.el10.aarch64+64k" "kernel-64k-core 6.12.0-55.el10.aarch64"
+if [[ "$RC" -ne 0 ]] && grep -q 'kernel-64k-modules-extra-6.12.0-55.el10.aarch64' <<<"$OUT"; then
+  pass "EL10 64k variant when dnf fails: fails and names the variant package"
+else fail "EL10 64k dnf failure: rc=$RC out: $OUT"; fi
+kme rhel 10.0 missing missing ok "$X86_UNAME" none
+if [[ "$RC" -eq 0 ]] && ! grep -q '^dnf ' <<<"$KCALLS" && grep -q 'not a distribution package' <<<"$OUT"; then
+  pass "EL10 on a kernel no package owns (VM platform or custom kernel): skips with a message, no dnf call"
+else fail "EL10 unowned kernel: rc=$RC calls: $(tr '\n' '|' <<<"$KCALLS") out: $OUT"; fi
+kme rhel 9.6 missing missing ok
+if [[ "$RC" -eq 0 && -z "$KCALLS" ]]; then pass "EL9: no check (the modules are in kernel-modules-core)"
+else fail "EL9: rc=$RC calls: $(tr '\n' '|' <<<"$KCALLS")"; fi
+kme debian 13 missing missing ok
+if [[ "$RC" -eq 0 && -z "$KCALLS" ]]; then pass "Debian family: no modprobe, rpm or dnf call"
+else fail "Debian family: rc=$RC calls: $(tr '\n' '|' <<<"$KCALLS")"; fi
+if grep -nE '^[[:space:]]*ensure_k3s_kernel_modules' "${ROOT_DIR}/bootstrap/install.sh" >/dev/null; then
+  k="$(grep -nE '^[[:space:]]*ensure_k3s_kernel_modules' "${ROOT_DIR}/bootstrap/install.sh" | head -1 | cut -d: -f1)"
+  i="$(grep -nE 'bash "\$\{k3s_tmpdir\}/k3s-install.sh"' "${ROOT_DIR}/bootstrap/install.sh" | head -1 | cut -d: -f1)"
+  if [[ -n "$i" && "$k" -lt "$i" ]]; then pass "install.sh ensures the kernel modules before it runs the k3s installer"
+  else fail "install.sh: ensure_k3s_kernel_modules line $k, k3s installer line ${i:-none}"; fi
+else fail "install.sh does not call ensure_k3s_kernel_modules"; fi
+
+section "14. SELinux mode and Secure Boot state"
+SBIN="${WORK}/sbin"; mkdir -p "$SBIN"
+FW="${WORK}/fw"
+# Only the tools the functions need, so a host's own getenforce or mokutil
+# (GitHub's Ubuntu runners ship mokutil) cannot answer instead of the fakes.
+TOOLS="${WORK}/tools"; mkdir -p "$TOOLS"
+for t in bash od tr; do ln -sf "$(command -v "$t")" "${TOOLS}/${t}"; done
+# hs <getenforce output or ""> <mokutil output or ""> <efivar byte or "" or noefi>
+hs() {
+  rm -rf "${SBIN:?}" "${FW:?}"; mkdir -p "$SBIN"
+  [[ -n "$1" ]] && printf '#!/bin/sh\necho %s\n' "$1" > "${SBIN}/getenforce"
+  [[ -n "$2" ]] && printf '#!/bin/sh\necho "%s"\n' "$2" > "${SBIN}/mokutil"
+  chmod +x "$SBIN"/* 2>/dev/null || true
+  if [[ "$3" != noefi ]]; then
+    mkdir -p "${FW}/efi/efivars"
+    [[ -n "$3" ]] && printf "\x07\x00\x00\x00\x${3}" > "${FW}/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
+  fi
+  OUT="$(env -i HOME="$WORK" PATH="${SBIN}:${TOOLS}" ROOT_DIR="$ROOT_DIR" FW="$FW" "${TOOLS}/bash" -c '
+    set -euo pipefail
+    source "${ROOT_DIR}/bootstrap/lib/os.sh"
+    echo "selinux=$(host_selinux_mode)"
+    echo "secureboot=$(host_secure_boot "$FW")"' 2>&1 </dev/null || true)"
+}
+hs Enforcing "SecureBoot enabled" 01
+if grep -qx 'selinux=Enforcing' <<<"$OUT" && grep -qx 'secureboot=enabled' <<<"$OUT"; then pass "getenforce and mokutil: Enforcing, enabled"
+else fail "getenforce/mokutil: $OUT"; fi
+hs Permissive "" 00
+if grep -qx 'selinux=Permissive' <<<"$OUT" && grep -qx 'secureboot=disabled' <<<"$OUT"; then pass "no mokutil: reads the SecureBoot EFI variable (disabled)"
+else fail "efivar disabled: $OUT"; fi
+hs "" "" 01
+if grep -qx 'selinux=not present' <<<"$OUT" && grep -qx 'secureboot=enabled' <<<"$OUT"; then pass "no getenforce: 'not present'; EFI variable enabled"
+else fail "no getenforce: $OUT"; fi
+hs "" "" noefi
+if grep -qx 'secureboot=not EFI' <<<"$OUT"; then pass "no EFI firmware: 'not EFI'"
+else fail "no EFI: $OUT"; fi
+hs "" "" ""
+if grep -qx 'secureboot=unknown' <<<"$OUT"; then pass "EFI without a readable SecureBoot variable: 'unknown'"
+else fail "EFI no var: $OUT"; fi
+if grep -q 'SELinux:.*host_selinux_mode' "${ROOT_DIR}/bootstrap/verify.sh" && grep -q 'Secure Boot:.*host_secure_boot' "${ROOT_DIR}/bootstrap/verify.sh"; then
+  pass "verify.sh prints both in its Environment section"
+else fail "verify.sh does not print the SELinux mode and Secure Boot state"; fi
 
 # ─── Summary ───
 printf "\n${BOLD}Results: ${GREEN}${PASS} passed${RESET}"

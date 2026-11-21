@@ -1,0 +1,575 @@
+# Rathsted Foundations — rocky:10 Compatibility Evidence
+# Date: 2026-11-20T00:21:19Z
+# Source: https://github.com/rathsted/rathsted-foundations.git
+# Platform: x86_64 Hyper-V virtual machine (official rocky:10 cloud image)
+#
+
+# Pins: current
+#   k3s=v1.35.9+k3s1  kyverno=v1.19.1  flux=2.9.6
+#   changed=2026-10-02/2026-10-02/2026-10-02
+
+[rathsted 17:21:19] Using image: rocky:10 (x86_64 Hyper-V VM)
+[rathsted 17:21:19] Checking Hyper-V host...
+preflight: ok (15.7 GB free)
+[rathsted 17:21:24] Fetching and verifying the official cloud image on the Hyper-V host...
+downloading Rocky-10-GenericCloud-Base.latest.x86_64.qcow2
+verified Rocky-10-GenericCloud-Base.latest.x86_64.qcow2 SHA256 68eae06d402c8b19e7dca06e85bdc43a3476089afa3ee20d93d0d43cf9871e9e
+[rathsted 17:24:38] Creating VM (rocky:10, 4 vCPU, 6 GB, Secure Boot)...
+[rathsted 17:24:45] Waiting for the VM to boot...
+[rathsted 17:25:07] VM is up
+[rathsted 17:25:07] Installing prerequisites inside VM...
+Importing GPG key 0x6FEDFC85:
+ Userid     : "Release Engineering (Rocky Linux 10) <releng@rockylinux.org>"
+ Fingerprint: FC22 6859 C086 0BF0 DDB9 5B08 5B10 6C73 6FED FC85
+ From       : /etc/pki/rpm-gpg/RPM-GPG-KEY-Rocky-10
+Importing GPG key 0x2EBBA43F:
+ Userid     : "Release Engineering (Rocky Linux 10) <releng@rockylinux.org>"
+ Fingerprint: E336 84D4 2EBB A43F CB7D 2CC3 C0F4 72FC 3280 EB2F 3A6F 3850 C232 12DB ECF4 49E0
+ From       : /etc/pki/rpm-gpg/RPM-GPG-KEY-Rocky-10
+
+Installed:
+  git-2.52.0-1.el10.x86_64                                                      
+  git-core-2.52.0-1.el10.x86_64                                                 
+  git-core-doc-2.52.0-1.el10.noarch                                             
+  make-1:4.4.1-9.el10.x86_64                                                    
+  perl-AutoLoader-5.74-515.el10_2.noarch                                        
+  perl-B-1.89-515.el10_2.x86_64                                                 
+  perl-Carp-1.54-511.el10.noarch                                                
+  perl-Class-Struct-0.68-515.el10_2.noarch                                      
+  perl-Data-Dumper-2.189-512.el10.x86_64                                        
+  perl-Digest-1.20-511.el10.noarch                                              
+  perl-Digest-MD5-2.59-6.el10.x86_64                                            
+  perl-DynaLoader-1.56-515.el10_2.x86_64                                        
+  perl-Encode-4:3.21-511.el10.x86_64                                            
+  perl-Errno-1.38-515.el10_2.x86_64                                             
+  perl-Error-1:0.17029-18.el10.noarch                                           
+  perl-Exporter-5.78-511.el10.noarch                                            
+  perl-Fcntl-1.18-515.el10_2.x86_64                                             
+  perl-File-Basename-2.86-515.el10_2.noarch                                     
+  perl-File-Path-2.18-512.el10.noarch                                           
+  perl-File-Temp-1:0.231.100-512.el10.noarch                                    
+  perl-File-stat-1.14-515.el10_2.noarch                                         
+  perl-FileHandle-2.05-515.el10_2.noarch                                        
+  perl-Getopt-Long-1:2.58-3.el10.noarch                                         
+  perl-Getopt-Std-1.14-515.el10_2.noarch                                        
+  perl-Git-2.52.0-1.el10.noarch                                                 
+  perl-HTTP-Tiny-0.088-512.el10.noarch                                          
+  perl-IO-1.55-515.el10_2.x86_64                                                
+  perl-IO-Socket-IP-0.42-512.el10.noarch                                        
+  perl-IO-Socket-SSL-2.085-3.el10.noarch                                        
+  perl-IPC-Open3-1.22-515.el10_2.noarch                                         
+  perl-MIME-Base64-3.16-511.el10.x86_64                                         
+  perl-Mozilla-CA-20231213-5.el10.noarch                                        
+  perl-NDBM_File-1.17-515.el10_2.x86_64                                         
+  perl-Net-SSLeay-1.94-9.el10.x86_64                                            
+  perl-POSIX-2.20-515.el10_2.x86_64                                             
+  perl-PathTools-3.91-512.el10.x86_64                                           
+  perl-Pod-Escapes-1:1.07-511.el10.noarch                                       
+  perl-Pod-Perldoc-3.28.01-512.el10.noarch                                      
+  perl-Pod-Simple-1:3.45-511.el10.noarch                                        
+  perl-Pod-Usage-4:2.03-511.el10.noarch                                         
+  perl-Scalar-List-Utils-5:1.63-511.el10.x86_64                                 
+  perl-SelectSaver-1.02-515.el10_2.noarch                                       
+  perl-Socket-4:2.038-511.el10.x86_64                                           
+  perl-Storable-1:3.32-511.el10.x86_64                                          
+  perl-Symbol-1.09-515.el10_2.noarch                                            
+  perl-Term-ANSIColor-5.01-512.el10.noarch                                      
+  perl-Term-Cap-1.18-511.el10.noarch                                            
+  perl-TermReadKey-2.38-24.el10.x86_64                                          
+  perl-Text-ParseWords-3.31-511.el10.noarch                                     
+  perl-Text-Tabs+Wrap-2024.001-511.el10.noarch                                  
+  perl-Time-Local-2:1.350-511.el10.noarch                                       
+  perl-URI-5.27-4.el10_3.noarch                                                 
+  perl-Unicode-Normalize-1.32-511.el10.x86_64                                   
+  perl-base-2.27-515.el10_2.noarch                                              
+  perl-constant-1.33-512.el10.noarch                                            
+  perl-if-0.61.000-515.el10_2.noarch                                            
+  perl-interpreter-4:5.40.2-515.el10_2.x86_64                                   
+  perl-lib-0.65-515.el10_2.x86_64                                               
+  perl-libnet-3.15-512.el10.noarch                                              
+  perl-libs-4:5.40.2-515.el10_2.x86_64                                          
+  perl-locale-1.12-515.el10_2.noarch                                            
+  perl-mro-1.29-515.el10_2.x86_64                                               
+  perl-overload-1.37-515.el10_2.noarch                                          
+  perl-overloading-0.02-515.el10_2.noarch                                       
+  perl-parent-1:0.241-512.el10.noarch                                           
+  perl-podlators-1:5.01-511.el10.noarch                                         
+  perl-vars-1.05-515.el10_2.noarch                                              
+
+[rathsted 17:25:14] Copying repo into VM (/srv/rathsted-foundations)...
+[rathsted 17:25:15] Running E2E inside VM...
+./scripts/orbstack-e2e.sh
+[rathsted] E2E starting
+[rathsted] Host: Linux rathsted-compat-rocky-10-amd64 6.12.0-264.16.1.el10_3.x86_64 #1 SMP PREEMPT_DYNAMIC Thu Nov 12 14:37:47 UTC 2026 x86_64 GNU/Linux
+[rathsted] Detected OS: rocky 10.3
+
+━━━ 1/6  OS Detection ━━━
+
+[rathsted] Detected OS: rocky 10.3 (rhel family)
+[rathsted] Version pins: k3s=v1.35.9+k3s1 kyverno=v1.19.1 flux=2.9.6
+[rathsted] Version pins: cosign=v3.1.3 syft=v1.54.0 grype=v0.120.0
+
+━━━ 2/6  k3s ━━━
+
+[rathsted] Audit policy installed
+[rathsted] Installing k3s...
+[rathsted] Writing /etc/sysctl.d/90-kubelet.conf (required by protect-kernel-defaults)
+[rathsted] Installing kernel-modules-extra-6.12.0-264.16.1.el10_3.x86_64 (RHEL 10 keeps nft_compat and the xt_ matches k3s needs there)
+Last metadata expiration check: 0:00:06 ago on Fri 20 Nov 2026 12:25:10 AM UTC.
+Dependencies resolved.
+================================================================================
+ Package                 Arch      Version                      Repo       Size
+================================================================================
+Installing:
+ kernel-modules-extra    x86_64    6.12.0-264.16.1.el10_3       baseos    2.9 M
+Installing dependencies:
+ kernel-modules          x86_64    6.12.0-264.16.1.el10_3       baseos     42 M
+
+Transaction Summary
+================================================================================
+Install  2 Packages
+
+Total download size: 45 M
+Installed size: 41 M
+Downloading Packages:
+(1/2): kernel-modules-extra-6.12.0-264.16.1.el1  21 MB/s | 2.9 MB     00:00    
+(2/2): kernel-modules-6.12.0-264.16.1.el10_3.x8  80 MB/s |  42 MB     00:00    
+--------------------------------------------------------------------------------
+Total                                            57 MB/s |  45 MB     00:00     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1 
+  Installing       : kernel-modules-6.12.0-264.16.1.el10_3.x86_64           1/2 
+  Running scriptlet: kernel-modules-6.12.0-264.16.1.el10_3.x86_64           1/2 
+  Installing       : kernel-modules-extra-6.12.0-264.16.1.el10_3.x86_64     2/2 
+  Running scriptlet: kernel-modules-extra-6.12.0-264.16.1.el10_3.x86_64     2/2 
+  Running scriptlet: kernel-modules-6.12.0-264.16.1.el10_3.x86_64           2/2 
+Running: dracut -f --kver 6.12.0-264.16.1.el10_3.x86_64 /boot/initramfs-6.12.0-264.16.1.el10_3.x86_64.img
+
+  Running scriptlet: kernel-modules-extra-6.12.0-264.16.1.el10_3.x86_64     2/2 
+
+Installed:
+  kernel-modules-6.12.0-264.16.1.el10_3.x86_64                                  
+  kernel-modules-extra-6.12.0-264.16.1.el10_3.x86_64                            
+
+Complete!
+[INFO]  Using v1.35.9+k3s1 as release
+[INFO]  Downloading hash https://github.com/k3s-io/k3s/releases/download/v1.35.9+k3s1/sha256sum-amd64.txt
+[INFO]  Downloading binary https://github.com/k3s-io/k3s/releases/download/v1.35.9+k3s1/k3s
+[INFO]  Verifying binary download
+[INFO]  Installing k3s to /usr/local/bin/k3s
+[INFO]  Finding available k3s-selinux versions
+Rancher K3s Common (stable)                     5.2 kB/s | 1.1 kB     00:00    
+Dependencies resolved.
+================================================================================
+ Package            Arch    Version            Repository                  Size
+================================================================================
+Installing:
+ k3s-selinux        noarch  1.6-1.el9          rancher-k3s-common-stable   22 k
+Installing dependencies:
+ container-selinux  noarch  4:2.250.0-1.el10   appstream                   58 k
+
+Transaction Summary
+================================================================================
+Install  2 Packages
+
+Total download size: 80 k
+Installed size: 171 k
+Downloading Packages:
+(1/2): k3s-selinux-1.6-1.el9.noarch.rpm         285 kB/s |  22 kB     00:00    
+(2/2): container-selinux-2.250.0-1.el10.noarch. 206 kB/s |  58 kB     00:00    
+--------------------------------------------------------------------------------
+Total                                           148 kB/s |  80 kB     00:00     
+Rancher K3s Common (stable)                      39 kB/s | 2.4 kB     00:00    
+Importing GPG key 0xE257814A:
+ Userid     : "Rancher (CI) <ci@rancher.com>"
+ Fingerprint: C8CF F216 4551 26E9 B9C9 18BE 925E A29A E257 814A
+ From       : https://rpm.rancher.io/public.key
+Key imported successfully
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1 
+  Running scriptlet: container-selinux-4:2.250.0-1.el10.noarch              1/2 
+  Installing       : container-selinux-4:2.250.0-1.el10.noarch              1/2 
+  Running scriptlet: container-selinux-4:2.250.0-1.el10.noarch              1/2 
+  Running scriptlet: k3s-selinux-1.6-1.el9.noarch                           2/2 
+  Installing       : k3s-selinux-1.6-1.el9.noarch                           2/2 
+  Running scriptlet: k3s-selinux-1.6-1.el9.noarch                           2/2 
+  Running scriptlet: container-selinux-4:2.250.0-1.el10.noarch              2/2 
+  Running scriptlet: k3s-selinux-1.6-1.el9.noarch                           2/2 
+
+Installed:
+  container-selinux-4:2.250.0-1.el10.noarch     k3s-selinux-1.6-1.el9.noarch    
+
+Complete!
+[INFO]  Creating /usr/local/bin/kubectl symlink to k3s
+[INFO]  Creating /usr/local/bin/crictl symlink to k3s
+[INFO]  Creating /usr/local/bin/ctr symlink to k3s
+[INFO]  Creating killall script /usr/local/bin/k3s-killall.sh
+[INFO]  Creating uninstall script /usr/local/bin/k3s-uninstall.sh
+[INFO]  env: Creating environment file /etc/systemd/system/k3s.service.env
+[INFO]  systemd: Creating service file /etc/systemd/system/k3s.service
+[INFO]  systemd: Enabling k3s unit
+Created symlink '/etc/systemd/system/multi-user.target.wants/k3s.service' → '/etc/systemd/system/k3s.service'.
+[INFO]  Host iptables-save/iptables-restore tools not found
+[INFO]  Host ip6tables-save/ip6tables-restore tools not found
+[INFO]  systemd: Starting k3s
+
+━━━ 3/6  Flux + Supply Chain Tools ━━━
+
+[rathsted] Installing Flux CLI...
+[rathsted] Installing cosign...
+[rathsted] Installing syft...
+[rathsted] Installing grype...
+[rathsted] Installing Flux controllers...
+✚ generating manifests
+✔ manifests build completed
+► installing components in flux-system namespace
+CustomResourceDefinition/alerts.notification.toolkit.fluxcd.io created
+CustomResourceDefinition/buckets.source.toolkit.fluxcd.io created
+CustomResourceDefinition/externalartifacts.source.toolkit.fluxcd.io created
+CustomResourceDefinition/gitrepositories.source.toolkit.fluxcd.io created
+CustomResourceDefinition/helmcharts.source.toolkit.fluxcd.io created
+CustomResourceDefinition/helmreleases.helm.toolkit.fluxcd.io created
+CustomResourceDefinition/helmrepositories.source.toolkit.fluxcd.io created
+CustomResourceDefinition/kustomizations.kustomize.toolkit.fluxcd.io created
+CustomResourceDefinition/ocirepositories.source.toolkit.fluxcd.io created
+CustomResourceDefinition/providers.notification.toolkit.fluxcd.io created
+CustomResourceDefinition/receivers.notification.toolkit.fluxcd.io created
+Namespace/flux-system created
+ClusterRole/crd-controller-flux-system created
+ClusterRole/flux-edit-flux-system created
+ClusterRole/flux-view-flux-system created
+ClusterRoleBinding/cluster-reconciler-flux-system created
+ClusterRoleBinding/crd-controller-flux-system created
+ResourceQuota/flux-system/critical-pods-flux-system created
+ServiceAccount/flux-system/helm-controller created
+ServiceAccount/flux-system/kustomize-controller created
+ServiceAccount/flux-system/notification-controller created
+ServiceAccount/flux-system/source-controller created
+Service/flux-system/notification-controller created
+Service/flux-system/source-controller created
+Service/flux-system/webhook-receiver created
+Deployment/flux-system/helm-controller created
+Deployment/flux-system/kustomize-controller created
+Deployment/flux-system/notification-controller created
+Deployment/flux-system/source-controller created
+NetworkPolicy/flux-system/allow-egress created
+NetworkPolicy/flux-system/allow-scraping created
+NetworkPolicy/flux-system/allow-webhooks created
+◎ verifying installation
+✔ helm-controller: deployment ready
+✔ kustomize-controller: deployment ready
+✔ notification-controller: deployment ready
+✔ source-controller: deployment ready
+✔ install finished
+configmap/rathsted-foundations-contract created
+
+━━━ 4/6  Kyverno ━━━
+
+[rathsted] Installing Kyverno...
+[rathsted] Kyverno v1.19.1: vendored manifest
+customresourcedefinition.apiextensions.k8s.io/cleanuppolicies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/clustercleanuppolicies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/clusterpolicies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/globalcontextentries.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/policyexceptions.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/updaterequests.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/clusterephemeralreports.reports.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/ephemeralreports.reports.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/clusterpolicyreports.wgpolicyk8s.io created
+customresourcedefinition.apiextensions.k8s.io/policyreports.wgpolicyk8s.io created
+customresourcedefinition.apiextensions.k8s.io/deletingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/generatingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/imagevalidatingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/mutatingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/namespaceddeletingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/namespacedgeneratingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/namespacedimagevalidatingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/namespacedmutatingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/namespacedvalidatingpolicies.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/policyexceptions.policies.kyverno.io created
+customresourcedefinition.apiextensions.k8s.io/validatingpolicies.policies.kyverno.io created
+namespace/kyverno serverside-applied
+serviceaccount/kyverno-admission-controller serverside-applied
+serviceaccount/kyverno-background-controller serverside-applied
+serviceaccount/kyverno-cleanup-controller serverside-applied
+serviceaccount/kyverno-reports-controller serverside-applied
+configmap/kyverno serverside-applied
+configmap/kyverno-metrics serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:admission-controller serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:admission-controller:core serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:background-controller serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:background-controller:core serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:cleanup-controller serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:cleanup-controller:core serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:admin:policies serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:view:policies serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:admin:policyreports serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:view:policyreports serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:admin:reports serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:view:reports serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:admin:updaterequests serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:rbac:view:updaterequests serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:reports-controller serverside-applied
+clusterrole.rbac.authorization.k8s.io/kyverno:reports-controller:core serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/kyverno:admission-controller serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/kyverno:admission-controller:view serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/kyverno:background-controller serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/kyverno:background-controller:view serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/kyverno:cleanup-controller serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/kyverno:reports-controller serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/kyverno:reports-controller:view serverside-applied
+role.rbac.authorization.k8s.io/kyverno:admission-controller serverside-applied
+role.rbac.authorization.k8s.io/kyverno:background-controller serverside-applied
+role.rbac.authorization.k8s.io/kyverno:cleanup-controller serverside-applied
+role.rbac.authorization.k8s.io/kyverno:reports-controller serverside-applied
+rolebinding.rbac.authorization.k8s.io/kyverno:admission-controller serverside-applied
+rolebinding.rbac.authorization.k8s.io/kyverno:background-controller serverside-applied
+rolebinding.rbac.authorization.k8s.io/kyverno:cleanup-controller serverside-applied
+rolebinding.rbac.authorization.k8s.io/kyverno:reports-controller serverside-applied
+service/kyverno-svc serverside-applied
+service/kyverno-svc-metrics serverside-applied
+service/kyverno-background-controller-metrics serverside-applied
+service/kyverno-cleanup-controller serverside-applied
+service/kyverno-cleanup-controller-metrics serverside-applied
+service/kyverno-reports-controller-metrics serverside-applied
+deployment.apps/kyverno-admission-controller serverside-applied
+deployment.apps/kyverno-background-controller serverside-applied
+deployment.apps/kyverno-cleanup-controller serverside-applied
+deployment.apps/kyverno-reports-controller serverside-applied
+
+━━━ 5/6  Policies ━━━
+
+[rathsted] Applying baseline policies...
+[rathsted] Policy apply attempt 1/10 (timeout 60s)...
+Warning: kyverno.io/v1 ClusterPolicy is deprecated and will be removed in a future release; migrate to ValidatingPolicy, MutatingPolicy, GeneratingPolicy or ImageValidatingPolicy (policies.kyverno.io), see https://kyverno.io/docs/guides/migration-to-cel/
+clusterpolicy.kyverno.io/baseline-networkpolicy created
+Warning: Policies that match Pods apply to all Pods including those created and managed by controllers excluded from autogen. Use preconditions to exclude the Pods managed by controllers which are excluded from autogen. Refer to https://kyverno.io/docs/policy-types/cluster-policy/autogen/ for details.
+clusterpolicy.kyverno.io/disallow-host-namespaces created
+clusterpolicy.kyverno.io/disallow-privileged created
+clusterpolicy.kyverno.io/drop-all-capabilities created
+clusterpolicy.kyverno.io/require-namespace-labels created
+clusterpolicy.kyverno.io/require-non-root created
+clusterpolicy.kyverno.io/require-probes created
+clusterpolicy.kyverno.io/require-readonly-rootfs created
+clusterpolicy.kyverno.io/require-resources created
+clusterpolicy.kyverno.io/require-seccomp created
+clusterpolicy.kyverno.io/require-signed-images created
+clusterpolicy.kyverno.io/restrict-hostpath created
+clusterpolicy.kyverno.io/restrict-registries created
+[rathsted] Using default policies (run 'make configure' to customize registry/image signing).
+[rathsted] WARNING: RATHSTED_OPERATOR_CONTROL is not set, so require-namespace-labels stamps rathsted.io/operator-control=foreign-provider on every namespace.
+[rathsted] WARNING: the tracked policy's value is foreign-provider, written for Rathsted's reference deployment; it is not a fact about this cluster.
+[rathsted] Declare who controls this cluster's operator: re-run with RATHSTED_OPERATOR_CONTROL=customer|domestic-provider|foreign-provider|rathsted
+[rathsted] WARNING: RATHSTED_JURISDICTION is not set, so these namespaces were left without jurisdiction labels: flux-system kyverno default
+[rathsted] WARNING: they do not meet the namespace label convention until labelled. Re-run with RATHSTED_JURISDICTION=ca|us|fr, or run:
+[rathsted]   CTL="$(kubectl get cpol require-namespace-labels -o jsonpath='{.spec.rules[?(@.name=="stamp-operator-control")].mutate.patchStrategicMerge.metadata.labels.rathsted\.io/operator-control}')"
+[rathsted]   kubectl label namespace flux-system kyverno default owner=platform environment=platform rathsted.io/jurisdiction=<ca|us|fr> rathsted.io/operator-control="$CTL" --overwrite
+[rathsted] Check with: ./bootstrap/jurisdiction-audit.sh
+
+━━━ 6/6  GitOps Bootstrap ━━━
+
+[rathsted] Bootstrapping GitOps sync...
+gitrepository.source.toolkit.fluxcd.io/rathsted-foundations created
+kustomization.kustomize.toolkit.fluxcd.io/rathsted-sync created
+kustomization.kustomize.toolkit.fluxcd.io/rathsted-apps created
+[rathsted] Done. Use ./bootstrap/verify.sh to validate.
+[rathsted] Waiting up to 180s for Flux to create the demo namespace...
+[rathsted] Demo namespace created by Flux
+
+== Environment ==
+  Foundations version: untagged
+  Hostname:           rathsted-compat-rocky-10-amd64
+  Date:               2026-11-20T00:27:24Z
+  Verify mode:        self-hosted
+  OS:                 Rocky Linux 10.3 (Red Quartz)
+  Kernel:             6.12.0-264.16.1.el10_3.x86_64
+[ok 00:27:24] Environment recorded
+
+== Cluster ==
+[ok 00:27:24] cluster-info ok
+  Cluster nodes:      1
+[ok 00:27:24] cluster nodes accessible
+  Contract series:    2.x
+  Contract install:   self-hosted
+  Decks v0 support:   true
+  Topology:           single-node (supported nodes 1-1)
+  Topology support:   baseline
+[ok 00:27:24] Foundations contract marker present
+[ok 00:27:24] Cluster node count 1 matches the single-node contract
+
+== Hardening ==
+  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (16M, 6793 entries)
+[ok 00:27:24] API server audit logging active
+[ok 00:27:24] Audit policy file present
+[ok 00:27:24] Secrets encryption at rest enabled (encryption config present)
+
+== Flux ==
+[ok 00:27:25] Flux check passed
+[ok 00:27:25] Flux installed
+[ok 00:27:25] Flux pods present
+
+== Kyverno ==
+[ok 00:27:25] Kyverno installed
+[ok 00:27:26] Kyverno pods present
+[ok 00:27:26] Kyverno policies present
+[info 00:27:26] kyverno image: ghcr.io/kyverno/kyverno:v1.19.1
+[info 00:27:26] kyverno image: ghcr.io/kyverno/background-controller:v1.19.1
+[info 00:27:26] kyverno image: ghcr.io/kyverno/cleanup-controller:v1.19.1
+[info 00:27:26] kyverno image: ghcr.io/kyverno/reports-controller:v1.19.1
+
+== GitOps Readiness ==
+[info 00:27:26] reading flux-system/rathsted-sync before the namespace label checks; the verdict is in the GitOps section
+
+== Namespace Jurisdiction Labels ==
+NAMESPACE                    OWNER          ENVIRONMENT    JURISDICTION OPERATOR-CONTROL   VERDICT
+default                      -              -              -            -                  NON-CONFORMING
+demo                         platform       demo           ca           foreign-provider   conforming
+flux-system                  -              -              -            -                  NON-CONFORMING
+kube-node-lease              -              -              -            -                  system (excluded)
+kube-public                  -              -              -            -                  system (excluded)
+kube-system                  -              -              -            -                  system (excluded)
+kyverno                      -              -              -            -                  NON-CONFORMING
+[rathsted] jurisdiction audit: non-conforming: default flux-system kyverno
+[warn 00:27:26] Namespaces without the jurisdiction labels; warning only: no r3_jurisdiction is recorded in flux-system/rathsted-foundations-contract and no platform namespace declares a jurisdiction (strict with RATHSTED_JURISDICTION or --release; see docs/upgrade-guide.md)
+[warn 00:27:26] rathsted.io/operator-control is stamped foreign-provider, but no operator declared it (no r3_operator_control in flux-system/rathsted-foundations-contract); declare it with RATHSTED_OPERATOR_CONTROL at install
+
+== GitOps ==
+[ok 00:27:27] GitOps sync present
+[ok 00:27:27] Flux kustomizations listed
+[ok 00:27:27] Flux Git sources listed
+[ok 00:27:27] flux-system/rathsted-sync Ready, applied main@sha1:2adeece857a02e619179b9b6397f907725ac504c (the current GitRepository/rathsted-foundations revision)
+
+== Demo App ==
+[ok 00:27:27] Demo app objects present
+[ok 00:27:38] Demo app Ready
+[rathsted] waiting for flux-system/rathsted-apps to be Ready (up to 24 checks, 5s apart)
+[ok 00:27:43] flux-system/rathsted-apps Ready, applied main@sha1:2adeece857a02e619179b9b6397f907725ac504c (the current GitRepository/rathsted-foundations revision)
+[ok 00:27:44] Signature policy installed
+
+== Supply Chain ==
+[ok 00:27:46] SBOM generated (local containerd)
+[skip 00:27:46] Cosign skipped (cosign.pub not configured; use --release to enforce)
+
+== Vulnerability Scan ==
+  Results: /srv/rathsted-foundations/supply-chain/sbom/output/foundations-demo.grype.txt
+  Critical: 50  High: 167
+[ok 00:28:52] Grype scan complete (informational; the High+ release gate applies under --release)
+
+== Negative Tests ==
+[ok 00:28:52] Kyverno webhooks detected, waiting 15s for policies to settle...
+[ok 00:29:07] Policy rejected as expected: default-namespace-pod.yaml
+[ok 00:29:07] Policy rejected as expected: disallowed-registry.yaml
+[ok 00:29:07] Policy rejected as expected: host-namespaces-pod.yaml
+[ok 00:29:07] Policy rejected as expected: hostpath-pod.yaml
+[ok 00:29:07] Policy rejected as expected: no-drop-capabilities-pod.yaml
+[ok 00:29:07] Policy rejected as expected: no-namespace-labels.yaml
+[ok 00:29:08] Policy rejected as expected: no-probes-pod.yaml
+[ok 00:29:08] Policy rejected as expected: no-resources-pod.yaml
+[ok 00:29:08] Policy rejected as expected: no-seccomp-pod.yaml
+[ok 00:29:08] Policy rejected as expected: privileged-pod.yaml
+[ok 00:29:08] Policy rejected as expected: readonly-rootfs-pod.yaml
+[ok 00:29:08] Policy rejected as expected: root-pod.yaml
+[ok 00:29:11] Policy rejected as expected: unsigned-image-pod.yaml
+
+== Positive Admission Tests ==
+[skip 00:29:11] Positive admission tests skipped (use --release to enforce)
+
+== Access Control (RBAC) ==
+  ClusterRoleBindings + RoleBindings: 80
+    cluster-admin
+    cluster-reconciler-flux-system
+    clustercidrs-node
+    crd-controller-flux-system
+    k3s-cloud-controller-manager
+    k3s-cloud-controller-manager-auth-delegator
+    kube-apiserver-kubelet-admin
+    kyverno:admission-controller
+    kyverno:admission-controller:view
+    kyverno:background-controller
+    kyverno:background-controller:view
+    kyverno:cleanup-controller
+    kyverno:reports-controller
+    kyverno:reports-controller:view
+    local-path-provisioner-bind
+    metrics-server:system:auth-delegator
+    system:basic-user
+    system:controller:attachdetach-controller
+    system:controller:certificate-controller
+    system:controller:clusterrole-aggregation-controller
+    system:controller:cronjob-controller
+    system:controller:daemon-set-controller
+    system:controller:deployment-controller
+    system:controller:disruption-controller
+    system:controller:endpoint-controller
+    system:controller:endpointslice-controller
+    system:controller:endpointslicemirroring-controller
+    system:controller:ephemeral-volume-controller
+    system:controller:expand-controller
+    system:controller:generic-garbage-collector
+    system:controller:horizontal-pod-autoscaler
+    system:controller:job-controller
+    system:controller:legacy-service-account-token-cleaner
+    system:controller:namespace-controller
+    system:controller:node-controller
+    system:controller:persistent-volume-binder
+    system:controller:pod-garbage-collector
+    system:controller:pv-protection-controller
+    system:controller:pvc-protection-controller
+    system:controller:replicaset-controller
+    system:controller:replication-controller
+    system:controller:resource-claim-controller
+    system:controller:resourcequota-controller
+    system:controller:root-ca-cert-publisher
+    system:controller:route-controller
+    system:controller:selinux-warning-controller
+    system:controller:service-account-controller
+    system:controller:service-cidrs-controller
+    system:controller:service-controller
+    system:controller:statefulset-controller
+    system:controller:ttl-after-finished-controller
+    system:controller:ttl-controller
+    system:controller:validatingadmissionpolicy-status-controller
+    system:controller:volumeattributesclass-protection-controller
+    system:coredns
+    system:discovery
+    system:k3s-controller
+    system:kube-controller-manager
+    system:kube-dns
+    system:kube-scheduler
+    system:metrics-server
+    system:monitoring
+    system:node
+    system:node-proxier
+    system:public-info-viewer
+    system:service-account-issuer-discovery
+    system:volume-scheduler
+[ok 00:29:11] RBAC snapshot recorded
+
+== Network Policies ==
+  NetworkPolicies across all namespaces: 4
+    demo                 default-deny
+    flux-system          allow-egress
+    flux-system          allow-scraping
+    flux-system          allow-webhooks
+[ok 00:29:11] NetworkPolicy snapshot recorded
+
+== Summary ==
+  Passed:   40
+  Warnings: 4
+  Failed:   0
+
+[ok 00:29:11] Verification passed
+[rathsted] E2E complete
+[rathsted 17:29:11] Host-side Hyper-V E2E complete
+
+# Exit code: 0
+# Completed: 2026-11-20T00:29:13Z

@@ -24,6 +24,10 @@ source "${ROOT_DIR}/bootstrap/lib/cluster.sh"
 # shellcheck source=bootstrap/lib/jurisdiction.sh
 source "${ROOT_DIR}/bootstrap/lib/jurisdiction.sh"
 
+# Supported host OS gate and per-release host preparation
+# shellcheck source=bootstrap/lib/os.sh
+source "${ROOT_DIR}/bootstrap/lib/os.sh"
+
 # Version pins (overridable via env vars for version matrix testing)
 K3S_VERSION="${RATHSTED_K3S_VERSION:-v1.35.9+k3s1}"
 KYVERNO_VERSION="${RATHSTED_KYVERNO_VERSION:-v1.19.1}"
@@ -106,7 +110,14 @@ if [[ "${EUID:-$(id -u)}" -ne 0 ]]; then
     # arguments: sudo -E alone can drop them (env_reset, env_delete), and the
     # root pass would then label and declare nothing. With a declared
     # operator-control, so are the checked GitOps URL and ref.
-    exec sudo -E env "RATHSTED_JURISDICTION=${RATHSTED_JURISDICTION:-}" \
+    # The other RATHSTED_* settings (pins, GitOps URL, token, key) and any
+    # proxy or CA bundle settings are named in --preserve-env=LIST: sudo-rs,
+    # the default sudo on Ubuntu 26.04, ignores a bare -E. Names only, so no
+    # value reaches the argv.
+    PRESERVE=()
+    preserve_names="$(compgen -e | grep -E '^(RATHSTED_[A-Za-z0-9_]*|http_proxy|https_proxy|no_proxy|HTTP_PROXY|HTTPS_PROXY|NO_PROXY|SSL_CERT_FILE|SSL_CERT_DIR|CURL_CA_BUNDLE)$' | paste -sd, - || true)"
+    [[ -n "${preserve_names}" ]] && PRESERVE=("--preserve-env=${preserve_names}")
+    exec sudo -E ${PRESERVE[@]+"${PRESERVE[@]}"} env "RATHSTED_JURISDICTION=${RATHSTED_JURISDICTION:-}" \
       "RATHSTED_OPERATOR_CONTROL=${RATHSTED_OPERATOR_CONTROL:-}" ${OPCTL_PIN[@]+"${OPCTL_PIN[@]}"} bash "$0" "$@"
   else
     echo "sudo is required to install." >&2
@@ -114,19 +125,10 @@ if [[ "${EUID:-$(id -u)}" -ne 0 ]]; then
   fi
 fi
 
-# OS check
-# shellcheck disable=SC1091
-. /etc/os-release
-case "${ID}" in
-  ubuntu|debian)    OS_FAMILY="debian" ;;
-  rocky|almalinux|rhel|centos) OS_FAMILY="rhel" ;;
-  *)
-    echo "Unsupported OS: ${ID}. Supported: Ubuntu 22.04/24.04, Debian 12, Rocky/Alma/RHEL 9." >&2
-    exit 1
-    ;;
-esac
+# OS check (sets OS_ID, OS_VERSION_ID, OS_FAMILY)
+detect_supported_os || exit 1
 step "1/6  OS Detection"
-info "Detected OS: ${ID} ${VERSION_ID} (${OS_FAMILY} family)"
+info "Detected OS: ${OS_ID} ${OS_VERSION_ID} (${OS_FAMILY} family)"
 info "Version pins: k3s=${K3S_VERSION} kyverno=${KYVERNO_VERSION} flux=${FLUX_VERSION}"
 info "Version pins: cosign=${COSIGN_VERSION} syft=${SYFT_VERSION} grype=${GRYPE_VERSION}"
 
@@ -199,6 +201,7 @@ EOF
   # Apply only this file: --system would also reload unrelated host config
   # and abort the install if any of it fails.
   sysctl -p /etc/sysctl.d/90-kubelet.conf >/dev/null || { fail "could not apply /etc/sysctl.d/90-kubelet.conf (kernel parameters required by protect-kernel-defaults)"; exit 1; }
+  ensure_k3s_kernel_modules || { fail "k3s prerequisites are missing on this host"; exit 1; }
   # The installer script internally verifies the k3s binary against the
   # official sha256sum file for the pinned version.
   INSTALL_K3S_VERSION="${K3S_VERSION}" \

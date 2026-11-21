@@ -1,7 +1,7 @@
 ┌─────────────────────────────────────────────────────────────┐
 │  Rathsted Foundations — Validation Evidence                 │
 │  Version: untagged · Target: debian:12                      │
-│  Date: 2026-10-09 · Source: github.com/rathsted             │
+│  Date: 2026-11-19 · Source: github.com/rathsted             │
 └─────────────────────────────────────────────────────────────┘
 
   Component Versions
@@ -13,68 +13,78 @@
   Syft           v1.54.0
   Grype          v0.120.0
 
-  ╭─ 1/12 Environment ───────────────────────────────── PASS ─╮
+  ╭─ 1/13 Environment ───────────────────────────────── PASS ─╮
   │  Foundations version: untagged
   │  Hostname:           rathsted-compat-debian-12
-  │  Date:               2026-10-09T21:42:48Z
+  │  Date:               2026-11-19T21:53:58Z
   │  Verify mode:        self-hosted
   │  OS:                 Debian GNU/Linux 12 (bookworm)
-  │  Kernel:             7.0.14-orbstack-00380-ga7e0a2dc9535
+  │  Kernel:             7.2.12-orbstack-00394-gbecdd6130068
   │  ✓  Environment recorded
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 2/12 Cluster ───────────────────────────────────── PASS ─╮
+  ╭─ 2/13 Cluster ───────────────────────────────────── PASS ─╮
   │  ✓  cluster-info ok
+  │  Cluster nodes:      1
   │  ✓  cluster nodes accessible
   │  Contract series:    2.x
   │  Contract install:   self-hosted
   │  Decks v0 support:   true
   │  Topology:           single-node (supported nodes 1-1)
+  │  Topology support:   baseline
   │  ✓  Foundations contract marker present
+  │  ✓  Cluster node count 1 matches the single-node contract
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 3/12 Hardening ─────────────────────────────────── PASS ─╮
-  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (4.4M, 3578 entries)
+  ╭─ 3/13 Hardening ─────────────────────────────────── PASS ─╮
+  │  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (7.6M, 5758 entries)
   │  ✓  API server audit logging active
   │  ✓  Audit policy file present
   │  ✓  Secrets encryption at rest enabled (encryption config present)
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 4/12 Flux ──────────────────────────────────────── PASS ─╮
+  ╭─ 4/13 Flux ──────────────────────────────────────── PASS ─╮
   │  ✓  Flux check passed
   │  ✓  Flux installed
   │  ✓  Flux pods present
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 5/12 Kyverno ───────────────────────────────────── PASS ─╮
+  ╭─ 5/13 Kyverno ───────────────────────────────────── PASS ─╮
   │  ✓  Kyverno installed
   │  ✓  Kyverno pods present
   │  ✓  Kyverno policies present
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 6/12 GitOps ────────────────────────────────────── PASS ─╮
+  ╭─ 6/13 Namespace Jurisdiction Labels ─────────────── WARN ─╮
+  │  ⚠  Namespaces without the jurisdiction labels; warning only: no r3_jurisdiction is recorded in flux-system/rathsted-foundations-contract and no platform namespace declares a jurisdiction (strict with RATHSTED_JURISDICTION or --release; see docs/upgrade-guide.md)
+  │  ⚠  rathsted.io/operator-control is stamped foreign-provider, but no operator declared it (no r3_operator_control in flux-system/rathsted-foundations-contract); declare it with RATHSTED_OPERATOR_CONTROL at install
+  ╰───────────────────────────────────────────────────────────╯
+
+  ╭─ 7/13 GitOps ────────────────────────────────────── PASS ─╮
   │  ✓  GitOps sync present
   │  ✓  Flux kustomizations listed
   │  ✓  Flux Git sources listed
+  │  ✓  flux-system/rathsted-sync Ready, applied main@sha1:2adeece857a02e619179b9b6397f907725ac504c (the current GitRepository/rathsted-foundations revision)
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 7/12 Demo App ──────────────────────────────────── WARN ─╮
+  ╭─ 8/13 Demo App ──────────────────────────────────── PASS ─╮
   │  ✓  Demo app objects present
-  │  ⚠  Demo app not Ready (non-fatal: GitOps reconciliation may still be in progress)
+  │  ✓  Demo app Ready
+  │  ✓  flux-system/rathsted-apps Ready, applied main@sha1:2adeece857a02e619179b9b6397f907725ac504c (the current GitRepository/rathsted-foundations revision)
   │  ✓  Signature policy installed
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 8/12 Supply Chain ──────────────────────────────── PASS ─╮
+  ╭─ 9/13 Supply Chain ──────────────────────────────── PASS ─╮
   │  ✓  SBOM generated (local containerd)
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 9/12 Vulnerability Scan ────────────────────────── PASS ─╮
+  ╭─ 10/13 Vulnerability Scan ───────────────────────── PASS ─╮
   │  Results: /srv/rathsted-foundations/supply-chain/sbom/output/foundations-demo.grype.txt
-  │  Critical: 28  High: 111
+  │  Critical: 50  High: 167
   │  ✓  Grype scan complete (informational; the High+ release gate applies under --release)
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 10/12 Negative Tests ───────────────────────────── PASS ─╮
+  ╭─ 11/13 Negative Tests ───────────────────────────── PASS ─╮
   │  ✓  Kyverno webhooks detected, waiting 15s for policies to settle...
   │  ✓  Policy rejected as expected: default-namespace-pod.yaml
   │  ✓  Policy rejected as expected: disallowed-registry.yaml
@@ -91,7 +101,7 @@
   │  ✓  Policy rejected as expected: unsigned-image-pod.yaml
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 11/12 Access Control (RBAC) ────────────────────── PASS ─╮
+  ╭─ 12/13 Access Control (RBAC) ────────────────────── PASS ─╮
   │  ClusterRoleBindings + RoleBindings: 80
   │    cluster-admin
   │    cluster-reconciler-flux-system
@@ -163,7 +173,7 @@
   │  ✓  RBAC snapshot recorded
   ╰───────────────────────────────────────────────────────────╯
 
-  ╭─ 12/12 Network Policies ─────────────────────────── PASS ─╮
+  ╭─ 13/13 Network Policies ─────────────────────────── PASS ─╮
   │  NetworkPolicies across all namespaces: 4
   │    demo                 default-deny
   │    flux-system          allow-egress
@@ -173,7 +183,7 @@
   ╰───────────────────────────────────────────────────────────╯
 
   ═════════════════════════════════════════════════════════════
-  Result:  36 passed · 3 warning(s) · 0 failed
+  Result:  40 passed · 4 warning(s) · 0 failed
   ═════════════════════════════════════════════════════════════
 
-  Generated: 2026-10-09T21:40:58Z
+  Generated: 2026-11-19T21:49:38Z
