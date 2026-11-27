@@ -1,5 +1,5 @@
 # Rathsted Foundations — rocky:9 Compatibility Evidence
-# Date: 2026-11-19T21:49:38Z
+# Date: 2026-11-26T21:18:49Z
 # Source: https://github.com/rathsted/rathsted-foundations.git
 #
 
@@ -7,12 +7,12 @@
 #   k3s=v1.35.9+k3s1  kyverno=v1.19.1  flux=2.9.6
 #   changed=2026-10-02/2026-10-02/2026-10-02
 
-[rathsted 14:49:38] Using VM: rathsted-compat-rocky-9
-[rathsted 14:49:38] Using image: rocky:9
-[rathsted 14:49:38] Repo: bundled tarball from invoking workspace
-[rathsted 14:49:38] Creating VM (rocky:9)...
-[rathsted 14:50:10] Installing prerequisites inside VM...
-Last metadata expiration check: 0:00:03 ago on Thu 19 Nov 2026 02:50:08 PM MST.
+[rathsted 14:18:49] Using VM: rathsted-compat-rocky-9
+[rathsted 14:18:49] Using image: rocky:9
+[rathsted 14:18:49] Repo: bundled tarball from invoking workspace
+[rathsted 14:18:49] Creating VM (rocky:9)...
+[rathsted 14:19:45] Installing prerequisites inside VM...
+Last metadata expiration check: 0:00:11 ago on Thu 26 Nov 2026 02:19:35 PM MST.
 Package curl-7.76.1-43.el9.aarch64 is already installed.
 Dependencies resolved.
 ================================================================================
@@ -22,6 +22,9 @@ Installing:
  git                      aarch64   2.52.0-1.el9              appstream    39 k
  make                     aarch64   1:4.3-8.el9               baseos      526 k
  which                    aarch64   2.21-30.el9_6             baseos       40 k
+Upgrading:
+ curl                     aarch64   7.76.1-44.el9_9.1         baseos      290 k
+ libcurl                  aarch64   7.76.1-44.el9_9.1         baseos      281 k
 Installing dependencies:
  git-core                 aarch64   2.52.0-1.el9              appstream   5.1 M
  git-core-doc             noarch    2.52.0-1.el9              appstream   2.8 M
@@ -96,235 +99,247 @@ Installing weak dependencies:
 Transaction Summary
 ================================================================================
 Install  71 Packages
+Upgrade   2 Packages
 
-Total download size: 17 M
-Installed size: 76 M
+Total download size: 18 M
 Downloading Packages:
-(1/71): make-4.3-8.el9.aarch64.rpm              2.1 MB/s | 526 kB     00:00    
-(2/71): less-590-6.el9.aarch64.rpm              650 kB/s | 159 kB     00:00    
-(3/71): groff-base-1.22.4-10.el9.0.1.aarch64.rp 2.6 MB/s | 1.0 MB     00:00    
-(4/71): which-2.21-30.el9_6.aarch64.rpm         250 kB/s |  40 kB     00:00    
-(5/71): git-2.52.0-1.el9.aarch64.rpm            568 kB/s |  39 kB     00:00    
-(6/71): ncurses-6.2-12.20210508.el9.aarch64.rpm 1.3 MB/s | 398 kB     00:00    
-(7/71): git-core-2.52.0-1.el9.aarch64.rpm        30 MB/s | 5.1 MB     00:00    
-(8/71): git-core-doc-2.52.0-1.el9.noarch.rpm     22 MB/s | 2.8 MB     00:00    
-(9/71): perl-AutoLoader-5.74-484.el9_8.noarch.r 615 kB/s |  20 kB     00:00    
-(10/71): perl-B-1.80-484.el9_8.aarch64.rpm      4.5 MB/s | 178 kB     00:00    
-(11/71): perl-Carp-1.50-460.el9.0.1.noarch.rpm  1.2 MB/s |  29 kB     00:00    
-(12/71): perl-Class-Struct-0.66-484.el9_8.noarc 941 kB/s |  21 kB     00:00    
-(13/71): perl-Data-Dumper-2.174-462.el9.aarch64 2.3 MB/s |  54 kB     00:00    
-(14/71): perl-Digest-1.19-4.el9.0.1.noarch.rpm  747 kB/s |  25 kB     00:00    
-(15/71): perl-Digest-MD5-2.58-4.el9.aarch64.rpm 1.0 MB/s |  36 kB     00:00    
-(16/71): perl-DynaLoader-1.47-484.el9_8.aarch64 548 kB/s |  24 kB     00:00    
-(17/71): perl-Encode-3.08-462.el9.aarch64.rpm    34 MB/s | 1.7 MB     00:00    
-(18/71): perl-Errno-1.30-484.el9_8.aarch64.rpm  312 kB/s |  14 kB     00:00    
-(19/71): perl-Error-0.17029-7.el9.0.1.noarch.rp 1.3 MB/s |  41 kB     00:00    
-(20/71): perl-Exporter-5.74-461.el9.noarch.rpm  1.3 MB/s |  31 kB     00:00    
-(21/71): perl-Fcntl-1.13-484.el9_8.aarch64.rpm  739 kB/s |  19 kB     00:00    
-(22/71): perl-File-Basename-2.85-484.el9_8.noar 506 kB/s |  16 kB     00:00    
-(23/71): perl-File-Path-2.18-4.el9.noarch.rpm   1.5 MB/s |  35 kB     00:00    
-(24/71): perl-File-Temp-0.231.100-4.el9.noarch. 2.1 MB/s |  59 kB     00:00    
-(25/71): perl-File-stat-1.09-484.el9_8.noarch.r 549 kB/s |  16 kB     00:00    
-(26/71): perl-FileHandle-2.03-484.el9_8.noarch. 431 kB/s |  14 kB     00:00    
-(27/71): perl-Getopt-Long-2.52-4.el9.noarch.rpm 2.2 MB/s |  60 kB     00:00    
-(28/71): perl-Getopt-Std-1.12-484.el9_8.noarch. 472 kB/s |  14 kB     00:00    
-(29/71): perl-Git-2.52.0-1.el9.noarch.rpm       968 kB/s |  37 kB     00:00    
-(30/71): perl-HTTP-Tiny-0.076-462.el9.noarch.rp 1.5 MB/s |  53 kB     00:00    
-(31/71): perl-IO-1.43-484.el9_8.aarch64.rpm     3.4 MB/s |  85 kB     00:00    
-(32/71): perl-IO-Socket-IP-0.41-5.el9.noarch.rp 1.3 MB/s |  42 kB     00:00    
-(33/71): perl-IO-Socket-SSL-2.073-2.el9.noarch. 6.6 MB/s | 214 kB     00:00    
-(34/71): perl-IPC-Open3-1.21-484.el9_8.noarch.r 773 kB/s |  22 kB     00:00    
-(35/71): perl-MIME-Base64-3.16-4.el9.aarch64.rp 887 kB/s |  30 kB     00:00    
-(36/71): perl-Mozilla-CA-20200520-6.el9.noarch. 368 kB/s |  12 kB     00:00    
-(37/71): perl-NDBM_File-1.15-484.el9_8.aarch64. 725 kB/s |  20 kB     00:00    
-(38/71): perl-Net-SSLeay-1.94-4.el9.aarch64.rpm  11 MB/s | 390 kB     00:00    
-(39/71): perl-POSIX-1.94-484.el9_8.aarch64.rpm  2.7 MB/s |  95 kB     00:00    
-(40/71): perl-PathTools-3.78-461.el9.aarch64.rp 2.6 MB/s |  85 kB     00:00    
-(41/71): perl-Pod-Escapes-1.07-460.el9.0.1.noar 750 kB/s |  20 kB     00:00    
-(42/71): perl-Pod-Perldoc-3.28.01-461.el9.noarc 2.4 MB/s |  83 kB     00:00    
-(43/71): perl-Pod-Simple-3.42-4.el9.noarch.rpm  6.3 MB/s | 215 kB     00:00    
-(44/71): perl-Pod-Usage-2.01-4.el9.noarch.rpm   1.7 MB/s |  40 kB     00:00    
-(45/71): perl-Scalar-List-Utils-1.56-462.el9.aa 2.3 MB/s |  68 kB     00:00    
-(46/71): perl-SelectSaver-1.02-484.el9_8.noarch 324 kB/s |  10 kB     00:00    
-(47/71): perl-Socket-2.031-4.el9.aarch64.rpm    1.4 MB/s |  54 kB     00:00    
-(48/71): perl-Storable-3.21-460.el9.aarch64.rpm 4.0 MB/s |  93 kB     00:00    
-(49/71): perl-Term-ANSIColor-5.01-461.el9.0.1.n 2.3 MB/s |  48 kB     00:00    
-(50/71): perl-Term-Cap-1.17-460.el9.0.1.noarch. 984 kB/s |  22 kB     00:00    
-(51/71): perl-Symbol-1.08-484.el9_8.noarch.rpm  386 kB/s |  13 kB     00:00    
-(52/71): perl-TermReadKey-2.38-11.el9.aarch64.r 1.6 MB/s |  35 kB     00:00    
-(53/71): perl-Text-ParseWords-3.30-460.el9.noar 692 kB/s |  16 kB     00:00    
-(54/71): perl-Text-Tabs+Wrap-2013.0523-460.el9. 1.0 MB/s |  23 kB     00:00    
-(55/71): perl-Time-Local-1.300-7.el9.noarch.rpm 1.5 MB/s |  33 kB     00:00    
-(56/71): perl-URI-5.09-4.el9_9.noarch.rpm       4.7 MB/s | 107 kB     00:00    
-(57/71): perl-Unicode-Normalize-1.27-461.el9.aa 3.4 MB/s |  87 kB     00:00    
-(58/71): perl-base-2.27-484.el9_8.noarch.rpm    576 kB/s |  15 kB     00:00    
-(59/71): perl-constant-1.33-461.el9.0.1.noarch. 982 kB/s |  23 kB     00:00    
-(60/71): perl-if-0.60.800-484.el9_8.noarch.rpm  465 kB/s |  13 kB     00:00    
-(61/71): perl-interpreter-5.32.1-484.el9_8.aarc 3.0 MB/s |  69 kB     00:00    
-(62/71): perl-lib-0.65-484.el9_8.aarch64.rpm    647 kB/s |  14 kB     00:00    
-(63/71): perl-libnet-3.13-4.el9.noarch.rpm      5.9 MB/s | 125 kB     00:00    
-(64/71): perl-mro-1.23-484.el9_8.aarch64.rpm    1.0 MB/s |  26 kB     00:00    
-(65/71): perl-overload-1.31-484.el9_8.noarch.rp 1.7 MB/s |  44 kB     00:00    
-(66/71): perl-libs-5.32.1-484.el9_8.aarch64.rpm  44 MB/s | 2.0 MB     00:00    
-(67/71): perl-overloading-0.02-484.el9_8.noarch 576 kB/s |  12 kB     00:00    
-(68/71): perl-parent-0.238-460.el9.noarch.rpm   741 kB/s |  14 kB     00:00    
-(69/71): perl-podlators-4.14-460.el9.0.1.noarch 5.2 MB/s | 117 kB     00:00    
-(70/71): perl-subs-1.03-484.el9_8.noarch.rpm    547 kB/s |  10 kB     00:00    
-(71/71): perl-vars-1.05-484.el9_8.noarch.rpm    512 kB/s |  12 kB     00:00    
+(1/73): less-590-6.el9.aarch64.rpm              554 kB/s | 159 kB     00:00    
+(2/73): make-4.3-8.el9.aarch64.rpm              1.1 MB/s | 526 kB     00:00    
+(3/73): ncurses-6.2-12.20210508.el9.aarch64.rpm 1.2 MB/s | 398 kB     00:00    
+(4/73): which-2.21-30.el9_6.aarch64.rpm         192 kB/s |  40 kB     00:00    
+(5/73): groff-base-1.22.4-10.el9.0.1.aarch64.rp 1.3 MB/s | 1.0 MB     00:00    
+(6/73): git-2.52.0-1.el9.aarch64.rpm            201 kB/s |  39 kB     00:00    
+(7/73): perl-AutoLoader-5.74-484.el9_8.noarch.r  80 kB/s |  20 kB     00:00    
+(8/73): git-core-2.52.0-1.el9.aarch64.rpm       8.5 MB/s | 5.1 MB     00:00    
+(9/73): git-core-doc-2.52.0-1.el9.noarch.rpm    5.2 MB/s | 2.8 MB     00:00    
+(10/73): perl-B-1.80-484.el9_8.aarch64.rpm      405 kB/s | 178 kB     00:00    
+(11/73): perl-Carp-1.50-460.el9.0.1.noarch.rpm   67 kB/s |  29 kB     00:00    
+(12/73): perl-Class-Struct-0.66-484.el9_8.noarc  94 kB/s |  21 kB     00:00    
+(13/73): perl-Data-Dumper-2.174-462.el9.aarch64 229 kB/s |  54 kB     00:00    
+(14/73): perl-Digest-1.19-4.el9.0.1.noarch.rpm  127 kB/s |  25 kB     00:00    
+(15/73): perl-Digest-MD5-2.58-4.el9.aarch64.rpm  93 kB/s |  36 kB     00:00    
+(16/73): perl-DynaLoader-1.47-484.el9_8.aarch64  47 kB/s |  24 kB     00:00    
+(17/73): perl-Encode-3.08-462.el9.aarch64.rpm   4.4 MB/s | 1.7 MB     00:00    
+(18/73): perl-Errno-1.30-484.el9_8.aarch64.rpm   76 kB/s |  14 kB     00:00    
+(19/73): perl-Error-0.17029-7.el9.0.1.noarch.rp 155 kB/s |  41 kB     00:00    
+(20/73): perl-Exporter-5.74-461.el9.noarch.rpm  129 kB/s |  31 kB     00:00    
+(21/73): perl-Fcntl-1.13-484.el9_8.aarch64.rpm  141 kB/s |  19 kB     00:00    
+(22/73): perl-File-Path-2.18-4.el9.noarch.rpm   306 kB/s |  35 kB     00:00    
+(23/73): perl-File-Basename-2.85-484.el9_8.noar 122 kB/s |  16 kB     00:00    
+(24/73): perl-File-Temp-0.231.100-4.el9.noarch. 542 kB/s |  59 kB     00:00    
+(25/73): perl-File-stat-1.09-484.el9_8.noarch.r 128 kB/s |  16 kB     00:00    
+(26/73): perl-FileHandle-2.03-484.el9_8.noarch. 123 kB/s |  14 kB     00:00    
+(27/73): perl-Getopt-Long-2.52-4.el9.noarch.rpm 358 kB/s |  60 kB     00:00    
+(28/73): perl-Getopt-Std-1.12-484.el9_8.noarch. 106 kB/s |  14 kB     00:00    
+(29/73): perl-Git-2.52.0-1.el9.noarch.rpm       249 kB/s |  37 kB     00:00    
+(30/73): perl-HTTP-Tiny-0.076-462.el9.noarch.rp 441 kB/s |  53 kB     00:00    
+(31/73): perl-IO-1.43-484.el9_8.aarch64.rpm     742 kB/s |  85 kB     00:00    
+(32/73): perl-IO-Socket-IP-0.41-5.el9.noarch.rp 374 kB/s |  42 kB     00:00    
+(33/73): perl-IO-Socket-SSL-2.073-2.el9.noarch. 1.6 MB/s | 214 kB     00:00    
+(34/73): perl-IPC-Open3-1.21-484.el9_8.noarch.r 179 kB/s |  22 kB     00:00    
+(35/73): perl-MIME-Base64-3.16-4.el9.aarch64.rp 119 kB/s |  30 kB     00:00    
+(36/73): perl-Mozilla-CA-20200520-6.el9.noarch.  31 kB/s |  12 kB     00:00    
+(37/73): perl-NDBM_File-1.15-484.el9_8.aarch64.  53 kB/s |  20 kB     00:00    
+(38/73): perl-Net-SSLeay-1.94-4.el9.aarch64.rpm 1.4 MB/s | 390 kB     00:00    
+(39/73): perl-PathTools-3.78-461.el9.aarch64.rp 716 kB/s |  85 kB     00:00    
+(40/73): perl-POSIX-1.94-484.el9_8.aarch64.rpm  556 kB/s |  95 kB     00:00    
+(41/73): perl-Pod-Escapes-1.07-460.el9.0.1.noar 103 kB/s |  20 kB     00:00    
+(42/73): perl-Pod-Perldoc-3.28.01-461.el9.noarc 642 kB/s |  83 kB     00:00    
+(43/73): perl-Pod-Simple-3.42-4.el9.noarch.rpm  1.4 MB/s | 215 kB     00:00    
+(44/73): perl-Pod-Usage-2.01-4.el9.noarch.rpm   291 kB/s |  40 kB     00:00    
+(45/73): perl-SelectSaver-1.02-484.el9_8.noarch  58 kB/s |  10 kB     00:00    
+(46/73): perl-Scalar-List-Utils-1.56-462.el9.aa 239 kB/s |  68 kB     00:00    
+(47/73): perl-Socket-2.031-4.el9.aarch64.rpm    277 kB/s |  54 kB     00:00    
+(48/73): perl-Storable-3.21-460.el9.aarch64.rpm 561 kB/s |  93 kB     00:00    
+(49/73): perl-Symbol-1.08-484.el9_8.noarch.rpm   59 kB/s |  13 kB     00:00    
+(50/73): perl-Term-ANSIColor-5.01-461.el9.0.1.n 189 kB/s |  48 kB     00:00    
+(51/73): perl-Term-Cap-1.17-460.el9.0.1.noarch. 131 kB/s |  22 kB     00:00    
+(52/73): perl-TermReadKey-2.38-11.el9.aarch64.r 259 kB/s |  35 kB     00:00    
+(53/73): perl-Text-ParseWords-3.30-460.el9.noar 105 kB/s |  16 kB     00:00    
+(54/73): perl-Text-Tabs+Wrap-2013.0523-460.el9. 161 kB/s |  23 kB     00:00    
+(55/73): perl-Time-Local-1.300-7.el9.noarch.rpm 184 kB/s |  33 kB     00:00    
+(56/73): perl-URI-5.09-4.el9_9.noarch.rpm       494 kB/s | 107 kB     00:00    
+(57/73): perl-Unicode-Normalize-1.27-461.el9.aa 355 kB/s |  87 kB     00:00    
+(58/73): perl-base-2.27-484.el9_8.noarch.rpm     89 kB/s |  15 kB     00:00    
+(59/73): perl-if-0.60.800-484.el9_8.noarch.rpm   57 kB/s |  13 kB     00:00    
+(60/73): perl-constant-1.33-461.el9.0.1.noarch.  91 kB/s |  23 kB     00:00    
+(61/73): perl-lib-0.65-484.el9_8.aarch64.rpm     46 kB/s |  14 kB     00:00    
+(62/73): perl-interpreter-5.32.1-484.el9_8.aarc 170 kB/s |  69 kB     00:00    
+(63/73): perl-libnet-3.13-4.el9.noarch.rpm      292 kB/s | 125 kB     00:00    
+(64/73): perl-libs-5.32.1-484.el9_8.aarch64.rpm 6.5 MB/s | 2.0 MB     00:00    
+(65/73): perl-mro-1.23-484.el9_8.aarch64.rpm     93 kB/s |  26 kB     00:00    
+(66/73): perl-overload-1.31-484.el9_8.noarch.rp 141 kB/s |  44 kB     00:00    
+(67/73): perl-overloading-0.02-484.el9_8.noarch  61 kB/s |  12 kB     00:00    
+(68/73): perl-parent-0.238-460.el9.noarch.rpm    54 kB/s |  14 kB     00:00    
+(69/73): perl-podlators-4.14-460.el9.0.1.noarch 399 kB/s | 117 kB     00:00    
+(70/73): perl-subs-1.03-484.el9_8.noarch.rpm     35 kB/s |  10 kB     00:00    
+(71/73): perl-vars-1.05-484.el9_8.noarch.rpm    104 kB/s |  12 kB     00:00    
+(72/73): libcurl-7.76.1-44.el9_9.1.aarch64.rpm  1.4 MB/s | 281 kB     00:00    
+(73/73): curl-7.76.1-44.el9_9.1.aarch64.rpm     1.2 MB/s | 290 kB     00:00    
 --------------------------------------------------------------------------------
-Total                                            12 MB/s |  17 MB     00:01     
+Total                                           2.6 MB/s |  18 MB     00:06     
 Running transaction check
 Transaction check succeeded.
 Running transaction test
 Transaction test succeeded.
 Running transaction
   Preparing        :                                                        1/1 
-  Installing       : ncurses-6.2-12.20210508.el9.aarch64                   1/71 
-  Installing       : less-590-6.el9.aarch64                                2/71 
-  Installing       : git-core-2.52.0-1.el9.aarch64                         3/71 
-  Installing       : git-core-doc-2.52.0-1.el9.noarch                      4/71 
-  Running scriptlet: groff-base-1.22.4-10.el9.0.1.aarch64                  5/71 
-  Installing       : groff-base-1.22.4-10.el9.0.1.aarch64                  5/71 
-  Running scriptlet: groff-base-1.22.4-10.el9.0.1.aarch64                  5/71 
-  Installing       : perl-Digest-1.19-4.el9.0.1.noarch                     6/71 
-  Installing       : perl-Digest-MD5-2.58-4.el9.aarch64                    7/71 
-  Installing       : perl-B-1.80-484.el9_8.aarch64                         8/71 
-  Installing       : perl-FileHandle-2.03-484.el9_8.noarch                 9/71 
-  Installing       : perl-Unicode-Normalize-1.27-461.el9.aarch64          10/71 
-  Installing       : perl-Data-Dumper-2.174-462.el9.aarch64               11/71 
-  Installing       : perl-libnet-3.13-4.el9.noarch                        12/71 
-  Installing       : perl-AutoLoader-5.74-484.el9_8.noarch                13/71 
-  Installing       : perl-base-2.27-484.el9_8.noarch                      14/71 
-  Installing       : perl-URI-5.09-4.el9_9.noarch                         15/71 
-  Installing       : perl-Mozilla-CA-20200520-6.el9.noarch                16/71 
-  Installing       : perl-if-0.60.800-484.el9_8.noarch                    17/71 
-  Installing       : perl-IO-Socket-IP-0.41-5.el9.noarch                  18/71 
-  Installing       : perl-Time-Local-2:1.300-7.el9.noarch                 19/71 
-  Installing       : perl-File-Path-2.18-4.el9.noarch                     20/71 
-  Installing       : perl-IO-Socket-SSL-2.073-2.el9.noarch                21/71 
-  Installing       : perl-Net-SSLeay-1.94-4.el9.aarch64                   22/71 
-  Installing       : perl-Pod-Escapes-1:1.07-460.el9.0.1.noarch           23/71 
-  Installing       : perl-Text-Tabs+Wrap-2013.0523-460.el9.0.1.noarch     24/71 
-  Installing       : perl-Class-Struct-0.66-484.el9_8.noarch              25/71 
-  Installing       : perl-POSIX-1.94-484.el9_8.aarch64                    26/71 
-  Installing       : perl-Term-ANSIColor-5.01-461.el9.0.1.noarch          27/71 
-  Installing       : perl-IPC-Open3-1.21-484.el9_8.noarch                 28/71 
-  Installing       : perl-subs-1.03-484.el9_8.noarch                      29/71 
-  Installing       : perl-File-Temp-1:0.231.100-4.el9.noarch              30/71 
-  Installing       : perl-HTTP-Tiny-0.076-462.el9.noarch                  31/71 
-  Installing       : perl-Term-Cap-1.17-460.el9.0.1.noarch                32/71 
-  Installing       : perl-Pod-Simple-1:3.42-4.el9.noarch                  33/71 
-  Installing       : perl-Socket-4:2.031-4.el9.aarch64                    34/71 
-  Installing       : perl-SelectSaver-1.02-484.el9_8.noarch               35/71 
-  Installing       : perl-Symbol-1.08-484.el9_8.noarch                    36/71 
-  Installing       : perl-File-stat-1.09-484.el9_8.noarch                 37/71 
-  Installing       : perl-podlators-1:4.14-460.el9.0.1.noarch             38/71 
-  Installing       : perl-Pod-Perldoc-3.28.01-461.el9.noarch              39/71 
-  Installing       : perl-Fcntl-1.13-484.el9_8.aarch64                    40/71 
-  Installing       : perl-Text-ParseWords-3.30-460.el9.noarch             41/71 
-  Installing       : perl-mro-1.23-484.el9_8.aarch64                      42/71 
-  Installing       : perl-IO-1.43-484.el9_8.aarch64                       43/71 
-  Installing       : perl-overloading-0.02-484.el9_8.noarch               44/71 
-  Installing       : perl-Pod-Usage-4:2.01-4.el9.noarch                   45/71 
-  Installing       : perl-Errno-1.30-484.el9_8.aarch64                    46/71 
-  Installing       : perl-File-Basename-2.85-484.el9_8.noarch             47/71 
-  Installing       : perl-Getopt-Std-1.12-484.el9_8.noarch                48/71 
-  Installing       : perl-MIME-Base64-3.16-4.el9.aarch64                  49/71 
-  Installing       : perl-Scalar-List-Utils-4:1.56-462.el9.aarch64        50/71 
-  Installing       : perl-constant-1.33-461.el9.0.1.noarch                51/71 
-  Installing       : perl-Storable-1:3.21-460.el9.aarch64                 52/71 
-  Installing       : perl-overload-1.31-484.el9_8.noarch                  53/71 
-  Installing       : perl-parent-1:0.238-460.el9.noarch                   54/71 
-  Installing       : perl-vars-1.05-484.el9_8.noarch                      55/71 
-  Installing       : perl-Getopt-Long-1:2.52-4.el9.noarch                 56/71 
-  Installing       : perl-Carp-1.50-460.el9.0.1.noarch                    57/71 
-  Installing       : perl-Exporter-5.74-461.el9.noarch                    58/71 
-  Installing       : perl-NDBM_File-1.15-484.el9_8.aarch64                59/71 
-  Installing       : perl-PathTools-3.78-461.el9.aarch64                  60/71 
-  Installing       : perl-Encode-4:3.08-462.el9.aarch64                   61/71 
-  Installing       : perl-libs-4:5.32.1-484.el9_8.aarch64                 62/71 
-  Installing       : perl-interpreter-4:5.32.1-484.el9_8.aarch64          63/71 
-  Installing       : perl-DynaLoader-1.47-484.el9_8.aarch64               64/71 
-  Installing       : perl-TermReadKey-2.38-11.el9.aarch64                 65/71 
-  Installing       : perl-Error-1:0.17029-7.el9.0.1.noarch                66/71 
-  Installing       : perl-lib-0.65-484.el9_8.aarch64                      67/71 
-  Installing       : perl-Git-2.52.0-1.el9.noarch                         68/71 
-  Installing       : git-2.52.0-1.el9.aarch64                             69/71 
-  Installing       : which-2.21-30.el9_6.aarch64                          70/71 
-  Installing       : make-1:4.3-8.el9.aarch64                             71/71 
-  Running scriptlet: make-1:4.3-8.el9.aarch64                             71/71 
-  Verifying        : groff-base-1.22.4-10.el9.0.1.aarch64                  1/71 
-  Verifying        : less-590-6.el9.aarch64                                2/71 
-  Verifying        : make-1:4.3-8.el9.aarch64                              3/71 
-  Verifying        : ncurses-6.2-12.20210508.el9.aarch64                   4/71 
-  Verifying        : which-2.21-30.el9_6.aarch64                           5/71 
-  Verifying        : git-2.52.0-1.el9.aarch64                              6/71 
-  Verifying        : git-core-2.52.0-1.el9.aarch64                         7/71 
-  Verifying        : git-core-doc-2.52.0-1.el9.noarch                      8/71 
-  Verifying        : perl-AutoLoader-5.74-484.el9_8.noarch                 9/71 
-  Verifying        : perl-B-1.80-484.el9_8.aarch64                        10/71 
-  Verifying        : perl-Carp-1.50-460.el9.0.1.noarch                    11/71 
-  Verifying        : perl-Class-Struct-0.66-484.el9_8.noarch              12/71 
-  Verifying        : perl-Data-Dumper-2.174-462.el9.aarch64               13/71 
-  Verifying        : perl-Digest-1.19-4.el9.0.1.noarch                    14/71 
-  Verifying        : perl-Digest-MD5-2.58-4.el9.aarch64                   15/71 
-  Verifying        : perl-DynaLoader-1.47-484.el9_8.aarch64               16/71 
-  Verifying        : perl-Encode-4:3.08-462.el9.aarch64                   17/71 
-  Verifying        : perl-Errno-1.30-484.el9_8.aarch64                    18/71 
-  Verifying        : perl-Error-1:0.17029-7.el9.0.1.noarch                19/71 
-  Verifying        : perl-Exporter-5.74-461.el9.noarch                    20/71 
-  Verifying        : perl-Fcntl-1.13-484.el9_8.aarch64                    21/71 
-  Verifying        : perl-File-Basename-2.85-484.el9_8.noarch             22/71 
-  Verifying        : perl-File-Path-2.18-4.el9.noarch                     23/71 
-  Verifying        : perl-File-Temp-1:0.231.100-4.el9.noarch              24/71 
-  Verifying        : perl-File-stat-1.09-484.el9_8.noarch                 25/71 
-  Verifying        : perl-FileHandle-2.03-484.el9_8.noarch                26/71 
-  Verifying        : perl-Getopt-Long-1:2.52-4.el9.noarch                 27/71 
-  Verifying        : perl-Getopt-Std-1.12-484.el9_8.noarch                28/71 
-  Verifying        : perl-Git-2.52.0-1.el9.noarch                         29/71 
-  Verifying        : perl-HTTP-Tiny-0.076-462.el9.noarch                  30/71 
-  Verifying        : perl-IO-1.43-484.el9_8.aarch64                       31/71 
-  Verifying        : perl-IO-Socket-IP-0.41-5.el9.noarch                  32/71 
-  Verifying        : perl-IO-Socket-SSL-2.073-2.el9.noarch                33/71 
-  Verifying        : perl-IPC-Open3-1.21-484.el9_8.noarch                 34/71 
-  Verifying        : perl-MIME-Base64-3.16-4.el9.aarch64                  35/71 
-  Verifying        : perl-Mozilla-CA-20200520-6.el9.noarch                36/71 
-  Verifying        : perl-NDBM_File-1.15-484.el9_8.aarch64                37/71 
-  Verifying        : perl-Net-SSLeay-1.94-4.el9.aarch64                   38/71 
-  Verifying        : perl-POSIX-1.94-484.el9_8.aarch64                    39/71 
-  Verifying        : perl-PathTools-3.78-461.el9.aarch64                  40/71 
-  Verifying        : perl-Pod-Escapes-1:1.07-460.el9.0.1.noarch           41/71 
-  Verifying        : perl-Pod-Perldoc-3.28.01-461.el9.noarch              42/71 
-  Verifying        : perl-Pod-Simple-1:3.42-4.el9.noarch                  43/71 
-  Verifying        : perl-Pod-Usage-4:2.01-4.el9.noarch                   44/71 
-  Verifying        : perl-Scalar-List-Utils-4:1.56-462.el9.aarch64        45/71 
-  Verifying        : perl-SelectSaver-1.02-484.el9_8.noarch               46/71 
-  Verifying        : perl-Socket-4:2.031-4.el9.aarch64                    47/71 
-  Verifying        : perl-Storable-1:3.21-460.el9.aarch64                 48/71 
-  Verifying        : perl-Symbol-1.08-484.el9_8.noarch                    49/71 
-  Verifying        : perl-Term-ANSIColor-5.01-461.el9.0.1.noarch          50/71 
-  Verifying        : perl-Term-Cap-1.17-460.el9.0.1.noarch                51/71 
-  Verifying        : perl-TermReadKey-2.38-11.el9.aarch64                 52/71 
-  Verifying        : perl-Text-ParseWords-3.30-460.el9.noarch             53/71 
-  Verifying        : perl-Text-Tabs+Wrap-2013.0523-460.el9.0.1.noarch     54/71 
-  Verifying        : perl-Time-Local-2:1.300-7.el9.noarch                 55/71 
-  Verifying        : perl-URI-5.09-4.el9_9.noarch                         56/71 
-  Verifying        : perl-Unicode-Normalize-1.27-461.el9.aarch64          57/71 
-  Verifying        : perl-base-2.27-484.el9_8.noarch                      58/71 
-  Verifying        : perl-constant-1.33-461.el9.0.1.noarch                59/71 
-  Verifying        : perl-if-0.60.800-484.el9_8.noarch                    60/71 
-  Verifying        : perl-interpreter-4:5.32.1-484.el9_8.aarch64          61/71 
-  Verifying        : perl-lib-0.65-484.el9_8.aarch64                      62/71 
-  Verifying        : perl-libnet-3.13-4.el9.noarch                        63/71 
-  Verifying        : perl-libs-4:5.32.1-484.el9_8.aarch64                 64/71 
-  Verifying        : perl-mro-1.23-484.el9_8.aarch64                      65/71 
-  Verifying        : perl-overload-1.31-484.el9_8.noarch                  66/71 
-  Verifying        : perl-overloading-0.02-484.el9_8.noarch               67/71 
-  Verifying        : perl-parent-1:0.238-460.el9.noarch                   68/71 
-  Verifying        : perl-podlators-1:4.14-460.el9.0.1.noarch             69/71 
-  Verifying        : perl-subs-1.03-484.el9_8.noarch                      70/71 
-  Verifying        : perl-vars-1.05-484.el9_8.noarch                      71/71 
+  Upgrading        : libcurl-7.76.1-44.el9_9.1.aarch64                     1/75 
+  Installing       : ncurses-6.2-12.20210508.el9.aarch64                   2/75 
+  Installing       : less-590-6.el9.aarch64                                3/75 
+  Installing       : git-core-2.52.0-1.el9.aarch64                         4/75 
+  Installing       : git-core-doc-2.52.0-1.el9.noarch                      5/75 
+  Running scriptlet: groff-base-1.22.4-10.el9.0.1.aarch64                  6/75 
+  Installing       : groff-base-1.22.4-10.el9.0.1.aarch64                  6/75 
+  Running scriptlet: groff-base-1.22.4-10.el9.0.1.aarch64                  6/75 
+  Installing       : perl-Digest-1.19-4.el9.0.1.noarch                     7/75 
+  Installing       : perl-Digest-MD5-2.58-4.el9.aarch64                    8/75 
+  Installing       : perl-B-1.80-484.el9_8.aarch64                         9/75 
+  Installing       : perl-FileHandle-2.03-484.el9_8.noarch                10/75 
+  Installing       : perl-Unicode-Normalize-1.27-461.el9.aarch64          11/75 
+  Installing       : perl-Data-Dumper-2.174-462.el9.aarch64               12/75 
+  Installing       : perl-libnet-3.13-4.el9.noarch                        13/75 
+  Installing       : perl-AutoLoader-5.74-484.el9_8.noarch                14/75 
+  Installing       : perl-base-2.27-484.el9_8.noarch                      15/75 
+  Installing       : perl-URI-5.09-4.el9_9.noarch                         16/75 
+  Installing       : perl-Mozilla-CA-20200520-6.el9.noarch                17/75 
+  Installing       : perl-if-0.60.800-484.el9_8.noarch                    18/75 
+  Installing       : perl-IO-Socket-IP-0.41-5.el9.noarch                  19/75 
+  Installing       : perl-Time-Local-2:1.300-7.el9.noarch                 20/75 
+  Installing       : perl-File-Path-2.18-4.el9.noarch                     21/75 
+  Installing       : perl-IO-Socket-SSL-2.073-2.el9.noarch                22/75 
+  Installing       : perl-Net-SSLeay-1.94-4.el9.aarch64                   23/75 
+  Installing       : perl-Pod-Escapes-1:1.07-460.el9.0.1.noarch           24/75 
+  Installing       : perl-Text-Tabs+Wrap-2013.0523-460.el9.0.1.noarch     25/75 
+  Installing       : perl-Class-Struct-0.66-484.el9_8.noarch              26/75 
+  Installing       : perl-POSIX-1.94-484.el9_8.aarch64                    27/75 
+  Installing       : perl-Term-ANSIColor-5.01-461.el9.0.1.noarch          28/75 
+  Installing       : perl-IPC-Open3-1.21-484.el9_8.noarch                 29/75 
+  Installing       : perl-subs-1.03-484.el9_8.noarch                      30/75 
+  Installing       : perl-File-Temp-1:0.231.100-4.el9.noarch              31/75 
+  Installing       : perl-HTTP-Tiny-0.076-462.el9.noarch                  32/75 
+  Installing       : perl-Term-Cap-1.17-460.el9.0.1.noarch                33/75 
+  Installing       : perl-Pod-Simple-1:3.42-4.el9.noarch                  34/75 
+  Installing       : perl-Socket-4:2.031-4.el9.aarch64                    35/75 
+  Installing       : perl-SelectSaver-1.02-484.el9_8.noarch               36/75 
+  Installing       : perl-Symbol-1.08-484.el9_8.noarch                    37/75 
+  Installing       : perl-File-stat-1.09-484.el9_8.noarch                 38/75 
+  Installing       : perl-podlators-1:4.14-460.el9.0.1.noarch             39/75 
+  Installing       : perl-Pod-Perldoc-3.28.01-461.el9.noarch              40/75 
+  Installing       : perl-Fcntl-1.13-484.el9_8.aarch64                    41/75 
+  Installing       : perl-Text-ParseWords-3.30-460.el9.noarch             42/75 
+  Installing       : perl-mro-1.23-484.el9_8.aarch64                      43/75 
+  Installing       : perl-IO-1.43-484.el9_8.aarch64                       44/75 
+  Installing       : perl-overloading-0.02-484.el9_8.noarch               45/75 
+  Installing       : perl-Pod-Usage-4:2.01-4.el9.noarch                   46/75 
+  Installing       : perl-Errno-1.30-484.el9_8.aarch64                    47/75 
+  Installing       : perl-File-Basename-2.85-484.el9_8.noarch             48/75 
+  Installing       : perl-Getopt-Std-1.12-484.el9_8.noarch                49/75 
+  Installing       : perl-MIME-Base64-3.16-4.el9.aarch64                  50/75 
+  Installing       : perl-Scalar-List-Utils-4:1.56-462.el9.aarch64        51/75 
+  Installing       : perl-constant-1.33-461.el9.0.1.noarch                52/75 
+  Installing       : perl-Storable-1:3.21-460.el9.aarch64                 53/75 
+  Installing       : perl-overload-1.31-484.el9_8.noarch                  54/75 
+  Installing       : perl-parent-1:0.238-460.el9.noarch                   55/75 
+  Installing       : perl-vars-1.05-484.el9_8.noarch                      56/75 
+  Installing       : perl-Getopt-Long-1:2.52-4.el9.noarch                 57/75 
+  Installing       : perl-Carp-1.50-460.el9.0.1.noarch                    58/75 
+  Installing       : perl-Exporter-5.74-461.el9.noarch                    59/75 
+  Installing       : perl-NDBM_File-1.15-484.el9_8.aarch64                60/75 
+  Installing       : perl-PathTools-3.78-461.el9.aarch64                  61/75 
+  Installing       : perl-Encode-4:3.08-462.el9.aarch64                   62/75 
+  Installing       : perl-libs-4:5.32.1-484.el9_8.aarch64                 63/75 
+  Installing       : perl-interpreter-4:5.32.1-484.el9_8.aarch64          64/75 
+  Installing       : perl-DynaLoader-1.47-484.el9_8.aarch64               65/75 
+  Installing       : perl-TermReadKey-2.38-11.el9.aarch64                 66/75 
+  Installing       : perl-Error-1:0.17029-7.el9.0.1.noarch                67/75 
+  Installing       : perl-lib-0.65-484.el9_8.aarch64                      68/75 
+  Installing       : perl-Git-2.52.0-1.el9.noarch                         69/75 
+  Installing       : git-2.52.0-1.el9.aarch64                             70/75 
+  Upgrading        : curl-7.76.1-44.el9_9.1.aarch64                       71/75 
+  Installing       : which-2.21-30.el9_6.aarch64                          72/75 
+  Installing       : make-1:4.3-8.el9.aarch64                             73/75 
+  Cleanup          : curl-7.76.1-43.el9.aarch64                           74/75 
+  Cleanup          : libcurl-7.76.1-43.el9.aarch64                        75/75 
+  Running scriptlet: libcurl-7.76.1-43.el9.aarch64                        75/75 
+  Verifying        : groff-base-1.22.4-10.el9.0.1.aarch64                  1/75 
+  Verifying        : less-590-6.el9.aarch64                                2/75 
+  Verifying        : make-1:4.3-8.el9.aarch64                              3/75 
+  Verifying        : ncurses-6.2-12.20210508.el9.aarch64                   4/75 
+  Verifying        : which-2.21-30.el9_6.aarch64                           5/75 
+  Verifying        : git-2.52.0-1.el9.aarch64                              6/75 
+  Verifying        : git-core-2.52.0-1.el9.aarch64                         7/75 
+  Verifying        : git-core-doc-2.52.0-1.el9.noarch                      8/75 
+  Verifying        : perl-AutoLoader-5.74-484.el9_8.noarch                 9/75 
+  Verifying        : perl-B-1.80-484.el9_8.aarch64                        10/75 
+  Verifying        : perl-Carp-1.50-460.el9.0.1.noarch                    11/75 
+  Verifying        : perl-Class-Struct-0.66-484.el9_8.noarch              12/75 
+  Verifying        : perl-Data-Dumper-2.174-462.el9.aarch64               13/75 
+  Verifying        : perl-Digest-1.19-4.el9.0.1.noarch                    14/75 
+  Verifying        : perl-Digest-MD5-2.58-4.el9.aarch64                   15/75 
+  Verifying        : perl-DynaLoader-1.47-484.el9_8.aarch64               16/75 
+  Verifying        : perl-Encode-4:3.08-462.el9.aarch64                   17/75 
+  Verifying        : perl-Errno-1.30-484.el9_8.aarch64                    18/75 
+  Verifying        : perl-Error-1:0.17029-7.el9.0.1.noarch                19/75 
+  Verifying        : perl-Exporter-5.74-461.el9.noarch                    20/75 
+  Verifying        : perl-Fcntl-1.13-484.el9_8.aarch64                    21/75 
+  Verifying        : perl-File-Basename-2.85-484.el9_8.noarch             22/75 
+  Verifying        : perl-File-Path-2.18-4.el9.noarch                     23/75 
+  Verifying        : perl-File-Temp-1:0.231.100-4.el9.noarch              24/75 
+  Verifying        : perl-File-stat-1.09-484.el9_8.noarch                 25/75 
+  Verifying        : perl-FileHandle-2.03-484.el9_8.noarch                26/75 
+  Verifying        : perl-Getopt-Long-1:2.52-4.el9.noarch                 27/75 
+  Verifying        : perl-Getopt-Std-1.12-484.el9_8.noarch                28/75 
+  Verifying        : perl-Git-2.52.0-1.el9.noarch                         29/75 
+  Verifying        : perl-HTTP-Tiny-0.076-462.el9.noarch                  30/75 
+  Verifying        : perl-IO-1.43-484.el9_8.aarch64                       31/75 
+  Verifying        : perl-IO-Socket-IP-0.41-5.el9.noarch                  32/75 
+  Verifying        : perl-IO-Socket-SSL-2.073-2.el9.noarch                33/75 
+  Verifying        : perl-IPC-Open3-1.21-484.el9_8.noarch                 34/75 
+  Verifying        : perl-MIME-Base64-3.16-4.el9.aarch64                  35/75 
+  Verifying        : perl-Mozilla-CA-20200520-6.el9.noarch                36/75 
+  Verifying        : perl-NDBM_File-1.15-484.el9_8.aarch64                37/75 
+  Verifying        : perl-Net-SSLeay-1.94-4.el9.aarch64                   38/75 
+  Verifying        : perl-POSIX-1.94-484.el9_8.aarch64                    39/75 
+  Verifying        : perl-PathTools-3.78-461.el9.aarch64                  40/75 
+  Verifying        : perl-Pod-Escapes-1:1.07-460.el9.0.1.noarch           41/75 
+  Verifying        : perl-Pod-Perldoc-3.28.01-461.el9.noarch              42/75 
+  Verifying        : perl-Pod-Simple-1:3.42-4.el9.noarch                  43/75 
+  Verifying        : perl-Pod-Usage-4:2.01-4.el9.noarch                   44/75 
+  Verifying        : perl-Scalar-List-Utils-4:1.56-462.el9.aarch64        45/75 
+  Verifying        : perl-SelectSaver-1.02-484.el9_8.noarch               46/75 
+  Verifying        : perl-Socket-4:2.031-4.el9.aarch64                    47/75 
+  Verifying        : perl-Storable-1:3.21-460.el9.aarch64                 48/75 
+  Verifying        : perl-Symbol-1.08-484.el9_8.noarch                    49/75 
+  Verifying        : perl-Term-ANSIColor-5.01-461.el9.0.1.noarch          50/75 
+  Verifying        : perl-Term-Cap-1.17-460.el9.0.1.noarch                51/75 
+  Verifying        : perl-TermReadKey-2.38-11.el9.aarch64                 52/75 
+  Verifying        : perl-Text-ParseWords-3.30-460.el9.noarch             53/75 
+  Verifying        : perl-Text-Tabs+Wrap-2013.0523-460.el9.0.1.noarch     54/75 
+  Verifying        : perl-Time-Local-2:1.300-7.el9.noarch                 55/75 
+  Verifying        : perl-URI-5.09-4.el9_9.noarch                         56/75 
+  Verifying        : perl-Unicode-Normalize-1.27-461.el9.aarch64          57/75 
+  Verifying        : perl-base-2.27-484.el9_8.noarch                      58/75 
+  Verifying        : perl-constant-1.33-461.el9.0.1.noarch                59/75 
+  Verifying        : perl-if-0.60.800-484.el9_8.noarch                    60/75 
+  Verifying        : perl-interpreter-4:5.32.1-484.el9_8.aarch64          61/75 
+  Verifying        : perl-lib-0.65-484.el9_8.aarch64                      62/75 
+  Verifying        : perl-libnet-3.13-4.el9.noarch                        63/75 
+  Verifying        : perl-libs-4:5.32.1-484.el9_8.aarch64                 64/75 
+  Verifying        : perl-mro-1.23-484.el9_8.aarch64                      65/75 
+  Verifying        : perl-overload-1.31-484.el9_8.noarch                  66/75 
+  Verifying        : perl-overloading-0.02-484.el9_8.noarch               67/75 
+  Verifying        : perl-parent-1:0.238-460.el9.noarch                   68/75 
+  Verifying        : perl-podlators-1:4.14-460.el9.0.1.noarch             69/75 
+  Verifying        : perl-subs-1.03-484.el9_8.noarch                      70/75 
+  Verifying        : perl-vars-1.05-484.el9_8.noarch                      71/75 
+  Verifying        : curl-7.76.1-44.el9_9.1.aarch64                       72/75 
+  Verifying        : curl-7.76.1-43.el9.aarch64                           73/75 
+  Verifying        : libcurl-7.76.1-44.el9_9.1.aarch64                    74/75 
+  Verifying        : libcurl-7.76.1-43.el9.aarch64                        75/75 
 
+Upgraded:
+  curl-7.76.1-44.el9_9.1.aarch64        libcurl-7.76.1-44.el9_9.1.aarch64       
 Installed:
   git-2.52.0-1.el9.aarch64                                                      
   git-core-2.52.0-1.el9.aarch64                                                 
@@ -399,10 +414,10 @@ Installed:
   which-2.21-30.el9_6.aarch64                                                   
 
 Complete!
-[rathsted 14:50:22] Copying local repo into VM rathsted-compat-rocky-9 (/srv/rathsted-foundations)...
-[rathsted 14:50:37] Running E2E inside VM rathsted-compat-rocky-9...
-[rathsted 14:50:37] Decrypting SSH key (removing passphrase for Flux compatibility)...
-[rathsted 14:50:37] SSH key decrypted successfully
+[rathsted 14:20:45] Copying local repo into VM rathsted-compat-rocky-9 (/srv/rathsted-foundations)...
+[rathsted 14:21:08] Running E2E inside VM rathsted-compat-rocky-9...
+[rathsted 14:21:08] Decrypting SSH key (removing passphrase for Flux compatibility)...
+[rathsted 14:21:08] SSH key decrypted successfully
 vm.overcommit_memory = 0
 vm.panic_on_oom = 0
 kernel.panic = 0
@@ -611,46 +626,48 @@ kustomization.kustomize.toolkit.fluxcd.io/rathsted-apps created
 == Environment ==
   Foundations version: untagged
   Hostname:           rathsted-compat-rocky-9
-  Date:               2026-11-19T21:53:27Z
+  Date:               2026-11-26T21:23:23Z
   Verify mode:        self-hosted
   OS:                 Rocky Linux 9.9 (Blue Onyx)
   Kernel:             7.2.12-orbstack-00394-gbecdd6130068
-[ok 14:53:27] Environment recorded
+  SELinux:            Disabled
+  Secure Boot:        not EFI
+[ok 14:23:23] Environment recorded
 
 == Cluster ==
-[ok 14:53:27] cluster-info ok
+[ok 14:23:23] cluster-info ok
   Cluster nodes:      1
-[ok 14:53:27] cluster nodes accessible
+[ok 14:23:24] cluster nodes accessible
   Contract series:    2.x
   Contract install:   self-hosted
   Decks v0 support:   true
   Topology:           single-node (supported nodes 1-1)
   Topology support:   baseline
-[ok 14:53:29] Foundations contract marker present
-[ok 14:53:29] Cluster node count 1 matches the single-node contract
+[ok 14:23:24] Foundations contract marker present
+[ok 14:23:24] Cluster node count 1 matches the single-node contract
 
 == Hardening ==
-  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (7.7M, 5843 entries)
-[ok 14:53:29] API server audit logging active
-[ok 14:53:29] Audit policy file present
-[ok 14:53:29] Secrets encryption at rest enabled (encryption config present)
+  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (8.0M, 6049 entries)
+[ok 14:23:24] API server audit logging active
+[ok 14:23:24] Audit policy file present
+[ok 14:23:24] Secrets encryption at rest enabled (encryption config present)
 
 == Flux ==
-[ok 14:53:30] Flux check passed
-[ok 14:53:30] Flux installed
-[ok 14:53:31] Flux pods present
+[ok 14:23:25] Flux check passed
+[ok 14:23:25] Flux installed
+[ok 14:23:25] Flux pods present
 
 == Kyverno ==
-[ok 14:53:31] Kyverno installed
-[ok 14:53:31] Kyverno pods present
-[ok 14:53:31] Kyverno policies present
-[info 14:53:31] kyverno image: ghcr.io/kyverno/kyverno:v1.19.1
-[info 14:53:31] kyverno image: ghcr.io/kyverno/background-controller:v1.19.1
-[info 14:53:31] kyverno image: ghcr.io/kyverno/cleanup-controller:v1.19.1
-[info 14:53:31] kyverno image: ghcr.io/kyverno/reports-controller:v1.19.1
+[ok 14:23:25] Kyverno installed
+[ok 14:23:25] Kyverno pods present
+[ok 14:23:26] Kyverno policies present
+[info 14:23:26] kyverno image: ghcr.io/kyverno/kyverno:v1.19.1
+[info 14:23:26] kyverno image: ghcr.io/kyverno/background-controller:v1.19.1
+[info 14:23:26] kyverno image: ghcr.io/kyverno/cleanup-controller:v1.19.1
+[info 14:23:26] kyverno image: ghcr.io/kyverno/reports-controller:v1.19.1
 
 == GitOps Readiness ==
-[info 14:53:31] reading flux-system/rathsted-sync before the namespace label checks; the verdict is in the GitOps section
+[info 14:23:26] reading flux-system/rathsted-sync before the namespace label checks; the verdict is in the GitOps section
 
 == Namespace Jurisdiction Labels ==
 NAMESPACE                    OWNER          ENVIRONMENT    JURISDICTION OPERATOR-CONTROL   VERDICT
@@ -662,49 +679,49 @@ kube-public                  -              -              -            -       
 kube-system                  -              -              -            -                  system (excluded)
 kyverno                      -              -              -            -                  NON-CONFORMING
 [rathsted] jurisdiction audit: non-conforming: default flux-system kyverno
-[warn 14:53:32] Namespaces without the jurisdiction labels; warning only: no r3_jurisdiction is recorded in flux-system/rathsted-foundations-contract and no platform namespace declares a jurisdiction (strict with RATHSTED_JURISDICTION or --release; see docs/upgrade-guide.md)
-[warn 14:53:33] rathsted.io/operator-control is stamped foreign-provider, but no operator declared it (no r3_operator_control in flux-system/rathsted-foundations-contract); declare it with RATHSTED_OPERATOR_CONTROL at install
+[warn 14:23:27] Namespaces without the jurisdiction labels; warning only: no r3_jurisdiction is recorded in flux-system/rathsted-foundations-contract and no platform namespace declares a jurisdiction (strict with RATHSTED_JURISDICTION or --release; see docs/upgrade-guide.md)
+[warn 14:23:27] rathsted.io/operator-control is stamped foreign-provider, but no operator declared it (no r3_operator_control in flux-system/rathsted-foundations-contract); declare it with RATHSTED_OPERATOR_CONTROL at install
 
 == GitOps ==
-[ok 14:53:33] GitOps sync present
-[ok 14:53:33] Flux kustomizations listed
-[ok 14:53:33] Flux Git sources listed
-[ok 14:53:33] flux-system/rathsted-sync Ready, applied main@sha1:2adeece857a02e619179b9b6397f907725ac504c (the current GitRepository/rathsted-foundations revision)
+[ok 14:23:27] GitOps sync present
+[ok 14:23:27] Flux kustomizations listed
+[ok 14:23:27] Flux Git sources listed
+[ok 14:23:27] flux-system/rathsted-sync Ready, applied main@sha1:3cc1d338885ec029474ab05e442f017dd72516c5 (the current GitRepository/rathsted-foundations revision)
 
 == Demo App ==
-[ok 14:53:33] Demo app objects present
-[ok 14:53:44] Demo app Ready
+[ok 14:23:27] Demo app objects present
+[ok 14:23:36] Demo app Ready
 [rathsted] waiting for flux-system/rathsted-apps to be Ready (up to 24 checks, 5s apart)
-[ok 14:53:50] flux-system/rathsted-apps Ready, applied main@sha1:2adeece857a02e619179b9b6397f907725ac504c (the current GitRepository/rathsted-foundations revision)
-[ok 14:53:50] Signature policy installed
+[ok 14:23:45] flux-system/rathsted-apps Ready, applied main@sha1:3cc1d338885ec029474ab05e442f017dd72516c5 (the current GitRepository/rathsted-foundations revision)
+[ok 14:23:45] Signature policy installed
 
 == Supply Chain ==
-[ok 14:53:55] SBOM generated (local containerd)
-[skip 14:53:55] Cosign skipped (cosign.pub not configured; use --release to enforce)
+[ok 14:24:20] SBOM generated (local containerd)
+[skip 14:24:20] Cosign skipped (cosign.pub not configured; use --release to enforce)
 
 == Vulnerability Scan ==
   Results: /srv/rathsted-foundations/supply-chain/sbom/output/foundations-demo.grype.txt
-  Critical: 50  High: 167
-[ok 14:57:44] Grype scan complete (informational; the High+ release gate applies under --release)
+  Critical: 44  High: 176
+[ok 14:26:33] Grype scan complete (informational; the High+ release gate applies under --release)
 
 == Negative Tests ==
-[ok 14:57:44] Kyverno webhooks detected, waiting 15s for policies to settle...
-[ok 14:58:00] Policy rejected as expected: default-namespace-pod.yaml
-[ok 14:58:01] Policy rejected as expected: disallowed-registry.yaml
-[ok 14:58:01] Policy rejected as expected: host-namespaces-pod.yaml
-[ok 14:58:01] Policy rejected as expected: hostpath-pod.yaml
-[ok 14:58:01] Policy rejected as expected: no-drop-capabilities-pod.yaml
-[ok 14:58:02] Policy rejected as expected: no-namespace-labels.yaml
-[ok 14:58:02] Policy rejected as expected: no-probes-pod.yaml
-[ok 14:58:02] Policy rejected as expected: no-resources-pod.yaml
-[ok 14:58:02] Policy rejected as expected: no-seccomp-pod.yaml
-[ok 14:58:02] Policy rejected as expected: privileged-pod.yaml
-[ok 14:58:03] Policy rejected as expected: readonly-rootfs-pod.yaml
-[ok 14:58:03] Policy rejected as expected: root-pod.yaml
-[ok 14:58:05] Policy rejected as expected: unsigned-image-pod.yaml
+[ok 14:26:33] Kyverno webhooks detected, waiting 15s for policies to settle...
+[ok 14:26:48] Policy rejected as expected: default-namespace-pod.yaml
+[ok 14:26:48] Policy rejected as expected: disallowed-registry.yaml
+[ok 14:26:49] Policy rejected as expected: host-namespaces-pod.yaml
+[ok 14:26:49] Policy rejected as expected: hostpath-pod.yaml
+[ok 14:26:49] Policy rejected as expected: no-drop-capabilities-pod.yaml
+[ok 14:26:49] Policy rejected as expected: no-namespace-labels.yaml
+[ok 14:26:50] Policy rejected as expected: no-probes-pod.yaml
+[ok 14:26:50] Policy rejected as expected: no-resources-pod.yaml
+[ok 14:26:50] Policy rejected as expected: no-seccomp-pod.yaml
+[ok 14:26:50] Policy rejected as expected: privileged-pod.yaml
+[ok 14:26:51] Policy rejected as expected: readonly-rootfs-pod.yaml
+[ok 14:26:51] Policy rejected as expected: root-pod.yaml
+[ok 14:26:52] Policy rejected as expected: unsigned-image-pod.yaml
 
 == Positive Admission Tests ==
-[skip 14:58:05] Positive admission tests skipped (use --release to enforce)
+[skip 14:26:52] Positive admission tests skipped (use --release to enforce)
 
 == Access Control (RBAC) ==
   ClusterRoleBindings + RoleBindings: 80
@@ -775,7 +792,7 @@ kyverno                      -              -              -            -       
     system:public-info-viewer
     system:service-account-issuer-discovery
     system:volume-scheduler
-[ok 14:58:05] RBAC snapshot recorded
+[ok 14:26:52] RBAC snapshot recorded
 
 == Network Policies ==
   NetworkPolicies across all namespaces: 4
@@ -783,16 +800,16 @@ kyverno                      -              -              -            -       
     flux-system          allow-egress
     flux-system          allow-scraping
     flux-system          allow-webhooks
-[ok 14:58:06] NetworkPolicy snapshot recorded
+[ok 14:26:52] NetworkPolicy snapshot recorded
 
 == Summary ==
   Passed:   40
   Warnings: 4
   Failed:   0
 
-[ok 14:58:06] Verification passed
+[ok 14:26:52] Verification passed
 [rathsted] E2E complete
-[rathsted 14:58:06] Host-side OrbStack E2E complete
+[rathsted 14:26:53] Host-side OrbStack E2E complete
 
 # Exit code: 0
-# Completed: 2026-11-19T21:58:06Z
+# Completed: 2026-11-26T21:26:53Z

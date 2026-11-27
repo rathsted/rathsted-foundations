@@ -19,15 +19,15 @@ Tested via `make compat-test` (OrbStack E2E matrix; maintainer CI only). Each ru
 
 | OS | Image | Status | Last Validated |
 | --- | --- | --- | --- |
-| Ubuntu 22.04 LTS | `ubuntu:22.04` | Primary supported | 2026-11-19 |
-| Ubuntu 24.04 LTS | `ubuntu:24.04` | Primary supported | 2026-11-19 |
-| Ubuntu 26.04 LTS | `ubuntu:26.04` | Validated compatibility path | 2026-11-19 |
+| Ubuntu 22.04 LTS | `ubuntu:22.04` | Supported | 2026-11-19 |
+| Ubuntu 24.04 LTS | `ubuntu:24.04` | Supported | 2026-11-19 |
+| Ubuntu 26.04 LTS | `ubuntu:26.04` | Primary supported | 2026-11-19 |
 | Ubuntu 24.04 CIS L1 | `ubuntu:24.04-cis` | Validated hardened path | 2026-11-19 |
 | Ubuntu 26.04 CIS L1 | `ubuntu:26.04-cis` | Validated hardened path | 2026-11-19 |
 | Debian 12 | `debian:12` | Validated compatibility path | 2026-11-19 |
 | Debian 13 | `debian:13` | Validated compatibility path | 2026-11-19 |
 | Rocky Linux 9 | `rocky:9` | Validated compatibility path | 2026-11-19 |
-| Rocky Linux 10 | `rocky:10` | Validated compatibility path | 2026-11-19 |
+| Rocky Linux 10 | `rocky:10` | Validated compatibility path | 2026-11-26 |
 | RHEL 9 | n/a | Compatible (same family as Rocky 9) | n/a |
 | RHEL 10 | n/a | Compatible (same family as Rocky 10) | n/a |
 | AlmaLinux 9 | n/a | Compatible (same family as Rocky 9) | n/a |

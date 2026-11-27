@@ -113,13 +113,21 @@ validate_rathsted_operator_control() {
 # The GitOps URL ($1, else RATHSTED_GIT_URL) must not carry credentials
 # (https://user:token@host/...): the installers write it into the Flux
 # GitRepository spec, which anyone who can read that object sees. A token goes
-# in RATHSTED_GIT_TOKEN, which becomes a Secret. SSH URLs (git@host:path,
-# ssh://git@host/path) are not affected. The URL is not printed.
+# in RATHSTED_GIT_TOKEN, which becomes a Secret. A bare user name is refused
+# too: a token can sit in that position. SSH URLs carry a user, not a secret
+# (git@host:path, ssh://git@host/path), but an ssh:// URL with a password
+# before the @ is refused. The URL is not printed.
 validate_rathsted_git_url() {
   local url="${1-${RATHSTED_GIT_URL:-}}"
+  url="${url#"${url%%[![:space:]]*}"}"
   [[ -z "$url" ]] && return 0
   if [[ "$url" =~ ^[Hh][Tt][Tt][Pp][Ss]?://[^/@]+@ ]]; then
-    echo "[rathsted] the GitOps URL (RATHSTED_GIT_URL, else the origin remote) must not embed credentials; use RATHSTED_GIT_TOKEN" >&2
+    echo "[rathsted] the GitOps URL (RATHSTED_GIT_URL, else the origin remote) must not embed credentials; use RATHSTED_GIT_TOKEN. Anything before '@' counts, even a user name alone, since a token can sit there" >&2
+    return 1
+  fi
+  # Any scheme (ssh://, git+ssh://, ...): a password before the @ is refused.
+  if [[ "$url" =~ ^[A-Za-z][A-Za-z0-9+.-]*://[^/@:]*:[^/@]*@ ]]; then
+    echo "[rathsted] the GitOps URL (RATHSTED_GIT_URL, else the origin remote) must not embed a password; use an SSH key" >&2
     return 1
   fi
   return 0

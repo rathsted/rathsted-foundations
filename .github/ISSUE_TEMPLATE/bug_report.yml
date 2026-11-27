@@ -43,6 +43,6 @@ body:
     attributes:
       label: OS
       description: Ubuntu version or other OS
-      placeholder: "Ubuntu 24.04"
+      placeholder: "Ubuntu 26.04"
     validations:
       required: true

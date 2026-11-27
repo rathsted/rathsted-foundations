@@ -1,5 +1,5 @@
 # Rathsted Foundations — ubuntu:24.04-cis Compatibility Evidence
-# Date: 2026-11-19T22:04:03Z
+# Date: 2026-11-26T21:42:55Z
 # Source: https://github.com/rathsted/rathsted-foundations.git
 #
 
@@ -8,11 +8,11 @@
 #   changed=2026-10-02/2026-10-02/2026-10-02
 # Hardening: cis
 
-[rathsted 15:04:03] Using VM: rathsted-compat-ubuntu-24-04-cis
-[rathsted 15:04:03] Using image: ubuntu:24.04
-[rathsted 15:04:04] Repo: bundled tarball from invoking workspace
-[rathsted 15:04:04] Creating VM (ubuntu:24.04)...
-[rathsted 15:04:17] Installing prerequisites inside VM...
+[rathsted 14:42:55] Using VM: rathsted-compat-ubuntu-24-04-cis
+[rathsted 14:42:55] Using image: ubuntu:24.04
+[rathsted 14:42:55] Repo: bundled tarball from invoking workspace
+[rathsted 14:42:55] Creating VM (ubuntu:24.04)...
+[rathsted 14:43:17] Installing prerequisites inside VM...
 Hit:1 http://ports.ubuntu.com/ubuntu-ports noble InRelease
 Hit:2 http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease
 Hit:3 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease
@@ -33,7 +33,7 @@ Suggested packages:
 The following NEW packages will be installed:
   git git-man libcurl3t64-gnutls liberror-perl libgdbm-compat4t64 libgdbm6t64
   libperl5.38t64 make patch perl perl-modules-5.38
-0 upgraded, 11 newly installed, 0 to remove and 11 not upgraded.
+0 upgraded, 11 newly installed, 0 to remove and 21 not upgraded.
 Need to get 13.7 MB of archives.
 After this operation, 78.4 MB of additional disk space will be used.
 Get:1 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 perl-modules-5.38 all 5.38.2-3.2ubuntu0.7 [3,110 kB]
@@ -48,7 +48,7 @@ Get:9 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 git arm64 1:
 Get:10 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 make arm64 4.3-4.1build2 [178 kB]
 Get:11 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 patch arm64 2.7.6-7build3 [101 kB]
 dpkg-preconfigure: unable to re-open stdin: No such file or directory
-Fetched 13.7 MB in 1s (12.2 MB/s)
+Fetched 13.7 MB in 1s (13.9 MB/s)
 Selecting previously unselected package perl-modules-5.38.
 (Reading database… (Reading database… 5%(Reading database… 10%(Reading database… 15%(Reading database… 20%(Reading database… 25%(Reading database… 30%(Reading database… 35%(Reading database… 40%(Reading database… 45%(Reading database… 50%(Reading database… 55%(Reading database… 60%(Reading database… 65%(Reading database… 70%(Reading database… 75%(Reading database… 80%(Reading database… 85%(Reading database… 90%(Reading database… 95%(Reading database… 100%(Reading database… 16356 files and directories currently installed.)
 Preparing to unpack …/00-perl-modules-5.38_5.38.2-3.2ubuntu0.7_all.deb…
@@ -95,10 +95,10 @@ Setting up perl (5.38.2-3.2ubuntu0.7)…
 Setting up liberror-perl (0.17029-2)…
 Setting up git (1:2.43.0-1ubuntu7.4)…
 Processing triggers for libc-bin (2.39-0ubuntu8.12)…
-[rathsted 15:04:31] Copying local repo into VM rathsted-compat-ubuntu-24-04-cis (/srv/rathsted-foundations)...
-[rathsted 15:04:39] Running E2E inside VM rathsted-compat-ubuntu-24-04-cis...
-[rathsted 15:04:39] Decrypting SSH key (removing passphrase for Flux compatibility)...
-[rathsted 15:04:40] SSH key decrypted successfully
+[rathsted 14:43:26] Copying local repo into VM rathsted-compat-ubuntu-24-04-cis (/srv/rathsted-foundations)...
+[rathsted 14:43:33] Running E2E inside VM rathsted-compat-ubuntu-24-04-cis...
+[rathsted 14:43:33] Decrypting SSH key (removing passphrase for Flux compatibility)...
+[rathsted 14:43:33] SSH key decrypted successfully
 vm.overcommit_memory = 0
 vm.panic_on_oom = 0
 kernel.panic = 0
@@ -160,7 +160,6 @@ Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc
 ✚ generating manifests
 ✔ manifests build completed
 ► installing components in flux-system namespace
-◎ verifying installation
 CustomResourceDefinition/alerts.notification.toolkit.fluxcd.io created
 CustomResourceDefinition/buckets.source.toolkit.fluxcd.io created
 CustomResourceDefinition/externalartifacts.source.toolkit.fluxcd.io created
@@ -193,6 +192,7 @@ Deployment/flux-system/source-controller created
 NetworkPolicy/flux-system/allow-egress created
 NetworkPolicy/flux-system/allow-scraping created
 NetworkPolicy/flux-system/allow-webhooks created
+◎ verifying installation
 ✔ helm-controller: deployment ready
 ✔ kustomize-controller: deployment ready
 ✔ notification-controller: deployment ready
@@ -294,6 +294,25 @@ clusterpolicy.kyverno.io/require-seccomp created
 clusterpolicy.kyverno.io/require-signed-images created
 clusterpolicy.kyverno.io/restrict-hostpath created
 clusterpolicy.kyverno.io/restrict-registries created
+[rathsted] Policies not all listed yet; retrying in 10s...
+[rathsted] policies_present: missing policies:
+require-seccomp
+[rathsted] Policy apply attempt 2/10 (timeout 60s)...
+Warning: kyverno.io/v1 ClusterPolicy is deprecated and will be removed in a future release; migrate to ValidatingPolicy, MutatingPolicy, GeneratingPolicy or ImageValidatingPolicy (policies.kyverno.io), see https://kyverno.io/docs/guides/migration-to-cel/
+clusterpolicy.kyverno.io/baseline-networkpolicy configured
+clusterpolicy.kyverno.io/disallow-host-namespaces configured
+Warning: Policies that match Pods apply to all Pods including those created and managed by controllers excluded from autogen. Use preconditions to exclude the Pods managed by controllers which are excluded from autogen. Refer to https://kyverno.io/docs/policy-types/cluster-policy/autogen/ for details.
+clusterpolicy.kyverno.io/disallow-privileged configured
+clusterpolicy.kyverno.io/drop-all-capabilities configured
+clusterpolicy.kyverno.io/require-namespace-labels configured
+clusterpolicy.kyverno.io/require-non-root configured
+clusterpolicy.kyverno.io/require-probes configured
+clusterpolicy.kyverno.io/require-readonly-rootfs configured
+clusterpolicy.kyverno.io/require-resources configured
+clusterpolicy.kyverno.io/require-seccomp configured
+clusterpolicy.kyverno.io/require-signed-images configured
+clusterpolicy.kyverno.io/restrict-hostpath configured
+clusterpolicy.kyverno.io/restrict-registries configured
 [rathsted] Using default policies (run 'make configure' to customize registry/image signing).
 [rathsted] WARNING: RATHSTED_OPERATOR_CONTROL is not set, so require-namespace-labels stamps rathsted.io/operator-control=foreign-provider on every namespace.
 [rathsted] WARNING: the tracked policy's value is foreign-provider, written for Rathsted's reference deployment; it is not a fact about this cluster.
@@ -319,46 +338,48 @@ kustomization.kustomize.toolkit.fluxcd.io/rathsted-apps created
 == Environment ==
   Foundations version: untagged
   Hostname:           rathsted-compat-ubuntu-24-04-cis
-  Date:               2026-11-19T22:06:26Z
+  Date:               2026-11-26T21:45:51Z
   Verify mode:        self-hosted
   OS:                 Ubuntu 24.04.5 LTS
   Kernel:             7.2.12-orbstack-00394-gbecdd6130068
-[ok 15:06:26] Environment recorded
+  SELinux:            not present
+  Secure Boot:        not EFI
+[ok 14:45:51] Environment recorded
 
 == Cluster ==
-[ok 15:06:26] cluster-info ok
+[ok 14:45:51] cluster-info ok
   Cluster nodes:      1
-[ok 15:06:26] cluster nodes accessible
+[ok 14:45:51] cluster nodes accessible
   Contract series:    2.x
   Contract install:   self-hosted
   Decks v0 support:   true
   Topology:           single-node (supported nodes 1-1)
   Topology support:   baseline
-[ok 15:06:27] Foundations contract marker present
-[ok 15:06:27] Cluster node count 1 matches the single-node contract
+[ok 14:45:52] Foundations contract marker present
+[ok 14:45:52] Cluster node count 1 matches the single-node contract
 
 == Hardening ==
-  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (7.4M, 5622 entries)
-[ok 15:06:27] API server audit logging active
-[ok 15:06:27] Audit policy file present
-[ok 15:06:27] Secrets encryption at rest enabled (encryption config present)
+  Audit log: /var/lib/rancher/k3s/server/logs/audit.log (8.3M, 6262 entries)
+[ok 14:45:52] API server audit logging active
+[ok 14:45:52] Audit policy file present
+[ok 14:45:52] Secrets encryption at rest enabled (encryption config present)
 
 == Flux ==
-[ok 15:06:28] Flux check passed
-[ok 15:06:28] Flux installed
-[ok 15:06:28] Flux pods present
+[ok 14:45:54] Flux check passed
+[ok 14:45:54] Flux installed
+[ok 14:45:54] Flux pods present
 
 == Kyverno ==
-[ok 15:06:29] Kyverno installed
-[ok 15:06:29] Kyverno pods present
-[ok 15:06:29] Kyverno policies present
-[info 15:06:29] kyverno image: ghcr.io/kyverno/kyverno:v1.19.1
-[info 15:06:29] kyverno image: ghcr.io/kyverno/background-controller:v1.19.1
-[info 15:06:29] kyverno image: ghcr.io/kyverno/cleanup-controller:v1.19.1
-[info 15:06:29] kyverno image: ghcr.io/kyverno/reports-controller:v1.19.1
+[ok 14:45:54] Kyverno installed
+[ok 14:45:54] Kyverno pods present
+[ok 14:45:55] Kyverno policies present
+[info 14:45:55] kyverno image: ghcr.io/kyverno/kyverno:v1.19.1
+[info 14:45:55] kyverno image: ghcr.io/kyverno/background-controller:v1.19.1
+[info 14:45:55] kyverno image: ghcr.io/kyverno/cleanup-controller:v1.19.1
+[info 14:45:55] kyverno image: ghcr.io/kyverno/reports-controller:v1.19.1
 
 == GitOps Readiness ==
-[info 15:06:29] reading flux-system/rathsted-sync before the namespace label checks; the verdict is in the GitOps section
+[info 14:45:55] reading flux-system/rathsted-sync before the namespace label checks; the verdict is in the GitOps section
 
 == Namespace Jurisdiction Labels ==
 NAMESPACE                    OWNER          ENVIRONMENT    JURISDICTION OPERATOR-CONTROL   VERDICT
@@ -370,49 +391,49 @@ kube-public                  -              -              -            -       
 kube-system                  -              -              -            -                  system (excluded)
 kyverno                      -              -              -            -                  NON-CONFORMING
 [rathsted] jurisdiction audit: non-conforming: default flux-system kyverno
-[warn 15:06:30] Namespaces without the jurisdiction labels; warning only: no r3_jurisdiction is recorded in flux-system/rathsted-foundations-contract and no platform namespace declares a jurisdiction (strict with RATHSTED_JURISDICTION or --release; see docs/upgrade-guide.md)
-[warn 15:06:30] rathsted.io/operator-control is stamped foreign-provider, but no operator declared it (no r3_operator_control in flux-system/rathsted-foundations-contract); declare it with RATHSTED_OPERATOR_CONTROL at install
+[warn 14:45:58] Namespaces without the jurisdiction labels; warning only: no r3_jurisdiction is recorded in flux-system/rathsted-foundations-contract and no platform namespace declares a jurisdiction (strict with RATHSTED_JURISDICTION or --release; see docs/upgrade-guide.md)
+[warn 14:45:58] rathsted.io/operator-control is stamped foreign-provider, but no operator declared it (no r3_operator_control in flux-system/rathsted-foundations-contract); declare it with RATHSTED_OPERATOR_CONTROL at install
 
 == GitOps ==
-[ok 15:06:30] GitOps sync present
-[ok 15:06:30] Flux kustomizations listed
-[ok 15:06:31] Flux Git sources listed
-[ok 15:06:31] flux-system/rathsted-sync Ready, applied main@sha1:2adeece857a02e619179b9b6397f907725ac504c (the current GitRepository/rathsted-foundations revision)
+[ok 14:45:58] GitOps sync present
+[ok 14:45:59] Flux kustomizations listed
+[ok 14:45:59] Flux Git sources listed
+[ok 14:45:59] flux-system/rathsted-sync Ready, applied main@sha1:3cc1d338885ec029474ab05e442f017dd72516c5 (the current GitRepository/rathsted-foundations revision)
 
 == Demo App ==
-[ok 15:06:31] Demo app objects present
-[ok 15:06:38] Demo app Ready
+[ok 14:45:59] Demo app objects present
+[ok 14:46:08] Demo app Ready
 [rathsted] waiting for flux-system/rathsted-apps to be Ready (up to 24 checks, 5s apart)
-[ok 15:06:43] flux-system/rathsted-apps Ready, applied main@sha1:2adeece857a02e619179b9b6397f907725ac504c (the current GitRepository/rathsted-foundations revision)
-[ok 15:06:43] Signature policy installed
+[ok 14:46:13] flux-system/rathsted-apps Ready, applied main@sha1:3cc1d338885ec029474ab05e442f017dd72516c5 (the current GitRepository/rathsted-foundations revision)
+[ok 14:46:14] Signature policy installed
 
 == Supply Chain ==
-[ok 15:06:47] SBOM generated (local containerd)
-[skip 15:06:47] Cosign skipped (cosign.pub not configured; use --release to enforce)
+[ok 14:46:18] SBOM generated (local containerd)
+[skip 14:46:18] Cosign skipped (cosign.pub not configured; use --release to enforce)
 
 == Vulnerability Scan ==
   Results: /srv/rathsted-foundations/supply-chain/sbom/output/foundations-demo.grype.txt
-  Critical: 50  High: 167
-[ok 15:08:17] Grype scan complete (informational; the High+ release gate applies under --release)
+  Critical: 44  High: 176
+[ok 14:48:31] Grype scan complete (informational; the High+ release gate applies under --release)
 
 == Negative Tests ==
-[ok 15:08:18] Kyverno webhooks detected, waiting 15s for policies to settle...
-[ok 15:08:33] Policy rejected as expected: default-namespace-pod.yaml
-[ok 15:08:33] Policy rejected as expected: disallowed-registry.yaml
-[ok 15:08:33] Policy rejected as expected: host-namespaces-pod.yaml
-[ok 15:08:33] Policy rejected as expected: hostpath-pod.yaml
-[ok 15:08:33] Policy rejected as expected: no-drop-capabilities-pod.yaml
-[ok 15:08:33] Policy rejected as expected: no-namespace-labels.yaml
-[ok 15:08:33] Policy rejected as expected: no-probes-pod.yaml
-[ok 15:08:34] Policy rejected as expected: no-resources-pod.yaml
-[ok 15:08:34] Policy rejected as expected: no-seccomp-pod.yaml
-[ok 15:08:34] Policy rejected as expected: privileged-pod.yaml
-[ok 15:08:34] Policy rejected as expected: readonly-rootfs-pod.yaml
-[ok 15:08:34] Policy rejected as expected: root-pod.yaml
-[ok 15:08:35] Policy rejected as expected: unsigned-image-pod.yaml
+[ok 14:48:32] Kyverno webhooks detected, waiting 15s for policies to settle...
+[ok 14:48:47] Policy rejected as expected: default-namespace-pod.yaml
+[ok 14:48:47] Policy rejected as expected: disallowed-registry.yaml
+[ok 14:48:48] Policy rejected as expected: host-namespaces-pod.yaml
+[ok 14:48:48] Policy rejected as expected: hostpath-pod.yaml
+[ok 14:48:48] Policy rejected as expected: no-drop-capabilities-pod.yaml
+[ok 14:48:49] Policy rejected as expected: no-namespace-labels.yaml
+[ok 14:48:49] Policy rejected as expected: no-probes-pod.yaml
+[ok 14:48:49] Policy rejected as expected: no-resources-pod.yaml
+[ok 14:48:50] Policy rejected as expected: no-seccomp-pod.yaml
+[ok 14:48:50] Policy rejected as expected: privileged-pod.yaml
+[ok 14:48:50] Policy rejected as expected: readonly-rootfs-pod.yaml
+[ok 14:48:50] Policy rejected as expected: root-pod.yaml
+[ok 14:48:52] Policy rejected as expected: unsigned-image-pod.yaml
 
 == Positive Admission Tests ==
-[skip 15:08:35] Positive admission tests skipped (use --release to enforce)
+[skip 14:48:52] Positive admission tests skipped (use --release to enforce)
 
 == Access Control (RBAC) ==
   ClusterRoleBindings + RoleBindings: 80
@@ -483,7 +504,7 @@ kyverno                      -              -              -            -       
     system:public-info-viewer
     system:service-account-issuer-discovery
     system:volume-scheduler
-[ok 15:08:35] RBAC snapshot recorded
+[ok 14:48:52] RBAC snapshot recorded
 
 == Network Policies ==
   NetworkPolicies across all namespaces: 4
@@ -491,16 +512,16 @@ kyverno                      -              -              -            -       
     flux-system          allow-egress
     flux-system          allow-scraping
     flux-system          allow-webhooks
-[ok 15:08:36] NetworkPolicy snapshot recorded
+[ok 14:48:52] NetworkPolicy snapshot recorded
 
 == Summary ==
   Passed:   40
   Warnings: 4
   Failed:   0
 
-[ok 15:08:36] Verification passed
+[ok 14:48:52] Verification passed
 [rathsted] E2E complete
-[rathsted 15:08:36] Host-side OrbStack E2E complete
+[rathsted 14:48:52] Host-side OrbStack E2E complete
 
 # Exit code: 0
-# Completed: 2026-11-19T22:08:36Z
+# Completed: 2026-11-26T21:48:52Z

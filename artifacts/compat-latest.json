@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-11-20T02:00:39Z",
+  "timestamp": "2026-11-26T22:39:43Z",
   "source": "https://github.com/rathsted/rathsted-foundations.git",
   "arch": "arm64",
   "backend": "orbstack",
-  "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
-  "commit_dirty": false,
+  "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
+  "commit_dirty": true,
   "parallel": true,
   "passed": 17,
   "failed": 0,
@@ -38,16 +38,16 @@
   },
   "pin_change_age_days": {
     "current": {
-      "k3s": 49,
-      "kyverno": 49,
-      "flux": 49,
-      "pin_set": 49
+      "k3s": 55,
+      "kyverno": 55,
+      "flux": 55,
+      "pin_set": 55
     },
     "previous": {
-      "k3s": 49,
-      "kyverno": 49,
-      "flux": 49,
-      "pin_set": 49
+      "k3s": 55,
+      "kyverno": 55,
+      "flux": 55,
+      "pin_set": 55
     }
   },
   "pin_change_count_180d": {
@@ -66,38 +66,38 @@
     {
       "image": "debian:12",
       "status": "passed",
-      "timestamp": "2026-11-19T22:10:50Z",
-      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
-      "commit_dirty": true,
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
+      "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
       "pins": {
-        "pin_set": "2026-10-02",
         "k3s": "v1.35.9+k3s1",
         "kyverno": "v1.19.1",
-        "flux": "2.9.6"
+        "flux": "2.9.6",
+        "pin_set": "2026-10-02"
       }
     },
     {
       "image": "debian:12-prev",
       "status": "passed",
-      "timestamp": "2026-11-19T22:10:50Z",
-      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
-      "commit_dirty": true,
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
+      "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
       "pins": {
-        "pin_set": "2026-10-02",
         "k3s": "v1.35.1+k3s1",
         "kyverno": "v1.17.1",
-        "flux": "2.8.1"
+        "flux": "2.8.1",
+        "pin_set": "2026-10-02"
       }
     },
     {
       "image": "debian:13",
       "status": "passed",
-      "timestamp": "2026-11-20T02:00:39Z",
-      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
       "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
@@ -111,8 +111,8 @@
     {
       "image": "debian:13-prev",
       "status": "passed",
-      "timestamp": "2026-11-20T02:00:39Z",
-      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
       "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
@@ -126,39 +126,39 @@
     {
       "image": "rocky:9",
       "status": "passed",
-      "timestamp": "2026-11-19T22:10:50Z",
-      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
-      "commit_dirty": true,
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
+      "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
       "pins": {
-        "pin_set": "2026-10-02",
         "k3s": "v1.35.9+k3s1",
         "kyverno": "v1.19.1",
-        "flux": "2.9.6"
+        "flux": "2.9.6",
+        "pin_set": "2026-10-02"
       }
     },
     {
       "image": "rocky:9-prev",
       "status": "passed",
-      "timestamp": "2026-11-19T22:10:50Z",
-      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
-      "commit_dirty": true,
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
+      "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
       "pins": {
-        "pin_set": "2026-10-02",
         "k3s": "v1.35.1+k3s1",
         "kyverno": "v1.17.1",
-        "flux": "2.8.1"
+        "flux": "2.8.1",
+        "pin_set": "2026-10-02"
       }
     },
     {
       "image": "rocky:10",
       "status": "passed",
-      "timestamp": "2026-11-20T02:00:39Z",
-      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
-      "commit_dirty": false,
+      "timestamp": "2026-11-26T22:39:43Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
+      "commit_dirty": true,
       "arch": "arm64",
       "backend": "orbstack",
       "pins": {
@@ -171,8 +171,8 @@
     {
       "image": "rocky:10-prev",
       "status": "passed",
-      "timestamp": "2026-11-20T02:00:39Z",
-      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
       "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
@@ -186,68 +186,68 @@
     {
       "image": "ubuntu:22.04",
       "status": "passed",
-      "timestamp": "2026-11-19T22:10:50Z",
-      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
-      "commit_dirty": true,
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
+      "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
       "pins": {
-        "pin_set": "2026-10-02",
         "k3s": "v1.35.9+k3s1",
         "kyverno": "v1.19.1",
-        "flux": "2.9.6"
+        "flux": "2.9.6",
+        "pin_set": "2026-10-02"
       }
     },
     {
       "image": "ubuntu:22.04-prev",
       "status": "passed",
-      "timestamp": "2026-11-19T22:10:50Z",
-      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
-      "commit_dirty": true,
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
+      "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
       "pins": {
-        "pin_set": "2026-10-02",
         "k3s": "v1.35.1+k3s1",
         "kyverno": "v1.17.1",
-        "flux": "2.8.1"
+        "flux": "2.8.1",
+        "pin_set": "2026-10-02"
       }
     },
     {
       "image": "ubuntu:24.04",
       "status": "passed",
-      "timestamp": "2026-11-19T22:10:50Z",
-      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
-      "commit_dirty": true,
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
+      "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
       "pins": {
-        "pin_set": "2026-10-02",
         "k3s": "v1.35.9+k3s1",
         "kyverno": "v1.19.1",
-        "flux": "2.9.6"
+        "flux": "2.9.6",
+        "pin_set": "2026-10-02"
       }
     },
     {
       "image": "ubuntu:24.04-prev",
       "status": "passed",
-      "timestamp": "2026-11-19T22:10:50Z",
-      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
-      "commit_dirty": true,
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
+      "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
       "pins": {
-        "pin_set": "2026-10-02",
         "k3s": "v1.35.1+k3s1",
         "kyverno": "v1.17.1",
-        "flux": "2.8.1"
+        "flux": "2.8.1",
+        "pin_set": "2026-10-02"
       }
     },
     {
       "image": "ubuntu:26.04",
       "status": "passed",
-      "timestamp": "2026-11-20T02:00:39Z",
-      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
       "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
@@ -261,8 +261,8 @@
     {
       "image": "ubuntu:26.04-prev",
       "status": "passed",
-      "timestamp": "2026-11-20T02:00:39Z",
-      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
       "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
@@ -276,8 +276,8 @@
     {
       "image": "ubuntu:26.04-cis",
       "status": "passed",
-      "timestamp": "2026-11-20T02:00:39Z",
-      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
       "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
@@ -291,8 +291,8 @@
     {
       "image": "ubuntu:26.04-cis-prev",
       "status": "passed",
-      "timestamp": "2026-11-20T02:00:39Z",
-      "commit": "17ed26bb8732fd07aca0ff800b43ae4117b369b6",
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
       "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
@@ -306,16 +306,16 @@
     {
       "image": "ubuntu:24.04-cis",
       "status": "passed",
-      "timestamp": "2026-11-19T22:10:50Z",
-      "commit": "8889cd8f025065de668c25a8ab5d45de44fc20d1",
-      "commit_dirty": true,
+      "timestamp": "2026-11-26T21:51:58Z",
+      "commit": "32a02ec62e77198610bcfb2507d9c7399c04ec83",
+      "commit_dirty": false,
       "arch": "arm64",
       "backend": "orbstack",
       "pins": {
-        "pin_set": "2026-10-02",
         "k3s": "v1.35.9+k3s1",
         "kyverno": "v1.19.1",
-        "flux": "2.9.6"
+        "flux": "2.9.6",
+        "pin_set": "2026-10-02"
       }
     }
   ]

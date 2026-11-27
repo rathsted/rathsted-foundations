@@ -6,6 +6,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [2.2.1] — 2026-11-26
+
+### Changed
+- Ubuntu 26.04 LTS is now the primary supported host. Ubuntu 22.04 and 24.04
+  stay supported and keep their validation runs.
+
+### Fixed
+- The GitOps URL check refuses a URL that embeds a password before the `@`
+  in any scheme (`ssh://`, `git+ssh://`); use an SSH key. Its refusal of an
+  https URL with only a user name now says why: a token can sit in that
+  position.
+- `test-bootstrap-guards.sh` reads one snapshot of `bootstrap/` and
+  `policies/`, so a checkout or sync that rewrites a policy file mid-run no
+  longer fails the "full policy set" check.
+- `test-jurisdiction-labels.sh` builds its installer fixture from tracked and
+  unignored files only, so an ignored local file such as a cosign private key
+  is never copied into a fixture commit.
+
 ## [2.2.0] — 2026-11-20
 
 ### Breaking / action required

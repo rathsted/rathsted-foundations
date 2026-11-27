@@ -58,6 +58,14 @@ WORK="$(mktemp -d)"
 cleanup() { rm -rf "$WORK"; }
 trap cleanup EXIT
 
+# Every check reads one snapshot of bootstrap/ and policies/. Reading the live
+# tree twice (the expected names here, the code under test later) failed when
+# a checkout or a sync rewrote a policy file in between (seen 2026-11-19).
+SNAP="${WORK}/root"
+mkdir -p "$SNAP"
+( cd "$ROOT_DIR" && tar -cf - bootstrap policies ) | ( cd "$SNAP" && tar -xf - )
+ROOT_DIR="$SNAP"
+
 # ─── Fake binaries: kubectl, timeout, sleep ───
 FAKE_BIN="${WORK}/bin"
 mkdir -p "$FAKE_BIN"
